@@ -90,7 +90,10 @@ The first priority is the skill toy page: each card represents a toy or practice
 
 - **Astro view transitions** for smooth page navigation where supported.
 - **CSS animations** for the homepage intro and card hover states.
-- **Framer Motion is not needed for MVP** because most animation can be handled with CSS.
+- **Motion One** for small page-specific DOM animations, starting with the
+  Art packet opening animation.
+- **Framer Motion is not needed for MVP** because the site is not React-based,
+  and Motion One fits Astro's mostly-static model better.
 - **Canvas or simple CSS motion** can power the homepage animation.
   - MVP recommendation: use CSS motion first to avoid unnecessary JavaScript.
   - Add canvas later if the homepage needs a more playful interactive background.
@@ -118,25 +121,29 @@ The first priority is the skill toy page: each card represents a toy or practice
 ```txt
 src/
   components/
-    Layout.astro
+    ActiveClipCard.astro
+    ComboLogCard.astro
+    HomePersonFigure.astro
     Nav.astro
-    SkillToyCard.astro
+    TerminalPanel.astro
+    ToyProgressChart.astro
+    ToyProgressStrip.astro
     VideoEmbed.astro
-    ProjectCard.astro
-    ArtGallery.astro
-  content/
-    skill-toys/
-    projects/
-    art/
   data/
+    artworks.ts
+    codingProjects.ts
     site.ts
+    skillToys.ts
   layouts/
     BaseLayout.astro
   pages/
     index.astro
     skill-toys.astro
+    skill-toys/[slug].astro
     coding.astro
     art.astro
+    art/[slug].astro
+    art/collections/[slug].astro
   styles/
     global.css
 public/
@@ -174,6 +181,60 @@ public/
 - Content can be updated through simple data files in `src/data`.
 - Site builds and is ready to deploy to GitHub Pages.
 
+## Completed Enhancement Pass
+
+### Skill Toys
+
+- Expanded the skill toy data from 5 overview toys to 8 total toys:
+  Kendama, Begleri, Yoyo, Pen Spinning, Juggling, Cardistry, Knucklebone, and
+  Contact Ball.
+- Added toy detail routes for every toy in the overview.
+- Added latest combo badges to skill toy clip cards so newest/current clips are
+  easier to spot.
+- Replaced performance-result labels like `landed`, `cleaning`, and `rough`
+  with a simpler manual combo log tag:
+  - `practice`
+  - `trick`
+  - `combo`
+- Kept the weighted variety progress log model, including active toy promotion
+  and inactive/archive toy representation.
+- Kept the compact percentage scroller at the bottom of the Skill Toys page.
+
+### Art Gallery
+
+- Added `@motionone/dom` as a lightweight animation library for Astro-friendly
+  DOM animation.
+- Added a packet-opening animation on Art collection pages:
+  - intro copy rises in
+  - cover panel opens in with scale/depth motion
+  - drawings stagger into view
+- The animation respects reduced-motion preferences.
+- Art collection pages still work as static GitHub Pages routes.
+
+### Coding
+
+- Removed the unused `codingNow` data export and its old `CodingNowItem` type.
+- Kept current coding updates in the tiny terminal instead of maintaining a
+  second status-card data structure.
+- Cleaned up stale code by deleting an unused older `SkillToyCard` component.
+
+### Verification
+
+- Ran `npm run build` successfully:
+  - Astro check: 0 errors, 0 warnings, 0 hints.
+  - Static build completed.
+- Browser-checked Skill Toys:
+  - latest badges render
+  - new `practice`, `trick`, and `combo` tags appear
+  - old `landed`, `cleaning`, and `rough` labels are gone
+  - all 8 toy detail routes are linked
+  - no horizontal overflow
+- Browser-checked Art collection route:
+  - packet animation hooks render
+  - drawing packet content renders
+  - no console errors
+  - no horizontal overflow
+
 ## Enhancement Roadmap
 
 ### Content Editing
@@ -200,30 +261,32 @@ public/
 
 - Keep the compact toy percentage scroller at the bottom of the Skill Toys page
   as a quick-jump area.
-- Add a "latest combo" badge for the newest clip.
-- Add a simple manual type field for combo logs:
+- Improve the "latest combo" badge styling with more visual states once real
+  videos are added.
+- Continue using the simple manual tag field for combo logs:
   - `practice`
   - `trick`
-  - `hard combo`
-- Use that type to control visual emphasis so difficult or important combos get
+  - `combo`
+- Use that tag to control visual emphasis so difficult or important combos get
   more attention without hiding normal practice clips.
 - Add filters for toy, status, and combo type once there are more real clips.
 - Add richer toy detail pages with personal notes, milestones, favorite combos,
   and embedded clip history.
-- automate skill toy uploads with youtube
+- Automate skill toy uploads with YouTube or another video source later.
 
 ### Art Gallery
 
 - Make art collections feel more like expandable drawing packets or volumes:
   click a volume, enter a focused collection page, then browse the drawings
   inside it.
-- Add a polished opening animation when entering an art packet.
+- Extend the new Motion One packet-opening animation with hover or click
+  reactions inside packets.
 - Keep the process widget as a two-column/two-slot feature when space allows.
 - Add a sketchbook or palette graphic that feels like a custom studio object,
   not just another grid card.
 - Make sure new art packets can be added by editing data only, without changing
   page code.
-- soft animated bontonical garden inspired background moving blobs
+- Add a soft animated botanical-garden-inspired background pattern.
 
 ### Coding
 
@@ -250,8 +313,8 @@ public/
   Toys.
 - Add seasonal decorations or small temporary UI effects.
 - Add mobile/tablet motion effects later, such as shake-to-scatter objects.
-- Consider an animation library only after the core interactions are chosen.
-  Start with CSS for simple effects.
+- Use Motion One for page-specific animation where CSS becomes awkward; keep
+  simple hover effects in CSS.
 - Consider Elevator.js on long scroll pages, especially Art or Skill Toys.
 
 ### Time Tracker / Practice Tracker App

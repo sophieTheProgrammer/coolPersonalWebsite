@@ -41,7 +41,7 @@ const [first, second, third] = volume.coverPalette;
       </a>
 
       <div class="mt-8 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
-        <div>
+        <div data-packet-open>
           <p class="text-sm font-black uppercase tracking-[0.22em] text-[var(--color-accent)]">
             {volume.year} / {drawings.length} drawings
           </p>
@@ -49,6 +49,7 @@ const [first, second, third] = volume.coverPalette;
           <p class="mt-4 text-xl font-bold text-[var(--color-muted)]">{volume.subtitle}</p>
         </div>
         <div
+          data-packet-cover
           class="relative min-h-64 overflow-hidden rounded-xl border border-[var(--color-line)] shadow-sm"
           style={`background: linear-gradient(135deg, ${first}, ${second} 58%, ${third});`}
         >
@@ -74,10 +75,58 @@ const [first, second, third] = volume.coverPalette;
           </p>
         </div>
 
-        <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {drawings.map((artwork, index) => <VolumeDrawingCard artwork={artwork} index={index} />)}
+        <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-packet-grid>
+          {
+            drawings.map((artwork, index) => (
+              <div data-packet-drawing>
+                <VolumeDrawingCard artwork={artwork} index={index} />
+              </div>
+            ))
+          }
         </div>
       </section>
     </section>
   </main>
 </BaseLayout>
+
+<script>
+  import { animate, stagger } from "@motionone/dom";
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!reduceMotion) {
+    const intro = document.querySelector("[data-packet-open]");
+    const cover = document.querySelector("[data-packet-cover]");
+    const drawings = document.querySelectorAll("[data-packet-drawing]");
+
+    if (intro) {
+      animate(
+        intro,
+        { opacity: [0, 1], transform: ["translateY(14px)", "translateY(0)"] },
+        { duration: 0.45, easing: "ease-out" },
+      );
+    }
+
+    if (cover) {
+      animate(
+        cover,
+        {
+          opacity: [0, 1],
+          transform: [
+            "translateY(20px) rotateX(8deg) scale(0.98)",
+            "translateY(0) rotateX(0deg) scale(1)",
+          ],
+        },
+        { duration: 0.65, delay: 0.08, easing: "ease-out" },
+      );
+    }
+
+    if (drawings.length) {
+      animate(
+        drawings,
+        { opacity: [0, 1], transform: ["translateY(18px)", "translateY(0)"] },
+        { duration: 0.42, delay: stagger(0.055, { start: 0.18 }), easing: "ease-out" },
+      );
+    }
+  }
+</script>

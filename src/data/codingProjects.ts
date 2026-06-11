@@ -18,30 +18,6 @@ export type CodingProject = {
   }[];
 };
 
-export type CodingNowItem = {
-  label: string;
-  value: string;
-  tone: "hot" | "cool" | "quiet";
-};
-
-export const codingNow: CodingNowItem[] = [
-  {
-    label: "Current build",
-    value: "Finishing this very website!",
-    tone: "hot",
-  },
-  {
-    label: "Learning",
-    value: "Nand2Tetris Course",
-    tone: "cool",
-  },
-  {
-    label: "Next push",
-    value: "Project detail pages and real links",
-    tone: "quiet",
-  },
-];
-
 export const codingProjects: CodingProject[] = [
   {
     title: "Cool Personal Website",

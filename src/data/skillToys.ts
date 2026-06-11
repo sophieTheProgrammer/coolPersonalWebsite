@@ -1,4 +1,5 @@
 export type SkillToyStatus = "active" | "paused" | "archive";
+export type ComboLogTag = "practice" | "trick" | "combo";
 
 export type SkillToy = {
   name: string;
@@ -15,7 +16,7 @@ export type ComboLog = {
   toySlug: string;
   title: string;
   date: string;
-  status: string;
+  tag: ComboLogTag;
   embedUrl: string;
   notes: string;
   featured: boolean;
@@ -52,7 +53,7 @@ export const skillToys: SkillToy[] = [
   {
     name: "Pen Spinning",
     slug: "pen-spinning",
-    progressScore: 28,
+    progressScore: 11,
     clipCount: 2,
     currentFocus: "ThumbAround consistency and simple links.",
     status: "paused",
@@ -67,6 +68,33 @@ export const skillToys: SkillToy[] = [
     status: "paused",
     latestComboId: "juggling-cascade-check-01",
   },
+  {
+    name: "Cardistry",
+    slug: "cardistry",
+    progressScore: 31,
+    clipCount: 1,
+    currentFocus: "Packet control and clean displays.",
+    status: "paused",
+    latestComboId: "cardistry-packet-opener-01",
+  },
+  {
+    name: "Knucklebone",
+    slug: "knucklebone",
+    progressScore: 22,
+    clipCount: 1,
+    currentFocus: "Slow rolls and controlled catches.",
+    status: "archive",
+    latestComboId: "knucklebone-roll-catch-01",
+  },
+  {
+    name: "Contact Ball",
+    slug: "contact-ball",
+    progressScore: 26,
+    clipCount: 1,
+    currentFocus: "Palm isolation and slow control.",
+    status: "archive",
+    latestComboId: "contact-ball-isolation-01",
+  },
 ];
 
 export const comboLogs: ComboLog[] = [
@@ -75,7 +103,7 @@ export const comboLogs: ComboLog[] = [
     toySlug: "kendama",
     title: "Lunar line practice",
     date: "2026-06-11",
-    status: "landed",
+    tag: "combo",
     embedUrl: "",
     notes: "Working on smoother setup and catch control.",
     featured: true,
@@ -85,7 +113,7 @@ export const comboLogs: ComboLog[] = [
     toySlug: "begleri",
     title: "Rebound flow",
     date: "2026-06-10",
-    status: "cleaning",
+    tag: "combo",
     embedUrl: "",
     notes: "Trying to keep the beads relaxed through the transfer.",
     featured: true,
@@ -95,7 +123,7 @@ export const comboLogs: ComboLog[] = [
     toySlug: "kendama",
     title: "Around Japan reset",
     date: "2026-06-08",
-    status: "landed",
+    tag: "trick",
     embedUrl: "",
     notes: "A small consistency check before harder lines.",
     featured: true,
@@ -105,7 +133,7 @@ export const comboLogs: ComboLog[] = [
     toySlug: "yoyo",
     title: "Frontstyle reset",
     date: "2026-06-07",
-    status: "practice",
+    tag: "practice",
     embedUrl: "",
     notes: "Keeping this in the log as a baseline for future yoyo clips.",
     featured: true,
@@ -115,7 +143,7 @@ export const comboLogs: ComboLog[] = [
     toySlug: "begleri",
     title: "Transfer check",
     date: "2026-06-04",
-    status: "practice",
+    tag: "practice",
     embedUrl: "",
     notes: "Short clip for seeing where the rhythm breaks.",
     featured: true,
@@ -125,7 +153,7 @@ export const comboLogs: ComboLog[] = [
     toySlug: "cardistry",
     title: "Packet opener",
     date: "2026-06-02",
-    status: "rough",
+    tag: "trick",
     embedUrl: "",
     notes: "Messy but useful for watching hand position.",
     featured: true,
@@ -135,7 +163,7 @@ export const comboLogs: ComboLog[] = [
     toySlug: "kendama",
     title: "Spike flow",
     date: "2026-05-31",
-    status: "landed",
+    tag: "combo",
     embedUrl: "",
     notes: "A faster line that still needs a cleaner finish.",
     featured: true,
@@ -145,7 +173,7 @@ export const comboLogs: ComboLog[] = [
     toySlug: "pen-spinning",
     title: "ThumbAround drill",
     date: "2026-05-28",
-    status: "practice",
+    tag: "practice",
     embedUrl: "",
     notes: "Tiny desk-session clip for tracking consistency.",
     featured: true,
@@ -155,7 +183,7 @@ export const comboLogs: ComboLog[] = [
     toySlug: "juggling",
     title: "Cascade check",
     date: "2026-05-25",
-    status: "practice",
+    tag: "practice",
     embedUrl: "",
     notes: "Watching throw height and timing.",
     featured: true,
@@ -165,7 +193,7 @@ export const comboLogs: ComboLog[] = [
     toySlug: "knucklebone",
     title: "Roll and catch",
     date: "2026-05-21",
-    status: "archive",
+    tag: "trick",
     embedUrl: "",
     notes: "Older clip kept around for variety in the log.",
     featured: true,
@@ -175,7 +203,7 @@ export const comboLogs: ComboLog[] = [
     toySlug: "contact-ball",
     title: "Palm isolation",
     date: "2026-05-18",
-    status: "archive",
+    tag: "practice",
     embedUrl: "",
     notes: "Slow control practice from the archive.",
     featured: true,
@@ -185,7 +213,7 @@ export const comboLogs: ComboLog[] = [
     toySlug: "kendama",
     title: "Cup flow warmup",
     date: "2026-05-15",
-    status: "practice",
+    tag: "practice",
     embedUrl: "",
     notes: "Basic flow warmup before trying harder tricks.",
     featured: false,
