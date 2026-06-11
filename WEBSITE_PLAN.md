@@ -236,6 +236,7 @@ public/
   - Active/building projects keep a warmer accent.
 - Add project detail pages with screenshots, lessons learned, demos, and repo
   links.
+- game jam tab or integration
 
 ### Easter Eggs and Micro-Interactions
 
