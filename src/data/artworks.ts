@@ -106,7 +106,8 @@ export const artVolumes: ArtVolume[] = [
     note: "A starter pack for sketches that feel like UI fragments, toy motion, and abstract little studio notes.",
     coverPalette: ["#e4577a", "#2d9c8c", "#f4d35e"],
     drawingSlugs: ["signal-garden", "pocket-orbit", "line-memory"],
-    easterEgg: "Hidden idea: add a tiny clickable mark that flips the cover colors.",
+    easterEgg:
+      "Hidden idea: add a tiny clickable mark that flips the cover colors.",
   },
   {
     title: "Studio Studies",
@@ -116,7 +117,8 @@ export const artVolumes: ArtVolume[] = [
     note: "A second pack for more finished-looking studies and placeholders for future drawing batches.",
     coverPalette: ["#1e1b2e", "#fbfaf7", "#7c6cff"],
     drawingSlugs: ["quiet-interface", "practice-room", "tiny-poster"],
-    easterEgg: "Hidden idea: add a fake page corner fold that reveals a note when hovered.",
+    easterEgg:
+      "Hidden idea: add a fake page corner fold that reveals a note when hovered.",
   },
   {
     title: "Pocket Sketchbook",
@@ -125,8 +127,14 @@ export const artVolumes: ArtVolume[] = [
     year: "2024-2026",
     note: "A flexible volume for rougher drawings and quick uploads that should not need a full polished gallery entry.",
     coverPalette: ["#f7b267", "#e4577a", "#fbfaf7"],
-    drawingSlugs: ["line-memory", "signal-garden", "practice-room", "pocket-orbit"],
-    easterEgg: "Hidden idea: add a random sketch button that jumps to one drawing inside the pack.",
+    drawingSlugs: [
+      "line-memory",
+      "signal-garden",
+      "practice-room",
+      "pocket-orbit",
+    ],
+    easterEgg:
+      "Hidden idea: add a random sketch button that jumps to one drawing inside the pack.",
   },
 ];
 
@@ -134,32 +142,37 @@ export const currentArtwork: CurrentArtwork = {
   title: "Signal Garden",
   status: "Blocking in",
   note: "Building a visual language with loose symbols, UI fragments, and toy-like motion shapes.",
-  nextStep: "Replace placeholder colors with real sketch screenshots and process images.",
+  nextStep:
+    "Replace placeholder colors with real sketch screenshots and process images.",
 };
 
 export const processStages: ProcessStage[] = [
   {
     label: "01",
     title: "Sketch",
-    description: "Loose thumbnail pass: composition, rhythm, and the first readable idea.",
+    description:
+      "Loose thumbnail pass: composition, rhythm, and the first readable idea.",
     palette: ["#fbfaf7", "#1e1b2e", "#d8d3c8"],
   },
   {
     label: "02",
     title: "Shape",
-    description: "Big graphic blocks and visual weight before small details get in the way.",
+    description:
+      "Big graphic blocks and visual weight before small details get in the way.",
     palette: ["#e4577a", "#fbfaf7", "#2d9c8c"],
   },
   {
     label: "03",
     title: "Color",
-    description: "Palette testing, contrast checks, and mood before the final pass.",
+    description:
+      "Palette testing, contrast checks, and mood before the final pass.",
     palette: ["#f4d35e", "#e4577a", "#7c6cff"],
   },
   {
     label: "04",
     title: "Finish",
-    description: "Clean edges, texture, export notes, and a final gallery-ready version.",
+    description:
+      "Clean edges, texture, export notes, and a final gallery-ready version.",
     palette: ["#1e1b2e", "#2d9c8c", "#fbfaf7"],
   },
 ];

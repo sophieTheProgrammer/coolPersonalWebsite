@@ -1,0 +1,41 @@
+---
+import type { SkillToy } from "../data/skillToys";
+
+type Props = {
+  toys: SkillToy[];
+};
+
+const { toys } = Astro.props;
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+---
+
+<div class="flex gap-2 overflow-x-auto pb-2" aria-label="Open toy trick logs">
+  {
+    toys.map((toy) => (
+      <a
+        class="min-w-[10rem] rounded-md border border-[var(--color-line)] bg-[var(--color-card)] p-2.5 shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--color-accent)]"
+        href={`${base}skill-toys/${toy.slug}/`}
+      >
+        <div class="flex items-center justify-between gap-3">
+          <h3 class="text-sm font-black">{toy.name}</h3>
+          <span class="text-xs font-bold text-[var(--color-muted)]">
+            {toy.progressScore}%
+          </span>
+        </div>
+        <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-[rgba(30,27,46,0.08)]">
+          <div
+            class="h-full rounded-full bg-[var(--color-accent-2)]"
+            style={`width: ${toy.progressScore}%`}
+          >
+          </div>
+        </div>
+        <div class="mt-2 flex items-center justify-between gap-3 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[var(--color-muted)]">
+          <span>{toy.status}</span>
+          <span>{toy.clipCount} clips</span>
+        </div>
+      </a>
+    ))
+  }
+</div>

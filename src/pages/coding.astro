@@ -1,7 +1,7 @@
 ---
 import CodingProjectCard from "../components/CodingProjectCard.astro";
 import TerminalPanel from "../components/TerminalPanel.astro";
-import { codingNow, codingProjects } from "../data/codingProjects";
+import { codingProjects } from "../data/codingProjects";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
@@ -14,10 +14,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <div class="grid gap-8 lg:grid-cols-[1fr_22rem] lg:items-start">
         <div>
           <p class="text-sm font-semibold uppercase tracking-[0.28em] text-[var(--color-muted)]">
-            Coding desk
+            Coding workbench
           </p>
           <h1 class="mt-4 max-w-4xl text-4xl font-black leading-none sm:text-6xl">
-            Projects, experiments, and what I am building next.
+            Projects
           </h1>
           <p class="mt-6 max-w-2xl text-lg leading-8 text-[var(--color-muted)]">
             A workbench-style page for active builds, small experiments, and
@@ -27,28 +27,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </div>
         <TerminalPanel />
       </div>
-
-      <section class="mt-10 grid gap-3 md:grid-cols-3" aria-label="Current coding status">
-        {
-          codingNow.map((item) => (
-            <article
-              class:list={[
-                "rounded-lg border p-4 shadow-sm",
-                item.tone === "hot"
-                  ? "border-[var(--color-accent)] bg-[rgba(228,87,122,0.08)]"
-                  : item.tone === "cool"
-                    ? "border-[var(--color-accent-2)] bg-[rgba(45,156,140,0.08)]"
-                    : "border-[var(--color-line)] bg-[var(--color-card)]",
-              ]}
-            >
-              <p class="text-xs font-black uppercase tracking-[0.18em] text-[var(--color-muted)]">
-                {item.label}
-              </p>
-              <p class="mt-3 text-lg font-black leading-snug">{item.value}</p>
-            </article>
-          ))
-        }
-      </section>
 
       <section class="mt-12" aria-labelledby="projects-heading">
         <div class="flex flex-wrap items-end justify-between gap-4">

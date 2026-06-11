@@ -11,7 +11,7 @@ The first priority is the skill toy page: each card represents a toy or practice
 ### Home
 
 - Simple polished landing page with your name, short intro, and links to the main sections.
-- Small animation on load, such as floating objects, subtle text reveal, or a looping canvas background.
+- Small animation on load, such as floating objects, subtle text reveal, or a looping canvas background, including drawn animated picture of me animated on hover
 - Featured links to Skill Toys, Coding, and Art.
 - Short "what I'm up to" line that can be edited from a content file.
 
@@ -19,10 +19,6 @@ The first priority is the skill toy page: each card represents a toy or practice
 
 - Main MVP feature.
 - Card grid for different skill toys and hobbies.
-- Initial cards can include:
-  - Kendama
-  - Begleri
-  - Other future toys or practice hobbies
 - Each card includes:
   - Toy name
   - Short description
@@ -178,18 +174,107 @@ public/
 - Content can be updated through simple data files in `src/data`.
 - Site builds and is ready to deploy to GitHub Pages.
 
-## Later Enhancements
+## Enhancement Roadmap
+
+### Content Editing
 
 - Add a private GUI editor/admin page for uploading art, pasting video links,
-  adding coding projects, and updating skill toy progress without editing code.
-- Add art Easter eggs such as hidden palette swaps, random sketch buttons, page
-  corner reveals, and secret sketchbook mode.
-- Add trick history per skill toy.
-- Add a "latest combo" badge that highlights the newest video.
-- Add filters for toy type, status, or tags.
-- Add a small combo timeline for Kendama and Begleri.
-- Add a random explore button.
-- Add theme switching.
-- Add project detail pages.
-- Add art process sliders or sketchbook mode.
-- Add search or command palette once there is enough content.
+  adding coding projects, editing homepage copy, and updating skill toy progress
+  without touching code.
+- Keep the current `src/data` files as the source of truth until the GUI exists.
+- Good future options:
+  - Decap CMS or another Git-backed CMS.
+  - A local-only admin page that writes JSON or Markdown.
+  - A hosted CMS if the site moves from GitHub Pages to Netlify or Vercel.
+
+### Home
+
+- Add small cards or buttons for YouTube and GitHub near the homepage studio
+  area.
+- Keep the CSS person/workshop scene, but add more hover reactions and small
+  idle animations.
+- Let the homepage show a tiny "latest update" pulled from skill toys, coding,
+  or art data.
+
+### Skill Toys
+
+- Keep the compact toy percentage scroller at the bottom of the Skill Toys page
+  as a quick-jump area.
+- Add a "latest combo" badge for the newest clip.
+- Add a simple manual type field for combo logs:
+  - `practice`
+  - `trick`
+  - `hard combo`
+- Use that type to control visual emphasis so difficult or important combos get
+  more attention without hiding normal practice clips.
+- Add filters for toy, status, and combo type once there are more real clips.
+- Add richer toy detail pages with personal notes, milestones, favorite combos,
+  and embedded clip history.
+
+### Art Gallery
+
+- Make art collections feel more like expandable drawing packets or volumes:
+  click a volume, enter a focused collection page, then browse the drawings
+  inside it.
+- Add a polished opening animation when entering an art packet.
+- Keep the process widget as a two-column/two-slot feature when space allows.
+- Add a sketchbook or palette graphic that feels like a custom studio object,
+  not just another grid card.
+- Make sure new art packets can be added by editing data only, without changing
+  page code.
+
+### Coding
+
+- Keep status updates inside the tiny terminal instead of separate "Current
+  build / Learning / Next push" cards.
+- Make terminal commands clickable later, so they can filter projects or jump to
+  related sections.
+- Add a small coding-side interactive prop near CS50 or the project cards.
+- Make project tags smarter:
+  - Completed projects fill their progress bar automatically.
+  - Completed status tags turn green.
+  - Active/building projects keep a warmer accent.
+- Add project detail pages with screenshots, lessons learned, demos, and repo
+  links.
+
+### Easter Eggs and Micro-Interactions
+
+- Add hidden palette swaps on art volume covers.
+- Add a random sketch button inside each art volume.
+- Add page-corner hover reveals with short handwritten-style notes.
+- Add a secret sketchbook mode on the Art page.
+- Add hidden "studio stamps" users can discover across Coding, Art, and Skill
+  Toys.
+- Add seasonal decorations or small temporary UI effects.
+- Add mobile/tablet motion effects later, such as shake-to-scatter objects.
+- Consider an animation library only after the core interactions are chosen.
+  Start with CSS for simple effects.
+- Consider Elevator.js on long scroll pages, especially Art or Skill Toys.
+
+### Time Tracker / Practice Tracker App
+
+- Plan a separate tracker section or app for importing drawing hours from iHour
+  and tracking projects over time.
+- MVP tracker data model:
+  - project name
+  - category, such as drawing, coding, skill toys, study
+  - start/end time or duration
+  - date
+  - notes
+  - optional energy/focus rating
+- Import path:
+  - Export from iHour as CSV if available.
+  - Normalize the CSV into a local data file first.
+  - Later, build an upload/import screen for CSV files.
+- Useful views:
+  - weekly hours
+  - project streaks
+  - time by category
+  - recent sessions
+  - project timeline
+- Behavioral science ideas:
+  - Show progress trends instead of only totals.
+  - Reward consistency, not just huge sessions.
+  - Use small reflection prompts after sessions.
+  - Keep goals adjustable so missing a day does not feel like failure.
+  - Highlight "next tiny action" for each project.

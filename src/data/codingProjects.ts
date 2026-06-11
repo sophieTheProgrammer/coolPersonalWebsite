@@ -1,7 +1,13 @@
 export type CodingProject = {
   title: string;
   slug: string;
-  status: "building" | "shipped" | "experiment" | "paused";
+  status:
+    | "building"
+    | "shipped"
+    | "experiment"
+    | "paused"
+    | "learning"
+    | "complete";
   summary: string;
   stack: string[];
   focus: string;
@@ -21,12 +27,12 @@ export type CodingNowItem = {
 export const codingNow: CodingNowItem[] = [
   {
     label: "Current build",
-    value: "Personal site MVP",
+    value: "Finishing this very website!",
     tone: "hot",
   },
   {
     label: "Learning",
-    value: "Astro, static content systems, visual polish",
+    value: "Nand2Tetris Course",
     tone: "cool",
   },
   {
@@ -42,46 +48,27 @@ export const codingProjects: CodingProject[] = [
     slug: "cool-personal-website",
     status: "building",
     summary:
-      "A static personal website for skill toys, art, coding work, and current experiments.",
-    stack: ["Astro", "TypeScript", "Tailwind", "GitHub Pages"],
-    focus: "Building the first real sections and making each page feel distinct.",
-    progress: 58,
+      "A static personal website for my three loves in life: skill toys, art, and coding. Completely vibecoded",
+    stack: ["Astro", "TypeScript", "Tailwind", "GitHub Pages", "ChatGPT"],
+    focus: "Replacing placeholders, and adding fun easter eggs.",
+    progress: 78,
     links: [
-      { label: "Repo", href: "https://github.com/sophieTheProgrammer/coolPersonalWebsite" },
+      {
+        label: "Repo",
+        href: "https://github.com/sophieTheProgrammer/coolPersonalWebsite",
+      },
     ],
   },
   {
-    title: "Skill Toy Progress System",
-    slug: "skill-toy-progress-system",
-    status: "experiment",
+    title: "CS50x",
+    slug: "cs50x",
+    status: "complete",
     summary:
-      "A local-data progression tracker for active hobbies, trick logs, and video placeholders.",
-    stack: ["Astro", "Chart.js", "TypeScript"],
-    focus: "Balancing active practice with variety across archived toys.",
-    progress: 42,
-    links: [{ label: "View section", href: "/coolPersonalWebsite/skill-toys/" }],
-  },
-  {
-    title: "Art Gallery System",
-    slug: "art-gallery-system",
-    status: "experiment",
-    summary:
-      "An editorial gallery layout with placeholder tiles, mood chips, and future lightbox hooks.",
-    stack: ["Astro", "CSS", "Content data"],
-    focus: "Making placeholder work feel intentional before real images land.",
-    progress: 31,
+      "Semester long intro to computer science from Harvard. Our very goat David Malan.",
+    stack: ["C", "Python", "SQL", "HTML/CSS/JS", "Flask", "Jinja"],
+    focus: "Learning the foundations of CS : s).",
+    progress: 100,
     links: [{ label: "View gallery", href: "/coolPersonalWebsite/art/" }],
-  },
-  {
-    title: "Tiny Browser Tools",
-    slug: "tiny-browser-tools",
-    status: "paused",
-    summary:
-      "A future bucket for small web tools, creative toys, bookmarklets, and useful utilities.",
-    stack: ["JavaScript", "Canvas", "Local storage"],
-    focus: "Collecting ideas before choosing the first tiny tool.",
-    progress: 12,
-    links: [],
   },
 ];
 

@@ -8,26 +8,25 @@ export const siteInfo = {
 
 export const homeContent = {
   eyebrow: "Personal studio",
-  headline: "A tiny workshop for motion, making, and experiments.",
-  intro:
-    "A simple personal site for latest skill toy clips, coding projects, and a small art portfolio. The first real feature is the skill toy wall.",
+  headline: "Hi! I'm Sophie, I keep cool stuff here",
+  intro: "Personal site for my skill toy clips, coding projects, and art.",
   sections: [
     {
       label: "Start here",
       title: "Skill Toys",
-      description: "Kendama, Begleri, and latest trick combo videos.",
+      description: "Kendama, Juggling, and more!",
       href: "/coolPersonalWebsite/skill-toys/",
       featured: true,
     },
     {
       title: "Coding",
-      description: "Projects, current builds, and experiments.",
+      description: "Projects, courses, and portfolio",
       href: "/coolPersonalWebsite/coding/",
       featured: false,
     },
     {
       title: "Art",
-      description: "A small gallery for finished pieces and studies.",
+      description: "A personal collection of illustrations and sketches.",
       href: "/coolPersonalWebsite/art/",
       featured: false,
     },
