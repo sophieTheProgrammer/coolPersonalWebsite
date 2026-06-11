@@ -1,0 +1,62 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import HomePersonFigure from "../components/HomePersonFigure.astro";
+import { homeContent } from "../data/site";
+---
+
+<BaseLayout title="Cool Personal Website">
+  <main class="min-h-screen overflow-hidden px-6 py-12 sm:px-10">
+    <section class="mx-auto grid min-h-[78vh] max-w-6xl items-center gap-12 lg:grid-cols-[1.25fr_0.75fr]">
+      <div class="relative">
+        <div
+          class="home-orbit absolute -left-8 top-2 h-24 w-24 rounded-full border border-[var(--color-line)] bg-[rgba(228,87,122,0.16)]"
+        >
+        </div>
+        <div
+          class="home-orbit-delayed absolute right-10 top-24 h-28 w-28 rounded-md border border-[var(--color-line)] bg-[rgba(45,156,140,0.16)]"
+        >
+        </div>
+        <p class="mb-4 text-sm font-semibold uppercase tracking-[0.28em] text-[var(--color-muted)]">
+          {homeContent.eyebrow}
+        </p>
+        <div class="hero-with-person">
+          <h1 class="max-w-3xl text-5xl font-black leading-[0.95] sm:text-7xl">
+            {homeContent.headline}
+          </h1>
+          <HomePersonFigure />
+        </div>
+
+        <p class="mt-8 max-w-2xl text-lg leading-8 text-[var(--color-muted)]">
+          {homeContent.intro}
+        </p>
+      </div>
+
+      <div class="relative rounded-lg border border-[var(--color-line)] bg-white p-5 shadow-sm">
+        <div class="grid gap-3">
+          {
+            homeContent.sections.map((section) => (
+              <a
+                class="rounded-md border border-[var(--color-line)] p-5 transition hover:-translate-y-0.5 hover:border-[var(--color-accent)]"
+                href={section.href}
+              >
+                {
+                  section.label && (
+                    <span class="text-sm font-black uppercase tracking-[0.18em] text-[var(--color-accent)]">
+                      {section.label}
+                    </span>
+                  )
+                }
+                <span class:list={["block font-black", section.featured ? "mt-2 text-2xl" : "text-xl"]}>
+                  {section.title}
+                </span>
+                <span class="mt-2 block leading-7 text-[var(--color-muted)]">
+                  {section.description}
+                </span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

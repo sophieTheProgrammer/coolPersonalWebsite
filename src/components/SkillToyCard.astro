@@ -1,0 +1,54 @@
+---
+import VideoEmbed from "./VideoEmbed.astro";
+import type { ComboLog, SkillToy } from "../data/skillToys";
+
+type Props = {
+  toy: SkillToy;
+  latestCombo?: ComboLog;
+};
+
+const { toy, latestCombo } = Astro.props;
+---
+
+<article class="group overflow-hidden rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+  <VideoEmbed title={latestCombo?.title ?? `${toy.name} latest combo`} embedUrl={latestCombo?.embedUrl} />
+  <div class="space-y-5 p-5">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <p class="text-xs font-black uppercase tracking-[0.2em] text-[var(--color-accent)]">
+          {toy.status}
+        </p>
+        <h2 class="mt-2 text-2xl font-black">{toy.name}</h2>
+      </div>
+      <span class="rounded-md border border-[var(--color-line)] bg-[rgba(45,156,140,0.12)] px-3 py-2 text-sm font-black transition group-hover:rotate-3">
+        {toy.progressScore}
+      </span>
+    </div>
+
+    <div>
+      <div class="flex items-center justify-between gap-4 text-sm font-bold">
+        <span>Progress</span>
+        <span>{toy.progressScore}%</span>
+      </div>
+      <div class="mt-2 h-2 overflow-hidden rounded-full bg-[rgba(30,27,46,0.08)]">
+        <div
+          class="h-full rounded-full bg-[var(--color-accent)]"
+          style={`width: ${toy.progressScore}%`}
+        >
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-md bg-[rgba(30,27,46,0.05)] p-4">
+      <p class="text-sm font-bold text-[var(--color-ink)]">Notes</p>
+      <p class="mt-1 text-sm leading-6 text-[var(--color-muted)]">{toy.currentFocus}</p>
+    </div>
+
+    <div>
+      <p class="text-sm font-bold">{latestCombo?.title ?? "Latest combo coming soon"}</p>
+      <p class="mt-1 text-sm leading-6 text-[var(--color-muted)]">
+        {toy.clipCount} clips logged
+      </p>
+    </div>
+  </div>
+</article>

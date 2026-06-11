@@ -1,0 +1,91 @@
+---
+import ComboLogCard from "../../components/ComboLogCard.astro";
+import {
+  getCombosForToy,
+  getToyBySlug,
+  skillToys,
+} from "../../data/skillToys";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export function getStaticPaths() {
+  return skillToys.map((toy) => ({
+    params: { slug: toy.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const toy = slug ? getToyBySlug(slug) : undefined;
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
+if (!toy) {
+  return Astro.redirect(`${base}skill-toys/`);
+}
+
+const combos = getCombosForToy(toy.slug);
+---
+
+<BaseLayout
+  title={`${toy.name} Tricks | Cool Personal Website`}
+  description={`All logged ${toy.name} practice clips and trick notes.`}
+>
+  <main class="min-h-screen px-6 py-12 sm:px-10">
+    <section class="mx-auto max-w-6xl">
+      <a
+        class="inline-flex rounded border border-[var(--color-line)] px-3 py-2 text-sm font-bold text-[var(--color-muted)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-ink)]"
+        href={`${base}skill-toys/`}
+      >
+        Back to skill toys
+      </a>
+
+      <div class="mt-8 grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-[0.28em] text-[var(--color-muted)]">
+            {toy.status} / {toy.clipCount} clips logged
+          </p>
+          <h1 class="mt-4 text-4xl font-black leading-none sm:text-6xl">
+            {toy.name} trick log
+          </h1>
+        </div>
+        <div class="rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] p-4 shadow-sm">
+          <div class="flex items-center justify-between gap-4 text-sm font-bold">
+            <span>Progress</span>
+            <span>{toy.progressScore}%</span>
+          </div>
+          <div class="mt-2 h-2 overflow-hidden rounded-full bg-[rgba(30,27,46,0.08)]">
+            <div
+              class="h-full rounded-full bg-[var(--color-accent)]"
+              style={`width: ${toy.progressScore}%`}
+            >
+            </div>
+          </div>
+          <div class="mt-5 rounded-md bg-[rgba(30,27,46,0.05)] p-4">
+            <p class="text-sm font-bold text-[var(--color-ink)]">Notes</p>
+            <p class="mt-1 leading-7 text-[var(--color-muted)]">{toy.currentFocus}</p>
+          </div>
+        </div>
+      </div>
+
+      <section class="mt-10" aria-labelledby="toy-log-heading">
+        <div class="flex items-end justify-between gap-4">
+          <div>
+            <p class="text-sm font-bold uppercase tracking-[0.22em] text-[var(--color-muted)]">
+              All tricks
+            </p>
+            <h2 id="toy-log-heading" class="mt-2 text-3xl font-black">
+              Everything logged for {toy.name}
+            </h2>
+          </div>
+          <p class="hidden text-sm font-semibold text-[var(--color-muted)] sm:block">
+            newest first
+          </p>
+        </div>
+
+        <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {combos.map((combo) => <ComboLogCard combo={combo} toy={toy} />)}
+        </div>
+      </section>
+    </section>
+  </main>
+</BaseLayout>

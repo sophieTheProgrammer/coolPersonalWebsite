@@ -1,0 +1,28 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+---
+
+<BaseLayout title="Not Found | Cool Personal Website">
+  <main class="min-h-screen px-6 py-20 sm:px-10">
+    <section class="mx-auto max-w-3xl">
+      <p class="text-sm font-black uppercase tracking-[0.22em] text-[var(--color-muted)]">
+        404
+      </p>
+      <h1 class="mt-4 text-5xl font-black leading-none">This corner is not built yet.</h1>
+      <p class="mt-5 text-lg leading-8 text-[var(--color-muted)]">
+        The studio has a few rooms, but this is not one of them. Head back home
+        and pick a finished section.
+      </p>
+      <a
+        class="mt-8 inline-flex rounded-md bg-[var(--color-ink)] px-4 py-3 font-black text-white"
+        href={base}
+      >
+        Back home
+      </a>
+    </section>
+  </main>
+</BaseLayout>

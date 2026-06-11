@@ -1,0 +1,64 @@
+---
+import { comboLogs, getToyBySlug } from "../data/skillToys";
+
+const prompts = comboLogs.slice(0, 8).map((combo) => ({
+  toy: getToyBySlug(combo.toySlug)?.name ?? combo.toySlug,
+  title: combo.title,
+  note: combo.notes,
+}));
+---
+
+<section
+  class="practice-picker rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] p-4 shadow-sm"
+  data-prompts={JSON.stringify(prompts)}
+>
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <p class="text-xs font-black uppercase tracking-[0.2em] text-[var(--color-muted)]">
+        practice picker
+      </p>
+      <h2 class="mt-2 text-2xl font-black" data-practice-title>{prompts[0].title}</h2>
+    </div>
+    <button
+      class="rounded-md bg-[var(--color-ink)] px-3 py-2 text-sm font-black text-white transition hover:-translate-y-0.5"
+      type="button"
+      data-practice-button
+    >
+      Pick one
+    </button>
+  </div>
+  <p class="mt-4 text-sm font-black uppercase tracking-[0.18em] text-[var(--color-accent)]" data-practice-toy>
+    {prompts[0].toy}
+  </p>
+  <p class="mt-3 min-h-14 leading-7 text-[var(--color-muted)]" data-practice-note>
+    {prompts[0].note}
+  </p>
+</section>
+
+<script>
+  document.querySelectorAll(".practice-picker").forEach((picker) => {
+    const prompts = JSON.parse(picker.getAttribute("data-prompts") ?? "[]") as Array<{
+      toy: string;
+      title: string;
+      note: string;
+    }>;
+    const title = picker.querySelector("[data-practice-title]");
+    const toy = picker.querySelector("[data-practice-toy]");
+    const note = picker.querySelector("[data-practice-note]");
+    const button = picker.querySelector("[data-practice-button]");
+    let index = 0;
+
+    const render = () => {
+      const prompt = prompts[index % prompts.length];
+      if (!prompt) return;
+      if (title) title.textContent = prompt.title;
+      if (toy) toy.textContent = prompt.toy;
+      if (note) note.textContent = prompt.note;
+    };
+
+    button?.addEventListener("click", () => {
+      index += 1;
+      render();
+    });
+  });
+</script>

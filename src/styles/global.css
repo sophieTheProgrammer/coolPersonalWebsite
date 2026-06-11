@@ -1,0 +1,433 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  --color-ink: #1e1b2e;
+  --color-paper: #fbfaf7;
+  --color-muted: #686176;
+  --color-accent: #e4577a;
+  --color-accent-2: #2d9c8c;
+  --color-card: #ffffff;
+  --color-line: rgba(30, 27, 46, 0.14);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: var(--color-paper);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  color: var(--color-ink);
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: rgba(228, 87, 122, 0.24);
+}
+
+@keyframes soft-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  50% {
+    transform: translate3d(10px, -14px, 0) rotate(7deg);
+  }
+}
+
+.home-orbit {
+  animation: soft-float 7s ease-in-out infinite;
+}
+
+.home-orbit-delayed {
+  animation: soft-float 8s ease-in-out infinite;
+  animation-delay: -3s;
+}
+
+.hero-with-person {
+  display: grid;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.home-person {
+  position: relative;
+  height: 12rem;
+  width: min(100%, 19rem);
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: 0.75rem;
+  background:
+    radial-gradient(circle at 78% 24%, rgba(45, 156, 140, 0.18), transparent 28%),
+    linear-gradient(135deg, rgba(228, 87, 122, 0.08), rgba(45, 156, 140, 0.08));
+  box-shadow: 0 1px 2px rgba(30, 27, 46, 0.08);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.hero-with-person:hover .home-person,
+.home-person:hover {
+  border-color: rgba(228, 87, 122, 0.5);
+  box-shadow: 0 16px 40px rgba(30, 27, 46, 0.14);
+  transform: translateY(-0.35rem) rotate(1deg);
+}
+
+.hero-with-person:hover .home-person__head,
+.home-person:hover .home-person__head {
+  animation: person-nod 650ms ease-in-out both;
+}
+
+.hero-with-person:hover .home-person__arm--right,
+.home-person:hover .home-person__arm--right {
+  animation: person-wave 700ms ease-in-out 2;
+}
+
+.home-person__halo,
+.home-person__head,
+.home-person__body,
+.home-person__arm,
+.home-person__desk {
+  position: absolute;
+}
+
+.home-person__halo {
+  left: 4.8rem;
+  top: 1.5rem;
+  width: 6.5rem;
+  height: 6.5rem;
+  border: 1px dashed rgba(30, 27, 46, 0.2);
+  border-radius: 999px;
+  animation: soft-float 9s ease-in-out infinite;
+}
+
+.home-person__head {
+  left: 6.2rem;
+  top: 2.5rem;
+  width: 3.6rem;
+  height: 3.6rem;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  background: #fbfaf7;
+}
+
+.home-person__body {
+  left: 5.25rem;
+  top: 6.1rem;
+  width: 5.5rem;
+  height: 5.6rem;
+  border: 1px solid var(--color-line);
+  border-radius: 1.4rem 1.4rem 0.7rem 0.7rem;
+  background: var(--color-accent);
+}
+
+.home-person__badge {
+  position: absolute;
+  right: 1rem;
+  top: 1.1rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 999px;
+  background: var(--color-accent-2);
+}
+
+.home-person__arm {
+  top: 7rem;
+  width: 3.2rem;
+  height: 1rem;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  background: #fbfaf7;
+}
+
+.home-person__arm--left {
+  left: 3.6rem;
+  transform: rotate(-18deg);
+}
+
+.home-person__arm--right {
+  left: 9.2rem;
+  transform: rotate(17deg);
+  animation: soft-float 5s ease-in-out infinite;
+}
+
+.home-person__desk {
+  left: 2.8rem;
+  right: 2.8rem;
+  bottom: 1.4rem;
+  display: flex;
+  gap: 0.6rem;
+  align-items: end;
+  height: 1.5rem;
+  border-top: 2px solid rgba(30, 27, 46, 0.35);
+}
+
+.home-person__desk span {
+  display: block;
+  width: 2.2rem;
+  border-radius: 0.3rem 0.3rem 0 0;
+  background: rgba(30, 27, 46, 0.14);
+}
+
+.home-person__desk span:nth-child(1) {
+  height: 0.7rem;
+}
+
+.home-person__desk span:nth-child(2) {
+  height: 1.1rem;
+  background: rgba(45, 156, 140, 0.25);
+}
+
+.home-person__desk span:nth-child(3) {
+  height: 0.9rem;
+  background: rgba(228, 87, 122, 0.22);
+}
+
+@keyframes person-wave {
+  0%,
+  100% {
+    transform: rotate(17deg);
+  }
+
+  50% {
+    transform: translateY(-0.45rem) rotate(-18deg);
+  }
+}
+
+@keyframes person-nod {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(0.35rem);
+  }
+}
+
+.tiny-terminal {
+  position: relative;
+  overflow: hidden;
+}
+
+.tiny-terminal::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(45, 156, 140, 0.12),
+    transparent
+  );
+  transform: translateY(-100%);
+  animation: terminal-scan 5s ease-in-out infinite;
+}
+
+.terminal-prompt {
+  animation: terminal-pulse 1.8s ease-in-out infinite;
+}
+
+.terminal-cursor {
+  display: inline-block;
+  margin-left: 0.2rem;
+  color: #f4d35e;
+  animation: terminal-blink 1s steps(2, start) infinite;
+}
+
+@keyframes terminal-scan {
+  0%,
+  45% {
+    transform: translateY(-100%);
+  }
+
+  70%,
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes terminal-pulse {
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes terminal-blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+
+  46%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.art-tile-pattern {
+  background-image:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.22) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.22) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.sketchbook-page {
+  position: relative;
+  min-height: 12rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, rgba(244, 211, 94, 0.24), rgba(228, 87, 122, 0.12));
+  padding: 1rem 1rem 1rem 2rem;
+}
+
+.sketchbook-page__spiral {
+  position: absolute;
+  left: 0.8rem;
+  top: 1rem;
+  bottom: 1rem;
+  width: 0.45rem;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(30, 27, 46, 0.3),
+    rgba(30, 27, 46, 0.3) 0.25rem,
+    transparent 0.25rem,
+    transparent 0.75rem
+  );
+}
+
+.sketchbook-page__paper {
+  position: relative;
+  height: 10rem;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: 0.6rem;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.sketch-line,
+.sketch-dot {
+  position: absolute;
+  display: block;
+}
+
+.sketch-line {
+  height: 0.35rem;
+  border-radius: 999px;
+  background: var(--color-ink);
+  opacity: 0.72;
+}
+
+.sketch-line--one {
+  left: 1.2rem;
+  top: 2rem;
+  width: 8rem;
+  transform: rotate(-7deg);
+}
+
+.sketch-line--two {
+  right: 1.4rem;
+  top: 4.8rem;
+  width: 7rem;
+  transform: rotate(10deg);
+  background: var(--color-accent);
+}
+
+.sketch-line--three {
+  left: 2rem;
+  bottom: 2.1rem;
+  width: 10rem;
+  transform: rotate(2deg);
+  background: var(--color-accent-2);
+}
+
+.sketch-dot {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-line);
+  background: rgba(244, 211, 94, 0.7);
+}
+
+.sketch-dot--one {
+  left: 4rem;
+  top: 4rem;
+}
+
+.sketch-dot--two {
+  right: 3rem;
+  bottom: 2.8rem;
+  background: rgba(228, 87, 122, 0.4);
+}
+
+@media (min-width: 1024px) {
+  .hero-with-person {
+    grid-template-columns: minmax(0, 1fr) 18rem;
+  }
+
+  .practice-board {
+    grid-auto-rows: minmax(11rem, auto);
+  }
+
+  .practice-board > article:nth-child(1) {
+    grid-column: span 3;
+    grid-row: span 2;
+  }
+
+  .practice-board > article:nth-child(2) {
+    grid-column: span 3;
+  }
+
+  .practice-board > article:nth-child(3),
+  .practice-board > article:nth-child(4),
+  .practice-board > article:nth-child(5) {
+    grid-column: span 2;
+  }
+}
+
+@media (min-width: 1280px) {
+  .art-gallery-grid > article:nth-child(1),
+  .art-gallery-grid > article:nth-child(4) {
+    grid-column: span 2;
+  }
+
+  .art-gallery-grid > article:nth-child(1) .aspect-\[4\/3\],
+  .art-gallery-grid > article:nth-child(4) .aspect-\[4\/3\] {
+    aspect-ratio: 16 / 9;
+  }
+
+  .art-gallery-grid > article:nth-child(2),
+  .art-gallery-grid > article:nth-child(5) {
+    transform: translateY(2rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

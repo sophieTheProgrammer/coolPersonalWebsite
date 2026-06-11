@@ -1,0 +1,56 @@
+---
+import type { ArtVolume } from "../data/artworks";
+import { getArtworksForVolume } from "../data/artworks";
+
+type Props = {
+  volume: ArtVolume;
+  index: number;
+};
+
+const { volume, index } = Astro.props;
+const drawings = getArtworksForVolume(volume.slug);
+const [first, second, third] = volume.coverPalette;
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+---
+
+<article
+  class:list={[
+    "art-volume-card group overflow-hidden rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] shadow-sm transition hover:-translate-y-1 hover:shadow-xl",
+    index === 0 ? "xl:col-span-2" : "",
+  ]}
+>
+  <a class="block" href={`${base}art/collections/${volume.slug}/`}>
+    <div
+      class="relative min-h-72 overflow-hidden"
+      style={`background: linear-gradient(135deg, ${first}, ${second} 58%, ${third});`}
+    >
+      <div class="absolute inset-0 opacity-25 mix-blend-screen art-tile-pattern"></div>
+      <div class="absolute left-5 top-5 rounded-md bg-white/70 px-3 py-2 text-xs font-black uppercase tracking-[0.16em] backdrop-blur">
+        {volume.year}
+      </div>
+      <div class="absolute bottom-5 left-5 right-5 grid grid-cols-3 gap-2">
+        {
+          drawings.slice(0, 3).map((drawing) => (
+            <div
+              class="aspect-[3/4] rounded-md border border-white/40 shadow-sm"
+              style={`background: linear-gradient(135deg, ${drawing.palette[0]}, ${drawing.palette[1]} 58%, ${drawing.palette[2]});`}
+            >
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </a>
+  <div class="space-y-4 p-4">
+    <div>
+      <p class="text-xs font-black uppercase tracking-[0.18em] text-[var(--color-accent)]">
+        {drawings.length} drawings
+      </p>
+      <h2 class="mt-2 text-2xl font-black">{volume.title}</h2>
+      <p class="mt-2 leading-7 text-[var(--color-muted)]">{volume.subtitle}</p>
+    </div>
+    <p class="leading-7 text-[var(--color-muted)]">{volume.note}</p>
+  </div>
+</article>

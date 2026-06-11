@@ -1,0 +1,47 @@
+---
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const path = Astro.url.pathname;
+
+const links = [
+  { href: base, label: "Home" },
+  { href: `${base}skill-toys/`, label: "Skill Toys" },
+  { href: `${base}coding/`, label: "Coding" },
+  { href: `${base}art/`, label: "Art" },
+];
+---
+
+<header class="sticky top-0 z-30 border-b border-[var(--color-line)] bg-[rgba(251,250,247,0.86)] backdrop-blur-xl">
+  <nav
+    class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3 sm:px-8"
+    aria-label="Main navigation"
+  >
+    <a class="text-sm font-black uppercase tracking-[0.18em]" href={base}>
+      Studio
+    </a>
+    <div class="flex items-center gap-1 rounded-md border border-[var(--color-line)] bg-white/70 p-1 shadow-sm">
+      {
+        links.map((link) => {
+          const isActive =
+            link.href === base ? path === base : path.startsWith(link.href);
+
+          return (
+            <a
+              class:list={[
+                "rounded px-3 py-2 text-sm font-semibold transition",
+                isActive
+                  ? "bg-[var(--color-ink)] text-white"
+                  : "text-[var(--color-muted)] hover:bg-[rgba(30,27,46,0.07)] hover:text-[var(--color-ink)]",
+              ]}
+              href={link.href}
+              aria-current={isActive ? "page" : undefined}
+            >
+              {link.label}
+            </a>
+          );
+        })
+      }
+    </div>
+  </nav>
+</header>

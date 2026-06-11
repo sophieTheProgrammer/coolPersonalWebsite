@@ -1,0 +1,123 @@
+---
+import ActiveClipCard from "../components/ActiveClipCard.astro";
+import ComboLogCard from "../components/ComboLogCard.astro";
+import PracticePicker from "../components/PracticePicker.astro";
+import ToyProgressChart from "../components/ToyProgressChart.astro";
+import {
+  comboLogs,
+  getActivePracticeClips,
+  getToyBySlug,
+  getWeightedProgressLog,
+  skillToys,
+} from "../data/skillToys";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const activeClips = getActivePracticeClips(5);
+const progressLog = getWeightedProgressLog(comboLogs.length);
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+---
+
+<BaseLayout
+  title="Skill Toys | Cool Personal Website"
+  description="Latest trick combo cards for Kendama, Begleri, and other skill toys."
+>
+  <main class="min-h-screen px-6 py-12 sm:px-10">
+    <section class="mx-auto max-w-6xl">
+      <div class="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-[0.28em] text-[var(--color-muted)]">
+            Skill toy wall
+          </p>
+          <h1 class="mt-4 text-4xl font-black leading-none sm:text-6xl">
+            Latest clips and practice loops.
+          </h1>
+        </div>
+        <p class="max-w-2xl text-lg leading-8 text-[var(--color-muted)]">
+          A simple progression log for the skill toys I like doing. Active
+          toys get pushed forward, while paused and archived toys still show up
+          so the page has variety.
+        </p>
+      </div>
+
+      <section class="mt-10" aria-labelledby="overview-heading">
+        <div class="grid gap-4 lg:grid-cols-[1fr_21rem]">
+          <ToyProgressChart toys={skillToys} />
+          <PracticePicker />
+        </div>
+        <div class="mt-3 flex gap-2 overflow-x-auto pb-2" aria-label="Open toy trick logs">
+          {
+            skillToys.map((toy) => (
+              <a
+                class="min-w-[10rem] rounded-md border border-[var(--color-line)] bg-[var(--color-card)] p-2.5 shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--color-accent)]"
+                href={`${base}skill-toys/${toy.slug}/`}
+              >
+                <div class="flex items-center justify-between gap-3">
+                  <h3 class="text-sm font-black">{toy.name}</h3>
+                  <span class="text-xs font-bold text-[var(--color-muted)]">
+                    {toy.progressScore}%
+                  </span>
+                </div>
+                <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-[rgba(30,27,46,0.08)]">
+                  <div
+                    class="h-full rounded-full bg-[var(--color-accent-2)]"
+                    style={`width: ${toy.progressScore}%`}
+                  >
+                  </div>
+                </div>
+                <div class="mt-2 flex items-center justify-between gap-3 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[var(--color-muted)]">
+                  <span>{toy.status}</span>
+                  <span>{toy.clipCount} clips</span>
+                </div>
+              </a>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="mt-12" aria-labelledby="active-heading">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <h2 id="active-heading" class="max-w-2xl text-4xl font-black leading-none sm:text-5xl">
+            What is getting practice now
+          </h2>
+          <p class="max-w-sm text-sm font-semibold leading-6 text-[var(--color-muted)]">
+            A big practice board for the clips that are most alive right now.
+          </p>
+        </div>
+        <div class="practice-board mt-6 grid grid-cols-1 gap-4 rounded-xl border border-[var(--color-line)] bg-[rgba(30,27,46,0.035)] p-3 shadow-sm sm:grid-cols-2 lg:grid-cols-6">
+          {
+            activeClips.map((combo) => {
+              const toy = getToyBySlug(combo.toySlug);
+              return toy ? <ActiveClipCard combo={combo} toy={toy} /> : null;
+            })
+          }
+        </div>
+      </section>
+
+      <section class="mt-14" aria-labelledby="log-heading">
+        <div class="grid gap-4 lg:grid-cols-[0.7fr_1fr] lg:items-end">
+          <div>
+            <p class="text-sm font-bold uppercase tracking-[0.22em] text-[var(--color-muted)]">
+              Progress log
+            </p>
+            <h2 id="log-heading" class="mt-2 text-3xl font-black">Recent clips with variety</h2>
+          </div>
+          <p class="max-w-2xl leading-7 text-[var(--color-muted)]">
+            Active toys appear a little more often, but the feed keeps one-off
+            and paused toys in the mix so the history still feels broad.
+          </p>
+        </div>
+
+        <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {
+            progressLog.map((combo) => {
+              const toy = getToyBySlug(combo.toySlug);
+              return toy ? <ComboLogCard combo={combo} toy={toy} /> : null;
+            })
+          }
+        </div>
+      </section>
+    </section>
+  </main>
+</BaseLayout>

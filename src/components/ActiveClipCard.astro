@@ -1,0 +1,38 @@
+---
+import VideoEmbed from "./VideoEmbed.astro";
+import type { ComboLog, SkillToy } from "../data/skillToys";
+
+type Props = {
+  combo: ComboLog;
+  toy: SkillToy;
+};
+
+const { combo, toy } = Astro.props;
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+---
+
+<article class="min-w-0 overflow-hidden rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+  <VideoEmbed title={combo.title} embedUrl={combo.embedUrl} />
+  <div class="space-y-3 p-3">
+    <div class="flex items-start justify-between gap-3">
+      <div>
+        <p class="text-xs font-black uppercase tracking-[0.18em] text-[var(--color-accent)]">
+          {toy.name}
+        </p>
+        <h3 class="mt-1 text-lg font-black leading-tight">{combo.title}</h3>
+      </div>
+      <span class="rounded border border-[var(--color-line)] px-2 py-1 text-xs font-bold text-[var(--color-muted)]">
+        {combo.status}
+      </span>
+    </div>
+    <p class="line-clamp-2 text-sm leading-6 text-[var(--color-muted)]">{combo.notes}</p>
+    <a
+      class="inline-flex rounded border border-[var(--color-line)] px-2.5 py-1.5 text-xs font-black uppercase tracking-[0.12em] text-[var(--color-muted)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-ink)]"
+      href={`${base}skill-toys/${toy.slug}/`}
+    >
+      All {toy.name} tricks
+    </a>
+  </div>
+</article>

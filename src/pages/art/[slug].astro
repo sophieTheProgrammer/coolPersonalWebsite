@@ -1,0 +1,76 @@
+---
+import { artworks, getArtworkBySlug } from "../../data/artworks";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+export function getStaticPaths() {
+  return artworks.map((artwork) => ({
+    params: { slug: artwork.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const artwork = slug ? getArtworkBySlug(slug) : undefined;
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
+if (!artwork) {
+  return Astro.redirect(`${base}art/`);
+}
+
+const [first, second, third] = artwork.palette;
+---
+
+<BaseLayout
+  title={`${artwork.title} | Art | Cool Personal Website`}
+  description={artwork.note}
+>
+  <main class="min-h-screen px-6 py-12 sm:px-10">
+    <section class="mx-auto max-w-6xl">
+      <a
+        class="inline-flex rounded border border-[var(--color-line)] px-3 py-2 text-sm font-bold text-[var(--color-muted)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-ink)]"
+        href={`${base}art/`}
+      >
+        Back to art
+      </a>
+
+      <div class="mt-8 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+        <div
+          class="relative aspect-[4/3] overflow-hidden rounded-xl border border-[var(--color-line)] shadow-sm"
+          style={`background: linear-gradient(135deg, ${first}, ${second} 54%, ${third});`}
+        >
+          <div class="absolute inset-0 opacity-30 mix-blend-screen art-tile-pattern"></div>
+          <div class="absolute left-10 top-10 h-32 w-32 rounded-full border border-white/35 bg-white/20 backdrop-blur-sm"></div>
+          <div class="absolute bottom-10 right-10 h-24 w-48 rounded-md border border-white/25 bg-black/15"></div>
+        </div>
+
+        <div>
+          <p class="text-sm font-black uppercase tracking-[0.22em] text-[var(--color-accent)]">
+            {artwork.medium} / {artwork.year}
+          </p>
+          <h1 class="mt-4 text-5xl font-black leading-none">{artwork.title}</h1>
+          <p class="mt-5 max-w-xl text-lg leading-8 text-[var(--color-muted)]">{artwork.note}</p>
+
+          <div class="mt-8 rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] p-4 shadow-sm">
+            <p class="text-sm font-black">Palette</p>
+            <div class="mt-3 grid grid-cols-3 overflow-hidden rounded-md border border-[var(--color-line)]">
+              {
+                artwork.palette.map((color) => (
+                  <div class="h-20" style={`background: ${color}`}></div>
+                ))
+              }
+            </div>
+            <div class="mt-4 flex flex-wrap gap-2">
+              <span class="rounded border border-[var(--color-line)] px-2.5 py-1 text-xs font-bold text-[var(--color-muted)]">
+                {artwork.status}
+              </span>
+              <span class="rounded border border-[var(--color-line)] px-2.5 py-1 text-xs font-bold text-[var(--color-muted)]">
+                {artwork.mood}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

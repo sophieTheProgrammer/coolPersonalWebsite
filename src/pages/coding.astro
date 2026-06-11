@@ -1,0 +1,89 @@
+---
+import CodingProjectCard from "../components/CodingProjectCard.astro";
+import TerminalPanel from "../components/TerminalPanel.astro";
+import { codingNow, codingProjects } from "../data/codingProjects";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Coding | Cool Personal Website"
+  description="Coding projects, current builds, experiments, and project notes."
+>
+  <main class="min-h-screen px-6 py-12 sm:px-10">
+    <section class="mx-auto max-w-6xl">
+      <div class="grid gap-8 lg:grid-cols-[1fr_22rem] lg:items-start">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-[0.28em] text-[var(--color-muted)]">
+            Coding desk
+          </p>
+          <h1 class="mt-4 max-w-4xl text-4xl font-black leading-none sm:text-6xl">
+            Projects, experiments, and what I am building next.
+          </h1>
+          <p class="mt-6 max-w-2xl text-lg leading-8 text-[var(--color-muted)]">
+            A workbench-style page for active builds, small experiments, and
+            the technical notes that connect them. This should feel more like a
+            dashboard than a gallery.
+          </p>
+        </div>
+        <TerminalPanel />
+      </div>
+
+      <section class="mt-10 grid gap-3 md:grid-cols-3" aria-label="Current coding status">
+        {
+          codingNow.map((item) => (
+            <article
+              class:list={[
+                "rounded-lg border p-4 shadow-sm",
+                item.tone === "hot"
+                  ? "border-[var(--color-accent)] bg-[rgba(228,87,122,0.08)]"
+                  : item.tone === "cool"
+                    ? "border-[var(--color-accent-2)] bg-[rgba(45,156,140,0.08)]"
+                    : "border-[var(--color-line)] bg-[var(--color-card)]",
+              ]}
+            >
+              <p class="text-xs font-black uppercase tracking-[0.18em] text-[var(--color-muted)]">
+                {item.label}
+              </p>
+              <p class="mt-3 text-lg font-black leading-snug">{item.value}</p>
+            </article>
+          ))
+        }
+      </section>
+
+      <section class="mt-12" aria-labelledby="projects-heading">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p class="text-sm font-bold uppercase tracking-[0.22em] text-[var(--color-muted)]">
+              Project stack
+            </p>
+            <h2 id="projects-heading" class="mt-2 text-3xl font-black">
+              Build log
+            </h2>
+          </div>
+          <p class="text-sm font-semibold text-[var(--color-muted)]">
+            {codingProjects.length} entries
+          </p>
+        </div>
+
+        <div class="mt-5 grid gap-4">
+          {codingProjects.map((project) => <CodingProjectCard project={project} />)}
+        </div>
+      </section>
+
+      <section class="mt-10 rounded-lg border border-dashed border-[var(--color-line)] p-4">
+        <h2 class="text-lg font-black">Next interactive pieces</h2>
+        <div class="mt-4 grid gap-3 md:grid-cols-3">
+          <p class="rounded-md bg-[rgba(30,27,46,0.04)] p-3 leading-7 text-[var(--color-muted)]">
+            Add filters for status and stack once real projects are entered.
+          </p>
+          <p class="rounded-md bg-[rgba(30,27,46,0.04)] p-3 leading-7 text-[var(--color-muted)]">
+            Make terminal commands clickable so they filter or jump sections.
+          </p>
+          <p class="rounded-md bg-[rgba(30,27,46,0.04)] p-3 leading-7 text-[var(--color-muted)]">
+            Add project detail pages with screenshots, lessons, and demos.
+          </p>
+        </div>
+      </section>
+    </section>
+  </main>
+</BaseLayout>
