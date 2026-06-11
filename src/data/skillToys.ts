@@ -50,15 +50,6 @@ export const skillToys: SkillToy[] = [
     latestComboId: "yoyo-frontstyle-reset-01",
   },
   {
-    name: "Cardistry",
-    slug: "cardistry",
-    progressScore: 32,
-    clipCount: 2,
-    currentFocus: "Packet control and smooth openers.",
-    status: "paused",
-    latestComboId: "cardistry-packet-opener-01",
-  },
-  {
     name: "Pen Spinning",
     slug: "pen-spinning",
     progressScore: 28,
@@ -75,24 +66,6 @@ export const skillToys: SkillToy[] = [
     currentFocus: "Three-ball rhythm and relaxed throws.",
     status: "paused",
     latestComboId: "juggling-cascade-check-01",
-  },
-  {
-    name: "Knucklebone",
-    slug: "knucklebone",
-    progressScore: 24,
-    clipCount: 1,
-    currentFocus: "Simple rolls and catches.",
-    status: "archive",
-    latestComboId: "knucklebone-roll-catch-01",
-  },
-  {
-    name: "Contact Ball",
-    slug: "contact-ball",
-    progressScore: 21,
-    clipCount: 1,
-    currentFocus: "Palm isolation and calm movement.",
-    status: "archive",
-    latestComboId: "contact-ball-isolation-01",
   },
 ];
 
@@ -255,16 +228,22 @@ export function getWeightedProgressLog(limit = 12) {
   };
 
   for (const slug of activeSlugs) {
-    const activeCombos = getCombosForToy(slug).filter((combo) => combo.featured);
+    const activeCombos = getCombosForToy(slug).filter(
+      (combo) => combo.featured,
+    );
     addCombo(activeCombos[0]);
     addCombo(activeCombos[1]);
   }
 
-  for (const toy of skillToys.filter((item) => !activeSlugs.includes(item.slug))) {
+  for (const toy of skillToys.filter(
+    (item) => !activeSlugs.includes(item.slug),
+  )) {
     addCombo(getCombosForToy(toy.slug).find((combo) => combo.featured));
   }
 
-  for (const combo of [...comboLogs].sort((first, second) => second.date.localeCompare(first.date))) {
+  for (const combo of [...comboLogs].sort((first, second) =>
+    second.date.localeCompare(first.date),
+  )) {
     addCombo(combo);
   }
 

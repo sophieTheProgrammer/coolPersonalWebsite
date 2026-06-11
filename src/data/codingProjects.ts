@@ -48,7 +48,7 @@ export const codingProjects: CodingProject[] = [
     slug: "cool-personal-website",
     status: "building",
     summary:
-      "A static personal website for my three loves in life: skill toys, art, and coding. Completely vibecoded",
+      "A static personal website for my three loves in life: skill toys, art, and coding. Completely vibecoded.",
     stack: ["Astro", "TypeScript", "Tailwind", "GitHub Pages", "ChatGPT"],
     focus: "Replacing placeholders, and adding fun easter eggs.",
     progress: 78,
@@ -75,14 +75,14 @@ export const codingProjects: CodingProject[] = [
 export const terminalCommands = [
   {
     command: "now",
-    output: "building the personal site and shaping the first project pages",
+    output: "polishing this VERY personal site and replacing placeholders",
   },
   {
     command: "stack",
     output: "astro / typescript / tailwind / chart.js",
   },
   {
-    command: "next",
-    output: "replace placeholders with real projects, videos, and artwork",
+    command: "learning",
+    output: "working on Nand2Tetris to build a computer from scratch",
   },
 ];

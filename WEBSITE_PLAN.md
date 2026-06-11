@@ -191,10 +191,10 @@ public/
 
 - Add small cards or buttons for YouTube and GitHub near the homepage studio
   area.
-- Keep the CSS person/workshop scene, but add more hover reactions and small
-  idle animations.
+- Replace CSS person with hand-drawn gif that animates on hover
 - Let the homepage show a tiny "latest update" pulled from skill toys, coding,
   or art data.
+- interacted background patteren to add interest
 
 ### Skill Toys
 
@@ -210,6 +210,7 @@ public/
 - Add filters for toy, status, and combo type once there are more real clips.
 - Add richer toy detail pages with personal notes, milestones, favorite combos,
   and embedded clip history.
+- automate skill toy uploads with youtube
 
 ### Art Gallery
 
@@ -222,6 +223,7 @@ public/
   not just another grid card.
 - Make sure new art packets can be added by editing data only, without changing
   page code.
+- soft animated bontonical garden inspired background moving blobs
 
 ### Coding
 
