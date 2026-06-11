@@ -31,6 +31,7 @@ export type ArtVolume = {
   note: string;
   coverPalette: string[];
   drawingSlugs: string[];
+  featureIdeas: string[];
   easterEgg?: string;
 };
 
@@ -106,6 +107,7 @@ export const artVolumes: ArtVolume[] = [
     note: "A starter pack for sketches that feel like UI fragments, toy motion, and abstract little studio notes.",
     coverPalette: ["#e4577a", "#2d9c8c", "#f4d35e"],
     drawingSlugs: ["signal-garden", "pocket-orbit", "line-memory"],
+    featureIdeas: ["cover color flip", "random drawing button", "process notes"],
     easterEgg:
       "Hidden idea: add a tiny clickable mark that flips the cover colors.",
   },
@@ -117,6 +119,7 @@ export const artVolumes: ArtVolume[] = [
     note: "A second pack for more finished-looking studies and placeholders for future drawing batches.",
     coverPalette: ["#1e1b2e", "#fbfaf7", "#7c6cff"],
     drawingSlugs: ["quiet-interface", "practice-room", "tiny-poster"],
+    featureIdeas: ["page corner reveal", "before/after slider", "studio note"],
     easterEgg:
       "Hidden idea: add a fake page corner fold that reveals a note when hovered.",
   },
@@ -133,6 +136,7 @@ export const artVolumes: ArtVolume[] = [
       "practice-room",
       "pocket-orbit",
     ],
+    featureIdeas: ["shuffle sketch", "warmup stack", "date filter"],
     easterEgg:
       "Hidden idea: add a random sketch button that jumps to one drawing inside the pack.",
   },

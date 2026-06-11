@@ -15,19 +15,19 @@ export const homeContent = {
       label: "Start here",
       title: "Skill Toys",
       description: "Kendama, Juggling, and more!",
-      href: "/coolPersonalWebsite/skill-toys/",
+      href: "skill-toys/",
       featured: true,
     },
     {
       title: "Coding",
       description: "Projects, courses, and portfolio",
-      href: "/coolPersonalWebsite/coding/",
+      href: "coding/",
       featured: false,
     },
     {
       title: "Art",
       description: "A personal collection of illustrations and sketches.",
-      href: "/coolPersonalWebsite/art/",
+      href: "art/",
       featured: false,
     },
   ],
@@ -39,7 +39,7 @@ export const editMap = [
     path: "src/data/skillToys.ts",
   },
   {
-    label: "Art gallery, palette lab, and process slider",
+    label: "Art packets, process slider, and sketchbook",
     path: "src/data/artworks.ts",
   },
   {

@@ -1,4 +1,5 @@
 ---
+import LatestBadge from "./LatestBadge.astro";
 import VideoEmbed from "./VideoEmbed.astro";
 import type { ComboLog, SkillToy } from "../data/skillToys";
 
@@ -33,9 +34,7 @@ const formattedDate = new Intl.DateTimeFormat("en", {
       <div class="flex shrink-0 flex-col items-end gap-1">
         {
           isLatestCombo && (
-            <span class="rounded bg-[var(--color-accent)] px-2 py-1 text-[0.65rem] font-black uppercase tracking-[0.12em] text-white">
-              Latest
-            </span>
+            <LatestBadge />
           )
         }
         <span class="rounded border border-[var(--color-line)] px-2 py-1 text-xs font-bold text-[var(--color-muted)]">

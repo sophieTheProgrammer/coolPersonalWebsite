@@ -1,0 +1,14 @@
+---
+type Props = {
+  label?: string;
+};
+
+const { label = "Latest" } = Astro.props;
+---
+
+<span
+  class="inline-flex items-center gap-1.5 rounded-full border border-[rgba(30,27,46,0.2)] bg-[var(--color-ink)] px-2.5 py-1 text-[0.62rem] font-black uppercase tracking-[0.14em] text-white shadow-[0_5px_0_rgba(30,27,46,0.12)]"
+>
+  <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]"></span>
+  {label}
+</span>

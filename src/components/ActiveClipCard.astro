@@ -8,7 +8,6 @@ type Props = {
 };
 
 const { combo, toy } = Astro.props;
-const isLatestCombo = combo.id === toy.latestComboId;
 const base = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
@@ -25,13 +24,6 @@ const base = import.meta.env.BASE_URL.endsWith("/")
         <h3 class="mt-1 text-lg font-black leading-tight">{combo.title}</h3>
       </div>
       <div class="flex shrink-0 flex-col items-end gap-1">
-        {
-          isLatestCombo && (
-            <span class="rounded bg-[var(--color-accent)] px-2 py-1 text-[0.65rem] font-black uppercase tracking-[0.12em] text-white">
-              Latest
-            </span>
-          )
-        }
         <span class="rounded border border-[var(--color-line)] px-2 py-1 text-xs font-bold text-[var(--color-muted)]">
           {combo.tag}
         </span>

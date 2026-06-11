@@ -115,6 +115,8 @@ The first priority is the skill toy page: each card represents a toy or practice
 - Use Astro's static output.
 - Add a GitHub Actions workflow to build and deploy the `dist` output.
 - Configure Astro's `site` and `base` values correctly if the site is deployed under a repository path.
+- Use `PUBLIC_BASE=/ npm run build` when creating a root-hosted
+  `public_html` package.
 
 ## Recommended File Structure
 
@@ -176,8 +178,8 @@ public/
 - Skill Toys includes a progress chart, practice board, combo log, and toy detail pages.
 - Homepage has a CSS person, motion, and section links.
 - Coding page displays current work, a tiny terminal, and project cards.
-- Art page displays drawing volumes, collection detail pages, a visual board,
-  process slider, palette lab, sketchbook tile, and artwork detail pages.
+- Art page displays expandable drawing packets, collection detail pages, a
+  process slider, sketchbook tile, and artwork detail pages.
 - Content can be updated through simple data files in `src/data`.
 - Site builds and is ready to deploy to GitHub Pages.
 
@@ -191,6 +193,9 @@ public/
 - Added toy detail routes for every toy in the overview.
 - Added latest combo badges to skill toy clip cards so newest/current clips are
   easier to spot.
+- Refined the badge into a reusable `LatestBadge` component.
+- Limited latest badges to actual latest clips per toy, and removed duplicate
+  latest badges from the active practice board.
 - Replaced performance-result labels like `landed`, `cleaning`, and `rough`
   with a simpler manual combo log tag:
   - `practice`
@@ -210,6 +215,11 @@ public/
   - drawings stagger into view
 - The animation respects reduced-motion preferences.
 - Art collection pages still work as static GitHub Pages routes.
+- Removed Palette Lab from the Art page and deleted the unused component.
+- Turned art volume cards into expandable drawing packets with:
+  - drawings inside each packet
+  - future feature chips controlled from `src/data/artworks.ts`
+  - a clear "Open drawing pack" link to the full collection route
 
 ### Coding
 
@@ -223,8 +233,14 @@ public/
 - Ran `npm run build` successfully:
   - Astro check: 0 errors, 0 warnings, 0 hints.
   - Static build completed.
+- Created `coolPersonalWebsite-public_html.zip` from the final `dist` output
+  for manual public_html-style hosting.
+- The public_html zip is built with `PUBLIC_BASE=/`, so extracted files link to
+  `/_astro`, `/art`, `/coding`, and `/skill-toys` instead of the GitHub Pages
+  `/coolPersonalWebsite` path.
 - Browser-checked Skill Toys:
   - latest badges render
+  - active practice board has no duplicate latest badges
   - new `practice`, `trick`, and `combo` tags appear
   - old `landed`, `cleaning`, and `rough` labels are gone
   - all 8 toy detail routes are linked
@@ -233,6 +249,11 @@ public/
   - packet animation hooks render
   - drawing packet content renders
   - no console errors
+  - no horizontal overflow
+- Browser-checked Art page:
+  - Palette Lab UI is removed
+  - expandable packet cards render
+  - future feature chips render from data
   - no horizontal overflow
 
 ## Enhancement Roadmap
@@ -282,8 +303,8 @@ public/
 - Extend the new Motion One packet-opening animation with hover or click
   reactions inside packets.
 - Keep the process widget as a two-column/two-slot feature when space allows.
-- Add a sketchbook or palette graphic that feels like a custom studio object,
-  not just another grid card.
+- Keep the sketchbook graphic feeling like a custom studio object, not just
+  another grid card.
 - Make sure new art packets can be added by editing data only, without changing
   page code.
 - Add a soft animated botanical-garden-inspired background pattern.
@@ -302,10 +323,11 @@ public/
 - Add project detail pages with screenshots, lessons learned, demos, and repo
   links.
 - game jam tab or integration
+- be able to highlight big projects so they pop out against small ones
 
 ### Easter Eggs and Micro-Interactions
 
-- Add hidden palette swaps on art volume covers.
+- Add hidden cover-color swaps on art volume covers.
 - Add a random sketch button inside each art volume.
 - Add page-corner hover reveals with short handwritten-style notes.
 - Add a secret sketchbook mode on the Art page.
