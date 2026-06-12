@@ -32,7 +32,6 @@ export type ArtVolume = {
   coverPalette: string[];
   coverDoodle?: string;
   drawingSlugs: string[];
-  easterEgg?: string;
 };
 
 export const artworks: Artwork[] = [
@@ -108,8 +107,6 @@ export const artVolumes: ArtVolume[] = [
     coverPalette: ["#e4577a", "#2d9c8c", "#f4d35e"],
     coverDoodle: "drawings-vol-01-cover.png",
     drawingSlugs: ["signal-garden", "pocket-orbit", "line-memory"],
-    easterEgg:
-      "A folded note: color swap button can live here later.",
   },
   {
     title: "Studio Studies",
@@ -120,8 +117,6 @@ export const artVolumes: ArtVolume[] = [
     coverPalette: ["#1e1b2e", "#fbfaf7", "#7c6cff"],
     coverDoodle: "studio-studies-cover.png",
     drawingSlugs: ["quiet-interface", "practice-room", "tiny-poster"],
-    easterEgg:
-      "A folded note: before/after slider can live inside this pack.",
   },
   {
     title: "Pocket Sketchbook",
@@ -137,8 +132,6 @@ export const artVolumes: ArtVolume[] = [
       "practice-room",
       "pocket-orbit",
     ],
-    easterEgg:
-      "A folded note: random sketch button can live here later.",
   },
 ];
 

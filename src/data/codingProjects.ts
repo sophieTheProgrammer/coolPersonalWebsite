@@ -12,6 +12,8 @@ export type CodingProject = {
   stack: string[];
   focus: string;
   progress: number;
+  spotlight?: boolean;
+  accent?: "rose" | "teal" | "gold" | "violet";
   links: {
     label: string;
     href: string;
@@ -28,6 +30,8 @@ export const codingProjects: CodingProject[] = [
     stack: ["Astro", "TypeScript", "Tailwind", "GitHub Pages", "ChatGPT"],
     focus: "Replacing placeholders, and adding fun easter eggs.",
     progress: 78,
+    spotlight: true,
+    accent: "teal",
     links: [
       {
         label: "Repo",
@@ -44,7 +48,8 @@ export const codingProjects: CodingProject[] = [
     stack: ["C", "Python", "SQL", "HTML/CSS/JS", "Flask", "Jinja"],
     focus: "Learning the foundations of CS : s).",
     progress: 100,
-    links: [{ label: "View gallery", href: "/coolPersonalWebsite/art/" }],
+    accent: "gold",
+    links: [{ label: "View gallery", href: "art/" }],
   },
 ];
 

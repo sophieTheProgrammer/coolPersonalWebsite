@@ -1,4 +1,5 @@
 ---
+import DoodleImage from "../components/DoodleImage.astro";
 import ArtProcessWidget from "../components/ArtProcessWidget.astro";
 import ArtVolumeCard from "../components/ArtVolumeCard.astro";
 import { artVolumes, artworks } from "../data/artworks";
@@ -14,11 +15,16 @@ const moods = [...new Set(artworks.map((artwork) => artwork.mood))];
 >
   <main class="art-page-shell min-h-screen overflow-hidden px-6 py-12 sm:px-10">
     <div class="art-garden-field" aria-hidden="true">
-      <span class="art-garden-field__stem art-garden-field__stem--one"></span>
-      <span class="art-garden-field__stem art-garden-field__stem--two"></span>
-      <span class="art-garden-field__leaf art-garden-field__leaf--one"></span>
-      <span class="art-garden-field__leaf art-garden-field__leaf--two"></span>
-      <span class="art-garden-field__leaf art-garden-field__leaf--three"></span>
+      <span class="art-garden-blob art-garden-blob--one"></span>
+      <span class="art-garden-blob art-garden-blob--two"></span>
+      <span class="art-garden-blob art-garden-blob--three"></span>
+      <span class="art-garden-blob art-garden-blob--four"></span>
+      <div class="art-garden-doodle art-garden-doodle--one">
+        <DoodleImage src="garden-blob-01.png" alt="Hand-drawn garden blob" variant="cover" animation="float" hideWhenMissing />
+      </div>
+      <div class="art-garden-doodle art-garden-doodle--two">
+        <DoodleImage src="garden-blob-02.png" alt="Hand-drawn garden flower blob" variant="cover" animation="float" hideWhenMissing />
+      </div>
     </div>
     <section class="relative z-10 mx-auto max-w-6xl">
       <div class="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
@@ -31,8 +37,8 @@ const moods = [...new Set(artworks.map((artwork) => artwork.mood))];
           </h1>
         </div>
         <p class="max-w-2xl text-lg leading-8 text-[var(--color-muted)]">
-          Browse art like packs: each volume opens into a little collection of
-          drawings, studies, and placeholders that can grow over time.
+          See my art! Collections of illustrations, studies, sketches,
+          and doodles that grow over time.
         </p>
       </div>
 

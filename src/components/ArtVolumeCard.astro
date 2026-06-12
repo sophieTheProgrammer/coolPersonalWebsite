@@ -31,9 +31,6 @@ const base = import.meta.env.BASE_URL.endsWith("/")
       <div class="absolute left-5 top-5 rounded-md bg-white/75 px-3 py-2 text-xs font-black uppercase tracking-[0.16em] backdrop-blur">
         {volume.year}
       </div>
-      <div class="page-fold-note" aria-hidden="true">
-        <span>{volume.easterEgg ?? "Open the packet."}</span>
-      </div>
       <div class="absolute inset-x-6 top-16 z-10">
         <DoodleImage
           src={volume.coverDoodle}

@@ -15,6 +15,7 @@
     "@tailwindcss/vite": "^4.1.17",
     "astro": "^5.13.10",
     "chart.js": "^4.5.1",
+    "elevator.js": "^1.0.1",
     "tailwindcss": "^4.1.17",
     "typescript": "^5.9.3"
   }

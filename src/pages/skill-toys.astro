@@ -1,7 +1,6 @@
 ---
 import ActiveClipCard from "../components/ActiveClipCard.astro";
 import ComboLogCard from "../components/ComboLogCard.astro";
-import PracticePicker from "../components/PracticePicker.astro";
 import ToyProgressStrip from "../components/ToyProgressStrip.astro";
 import ToyProgressChart from "../components/ToyProgressChart.astro";
 import {
@@ -13,7 +12,7 @@ import {
 } from "../data/skillToys";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
-const activeClips = getActivePracticeClips(5);
+const activeClips = getActivePracticeClips(4);
 const progressLog = getWeightedProgressLog(comboLogs.length);
 ---
 
@@ -40,9 +39,8 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
       </div>
 
       <section class="mt-10" aria-labelledby="overview-heading">
-        <div class="grid gap-4 lg:grid-cols-[1fr_21rem]">
+        <div class="grid gap-4">
           <ToyProgressChart toys={skillToys} />
-          <PracticePicker />
         </div>
       </section>
 
@@ -55,7 +53,7 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
             Tricks and combos I've been working on
           </p>
         </div>
-        <div class="practice-board mt-6 grid grid-cols-1 gap-4 rounded-xl border border-[var(--color-line)] bg-[rgba(30,27,46,0.035)] p-3 shadow-sm sm:grid-cols-2 lg:grid-cols-6">
+        <div class="practice-board mt-6 grid grid-cols-1 gap-5 rounded-xl border border-[var(--color-line)] bg-[rgba(30,27,46,0.035)] p-3 shadow-sm lg:grid-cols-2">
           {
             activeClips.map((combo) => {
               const toy = getToyBySlug(combo.toySlug);
@@ -102,6 +100,29 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
         </div>
         <ToyProgressStrip toys={skillToys} />
       </section>
+
+      <div class="mt-12 flex justify-center">
+        <button
+          class="elevator-button rounded-full border border-[var(--color-line)] bg-[var(--color-ink)] px-5 py-3 text-sm font-black uppercase tracking-[0.14em] text-white shadow-sm transition hover:-translate-y-0.5"
+          type="button"
+        >
+          Take the elevator up
+        </button>
+      </div>
     </section>
   </main>
 </BaseLayout>
+
+<script>
+  import Elevator from "elevator.js";
+
+  const elevatorButton = document.querySelector(".elevator-button");
+
+  if (elevatorButton) {
+    new Elevator({
+      element: elevatorButton,
+      duration: 900,
+      verticalPadding: 0,
+    });
+  }
+</script>

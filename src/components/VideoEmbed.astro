@@ -3,9 +3,25 @@ type Props = {
   title: string;
   embedUrl?: string;
   videoUrl?: string;
+  autoplay?: boolean;
 };
 
-const { title, embedUrl, videoUrl } = Astro.props;
+const { title, embedUrl, videoUrl, autoplay = false } = Astro.props;
+
+const getEmbedUrl = (url: string) => {
+  if (!autoplay) return url;
+
+  try {
+    const parsed = new URL(url);
+    parsed.searchParams.set("autoplay", "1");
+    parsed.searchParams.set("mute", "1");
+    parsed.searchParams.set("playsinline", "1");
+    return parsed.toString();
+  } catch {
+    const separator = url.includes("?") ? "&" : "?";
+    return `${url}${separator}autoplay=1&mute=1&playsinline=1`;
+  }
+};
 ---
 
 <div class="overflow-hidden rounded-md border border-[var(--color-line)] bg-[var(--color-ink)] shadow-sm">
@@ -13,7 +29,7 @@ const { title, embedUrl, videoUrl } = Astro.props;
     embedUrl ? (
       <iframe
         class="aspect-video w-full"
-        src={embedUrl}
+        src={getEmbedUrl(embedUrl)}
         title={title}
         loading="lazy"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

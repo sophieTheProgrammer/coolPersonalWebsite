@@ -14,6 +14,8 @@ Use this as the checklist for replacing placeholders with your own transparent P
 - [ ] `drawings-vol-01-cover.png` - cover drawing for the first art packet.
 - [ ] `studio-studies-cover.png` - cover drawing for the studio studies packet.
 - [ ] `pocket-sketchbook-cover.png` - cover drawing for the pocket sketchbook packet.
+- [ ] `garden-blob-01.png` - optional hand-drawn garden blob/leaf cluster for the Art page background.
+- [ ] `garden-blob-02.png` - optional second hand-drawn garden/blob variation.
 
 ## Skill Toy Icons
 
@@ -30,7 +32,7 @@ Use this as the checklist for replacing placeholders with your own transparent P
 
 - [ ] Page-corner doodles for Home, Art, Coding, and Skill Toys.
 - [ ] Hand-drawn arrows/dividers between sections.
-- [ ] Garden leaves and flowers to replace the CSS garden shapes on the Art page.
+- [ ] Garden blobs, leaves, and flowers to layer over the CSS garden background on the Art page.
 - [ ] Secret doodles for hidden hover/click Easter eggs.
 - [ ] Small hand-drawn tape strips or labels for cards.
 - [ ] Tiny doodle reactions for empty video placeholders.
@@ -40,9 +42,8 @@ Use this as the checklist for replacing placeholders with your own transparent P
 - [ ] Avatar hover wave or bob.
 - [ ] Sticker hover bounce/wiggle.
 - [ ] Art packet cover gentle float.
-- [ ] Garden leaf slow drift.
+- [ ] Garden blob slow drift.
 - [ ] Terminal note tiny float or cursor blink.
-- [ ] Page-corner fold reveal on hover.
 
 ## Placeholder Audit
 
@@ -67,4 +68,5 @@ Use this as the checklist for replacing placeholders with your own transparent P
   - `kendama-icon.png`
   - `begleri-icon.png`
   - `drawings-vol-01-cover.png`
+  - `garden-blob-01.png`
   - `terminal-note.png`

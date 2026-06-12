@@ -6,14 +6,36 @@ type Props = {
 };
 
 const { project } = Astro.props;
+const accent = project.accent ?? "rose";
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
+const getHref = (href: string) =>
+  href.startsWith("http") || href.startsWith("#") || href.startsWith("/")
+    ? href
+    : `${base}${href}`;
 ---
 
-<article class="grid gap-5 rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg md:grid-cols-[1fr_14rem]">
+<article
+  class:list={[
+    "coding-project-card grid gap-5 rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg md:grid-cols-[1fr_14rem]",
+    `coding-project-card--${accent}`,
+    project.spotlight ? "coding-project-card--spotlight" : "",
+  ]}
+>
   <div class="space-y-4">
     <div class="flex flex-wrap items-center gap-3">
       <span class="rounded bg-[var(--color-ink)] px-2.5 py-1 text-xs font-black uppercase tracking-[0.14em] text-white">
         {project.status}
       </span>
+      {
+        project.spotlight && (
+          <span class="coding-project-card__spotlight-label rounded px-2.5 py-1 text-xs font-black uppercase tracking-[0.14em]">
+            Big build
+          </span>
+        )
+      }
       <h2 class="text-2xl font-black">{project.title}</h2>
     </div>
     <p class="max-w-3xl leading-7 text-[var(--color-muted)]">{project.summary}</p>
@@ -39,7 +61,7 @@ const { project } = Astro.props;
         <span>{project.progress}%</span>
       </div>
       <div class="mt-2 h-2 overflow-hidden rounded-full bg-[rgba(30,27,46,0.08)]">
-        <div class="h-full rounded-full bg-[var(--color-accent)]" style={`width: ${project.progress}%`}></div>
+        <div class="coding-project-card__progress h-full rounded-full" style={`width: ${project.progress}%`}></div>
       </div>
     </div>
     <div class="grid gap-2">
@@ -48,7 +70,7 @@ const { project } = Astro.props;
           project.links.map((link) => (
             <a
               class="rounded-md border border-[var(--color-line)] px-3 py-2 text-center text-sm font-bold transition hover:border-[var(--color-accent)]"
-              href={link.href}
+              href={getHref(link.href)}
             >
               {link.label}
             </a>

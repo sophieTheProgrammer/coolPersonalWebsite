@@ -7,9 +7,9 @@ A small personal studio website for skill toy clips, coding projects, and art. I
 ## Current Pages
 
 - **Home** - intro, section links, and a studio avatar slot.
-- **Skill Toys** - progress chart, active practice clips, combo log, toy detail pages, and latest badges.
-- **Coding** - project cards and a tiny terminal.
-- **Art** - drawing packet covers, collection pages, process slider, sketchbook tile, page-fold notes, and animated garden background.
+- **Skill Toys** - progress chart, active practice clips, combo log, toy detail pages, latest badges, and an Elevator.js back-to-top button.
+- **Coding** - project cards, spotlight accents for big projects, and a tiny terminal.
+- **Art** - drawing packet covers, collection pages, process slider, sketchbook tile, and animated garden blob background.
 
 ## Where To Edit Content
 
@@ -29,8 +29,9 @@ A small personal studio website for skill toy clips, coding projects, and art. I
   - Skill toy icons like `kendama-icon.png` and `begleri-icon.png`.
   - Stickers like `latest-sticker.png`, `practice-sticker.png`, `trick-sticker.png`, and `combo-sticker.png`.
   - Art packet covers like `drawings-vol-01-cover.png`.
+  - Garden blob variations like `garden-blob-01.png`.
   - `terminal-note.png` on the coding page.
-- Keep animations gentle: float, bob, wiggle, and page-corner reveals.
+- Keep animations gentle: float, bob, wiggle, and slow garden drift.
 
 ## Next Features
 
@@ -52,8 +53,10 @@ A small personal studio website for skill toy clips, coding projects, and art. I
 
 - Added a reusable doodle image system with missing-file fallbacks.
 - Added homepage avatar, skill toy icon, sticker, art cover, and terminal accent slots.
+- Added coding project `spotlight` and `accent` fields for highlighting bigger projects.
 - Added `public/doodles/` for future transparent PNG drawings.
 - Added `DRAWING_TODO.md` as the drawing and placeholder checklist.
 - Simplified Art packet cards so they click into collection pages instead of expanding inline.
-- Added page-fold Easter eggs and an animated garden background on the Art page.
+- Removed the page-fold feature and added an animated garden blob background on the Art page.
+- Added Elevator.js to the Skill Toys page.
 - Removed Palette Lab and other stale art-card complexity.

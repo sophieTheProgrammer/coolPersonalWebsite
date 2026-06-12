@@ -29,9 +29,9 @@ const links = [
           return (
             <a
               class:list={[
-                "rounded px-3 py-2 text-sm font-semibold transition",
+                "nav-link rounded px-3 py-2 text-sm font-semibold transition",
                 isActive
-                  ? "bg-[var(--color-ink)] text-white"
+                  ? "nav-link--active"
                   : "text-[var(--color-muted)] hover:bg-[rgba(30,27,46,0.07)] hover:text-[var(--color-ink)]",
               ]}
               href={link.href}

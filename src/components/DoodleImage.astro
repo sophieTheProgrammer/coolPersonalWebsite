@@ -8,6 +8,7 @@ type Props = {
   label?: string;
   variant?: "avatar" | "icon" | "sticker" | "cover" | "accent";
   animation?: "float" | "wiggle" | "bob" | "none";
+  hideWhenMissing?: boolean;
 };
 
 const {
@@ -16,6 +17,7 @@ const {
   label,
   variant = "icon",
   animation = "none",
+  hideWhenMissing = false,
 } = Astro.props;
 
 const normalizedSrc = src
@@ -32,23 +34,27 @@ const publicSrc = hasImage ? `${base}doodles/${normalizedSrc}` : "";
 const hasFallback = Astro.slots.has("fallback");
 ---
 
-<figure
-  class:list={[
-    "doodle-image",
-    `doodle-image--${variant}`,
-    animation !== "none" ? `doodle-image--${animation}` : "",
-    hasImage ? "doodle-image--ready" : "doodle-image--placeholder",
-  ]}
->
-  {
-    hasImage ? (
-      <img src={publicSrc} alt={alt} loading="lazy" decoding="async" />
-    ) : hasFallback ? (
-      <slot name="fallback" />
-    ) : (
-      <div class="doodle-image__fallback" role="img" aria-label={alt}>
-        <span>{label ?? "draw me"}</span>
-      </div>
-    )
-  }
-</figure>
+{
+  !hasImage && hideWhenMissing ? null : (
+    <figure
+      class:list={[
+        "doodle-image",
+        `doodle-image--${variant}`,
+        animation !== "none" ? `doodle-image--${animation}` : "",
+        hasImage ? "doodle-image--ready" : "doodle-image--placeholder",
+      ]}
+    >
+      {
+        hasImage ? (
+          <img src={publicSrc} alt={alt} loading="lazy" decoding="async" />
+        ) : hasFallback ? (
+          <slot name="fallback" />
+        ) : (
+          <div class="doodle-image__fallback" role="img" aria-label={alt}>
+            <span>{label ?? "draw me"}</span>
+          </div>
+        )
+      }
+    </figure>
+  )
+}

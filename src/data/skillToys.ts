@@ -108,13 +108,13 @@ export const skillToys: SkillToy[] = [
 
 export const comboLogs: ComboLog[] = [
   {
-    id: "kendama-lunar-line-01",
+    id: "kendama-lighthouse-flip-01",
     toySlug: "kendama",
-    title: "Lunar line practice",
+    title: "Lunar Flip",
     date: "2026-06-11",
-    tag: "combo",
-    embedUrl: "",
-    notes: "Working on smoother setup and catch control.",
+    tag: "trick",
+    embedUrl: "https://www.youtube.com/embed/-0ThsN6z6hE?si=R-cVjeOJFeQvGqlU",
+    notes: "idk",
     featured: true,
   },
   {

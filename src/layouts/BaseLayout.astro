@@ -1,6 +1,7 @@
 ---
 import Footer from "../components/Footer.astro";
 import Nav from "../components/Nav.astro";
+import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 
 type Props = {
@@ -22,6 +23,10 @@ const {
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#fbfaf7" />
+    <link rel="preconnect" href="https://www.youtube.com" />
+    <link rel="preconnect" href="https://www.youtube-nocookie.com" />
+    <ClientRouter />
   </head>
   <body>
     <Nav />

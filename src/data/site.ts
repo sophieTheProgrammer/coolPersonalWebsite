@@ -11,6 +11,18 @@ export const homeContent = {
   headline: "Hi! I'm Sophie, I keep cool stuff here",
   intro: "Personal site for my skill toy clips, coding projects, and art.",
   studioAvatarDoodle: "studio-avatar.png",
+  socialLinks: [
+    {
+      label: "YouTube",
+      href: "https://www.youtube.com/",
+      note: "clips",
+    },
+    {
+      label: "GitHub",
+      href: siteInfo.repo,
+      note: "code",
+    },
+  ],
   sections: [
     {
       label: "Start here",
