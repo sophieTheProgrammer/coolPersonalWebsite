@@ -100,29 +100,6 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
         </div>
         <ToyProgressStrip toys={skillToys} />
       </section>
-
-      <div class="mt-12 flex justify-center">
-        <button
-          class="elevator-button rounded-full border border-[var(--color-line)] bg-[var(--color-ink)] px-5 py-3 text-sm font-black uppercase tracking-[0.14em] text-white shadow-sm transition hover:-translate-y-0.5"
-          type="button"
-        >
-          Take the elevator up
-        </button>
-      </div>
     </section>
   </main>
 </BaseLayout>
-
-<script>
-  import Elevator from "elevator.js";
-
-  const elevatorButton = document.querySelector(".elevator-button");
-
-  if (elevatorButton) {
-    new Elevator({
-      element: elevatorButton,
-      duration: 900,
-      verticalPadding: 0,
-    });
-  }
-</script>

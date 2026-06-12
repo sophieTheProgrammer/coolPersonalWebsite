@@ -39,10 +39,6 @@ const getHref = (href: string) =>
       <h2 class="text-2xl font-black">{project.title}</h2>
     </div>
     <p class="max-w-3xl leading-7 text-[var(--color-muted)]">{project.summary}</p>
-    <div class="rounded-md bg-[rgba(30,27,46,0.05)] p-3">
-      <p class="text-sm font-bold text-[var(--color-ink)]">Focus</p>
-      <p class="mt-1 text-sm leading-6 text-[var(--color-muted)]">{project.focus}</p>
-    </div>
     <div class="flex flex-wrap gap-2">
       {
         project.stack.map((item) => (
@@ -54,16 +50,7 @@ const getHref = (href: string) =>
     </div>
   </div>
 
-  <div class="flex flex-col justify-between gap-5 rounded-md border border-[var(--color-line)] p-3">
-    <div>
-      <div class="flex items-center justify-between text-sm font-bold">
-        <span>Progress</span>
-        <span>{project.progress}%</span>
-      </div>
-      <div class="mt-2 h-2 overflow-hidden rounded-full bg-[rgba(30,27,46,0.08)]">
-        <div class="coding-project-card__progress h-full rounded-full" style={`width: ${project.progress}%`}></div>
-      </div>
-    </div>
+  <div class="flex flex-col justify-center rounded-md border border-[var(--color-line)] p-3">
     <div class="grid gap-2">
       {
         project.links.length > 0 ? (
