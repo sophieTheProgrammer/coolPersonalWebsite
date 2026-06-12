@@ -10,6 +10,7 @@ export const homeContent = {
   eyebrow: "Personal studio",
   headline: "Hi! I'm Sophie, I keep cool stuff here",
   intro: "Personal site for my skill toy clips, coding projects, and art.",
+  studioAvatarDoodle: "studio-avatar.png",
   sections: [
     {
       label: "Start here",
@@ -31,6 +32,18 @@ export const homeContent = {
       featured: false,
     },
   ],
+};
+
+export const doodleStickers = {
+  latest: "latest-sticker.png",
+  practice: "practice-sticker.png",
+  trick: "trick-sticker.png",
+  combo: "combo-sticker.png",
+  favorite: "favorite-sticker.png",
+};
+
+export const codingDoodles = {
+  terminalAccent: "terminal-note.png",
 };
 
 export const editMap = [

@@ -30,8 +30,8 @@ export type ArtVolume = {
   year: string;
   note: string;
   coverPalette: string[];
+  coverDoodle?: string;
   drawingSlugs: string[];
-  featureIdeas: string[];
   easterEgg?: string;
 };
 
@@ -106,10 +106,10 @@ export const artVolumes: ArtVolume[] = [
     year: "2026",
     note: "A starter pack for sketches that feel like UI fragments, toy motion, and abstract little studio notes.",
     coverPalette: ["#e4577a", "#2d9c8c", "#f4d35e"],
+    coverDoodle: "drawings-vol-01-cover.png",
     drawingSlugs: ["signal-garden", "pocket-orbit", "line-memory"],
-    featureIdeas: ["cover color flip", "random drawing button", "process notes"],
     easterEgg:
-      "Hidden idea: add a tiny clickable mark that flips the cover colors.",
+      "A folded note: color swap button can live here later.",
   },
   {
     title: "Studio Studies",
@@ -118,10 +118,10 @@ export const artVolumes: ArtVolume[] = [
     year: "2025",
     note: "A second pack for more finished-looking studies and placeholders for future drawing batches.",
     coverPalette: ["#1e1b2e", "#fbfaf7", "#7c6cff"],
+    coverDoodle: "studio-studies-cover.png",
     drawingSlugs: ["quiet-interface", "practice-room", "tiny-poster"],
-    featureIdeas: ["page corner reveal", "before/after slider", "studio note"],
     easterEgg:
-      "Hidden idea: add a fake page corner fold that reveals a note when hovered.",
+      "A folded note: before/after slider can live inside this pack.",
   },
   {
     title: "Pocket Sketchbook",
@@ -130,15 +130,15 @@ export const artVolumes: ArtVolume[] = [
     year: "2024-2026",
     note: "A flexible volume for rougher drawings and quick uploads that should not need a full polished gallery entry.",
     coverPalette: ["#f7b267", "#e4577a", "#fbfaf7"],
+    coverDoodle: "pocket-sketchbook-cover.png",
     drawingSlugs: [
       "line-memory",
       "signal-garden",
       "practice-room",
       "pocket-orbit",
     ],
-    featureIdeas: ["shuffle sketch", "warmup stack", "date filter"],
     easterEgg:
-      "Hidden idea: add a random sketch button that jumps to one drawing inside the pack.",
+      "A folded note: random sketch button can live here later.",
   },
 ];
 

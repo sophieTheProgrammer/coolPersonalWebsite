@@ -1,4 +1,5 @@
 ---
+import DoodleImage from "./DoodleImage.astro";
 import VideoEmbed from "./VideoEmbed.astro";
 import type { ComboLog, SkillToy } from "../data/skillToys";
 
@@ -18,9 +19,12 @@ const base = import.meta.env.BASE_URL.endsWith("/")
   <div class="space-y-3 p-3">
     <div class="flex items-start justify-between gap-3">
       <div>
-        <p class="text-xs font-black uppercase tracking-[0.18em] text-[var(--color-accent)]">
-          {toy.name}
-        </p>
+        <div class="flex items-center gap-2">
+          <DoodleImage src={toy.doodleIcon} alt={`${toy.name} hand-drawn icon`} label={toy.name.slice(0, 2)} variant="icon" animation="bob" />
+          <p class="text-xs font-black uppercase tracking-[0.18em] text-[var(--color-accent)]">
+            {toy.name}
+          </p>
+        </div>
         <h3 class="mt-1 text-lg font-black leading-tight">{combo.title}</h3>
       </div>
       <div class="flex shrink-0 flex-col items-end gap-1">

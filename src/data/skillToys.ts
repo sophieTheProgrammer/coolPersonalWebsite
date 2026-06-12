@@ -9,6 +9,7 @@ export type SkillToy = {
   currentFocus: string;
   status: SkillToyStatus;
   latestComboId: string;
+  doodleIcon?: string;
 };
 
 export type ComboLog = {
@@ -31,6 +32,7 @@ export const skillToys: SkillToy[] = [
     currentFocus: "Cleaner catches and longer flow lines.",
     status: "active",
     latestComboId: "kendama-lunar-line-01",
+    doodleIcon: "kendama-icon.png",
   },
   {
     name: "Begleri",
@@ -40,6 +42,7 @@ export const skillToys: SkillToy[] = [
     currentFocus: "Smoother transfers and longer unbroken sequences.",
     status: "active",
     latestComboId: "begleri-rebound-flow-01",
+    doodleIcon: "begleri-icon.png",
   },
   {
     name: "Yoyo",
@@ -49,6 +52,7 @@ export const skillToys: SkillToy[] = [
     currentFocus: "Basic string control and cleaner binds.",
     status: "paused",
     latestComboId: "yoyo-frontstyle-reset-01",
+    doodleIcon: "yoyo-icon.png",
   },
   {
     name: "Pen Spinning",
@@ -58,6 +62,7 @@ export const skillToys: SkillToy[] = [
     currentFocus: "ThumbAround consistency and simple links.",
     status: "paused",
     latestComboId: "pen-spinning-thumbaround-01",
+    doodleIcon: "pen-spinning-icon.png",
   },
   {
     name: "Juggling",
@@ -67,6 +72,7 @@ export const skillToys: SkillToy[] = [
     currentFocus: "Three-ball rhythm and relaxed throws.",
     status: "paused",
     latestComboId: "juggling-cascade-check-01",
+    doodleIcon: "juggling-icon.png",
   },
   {
     name: "Cardistry",
@@ -76,6 +82,7 @@ export const skillToys: SkillToy[] = [
     currentFocus: "Packet control and clean displays.",
     status: "paused",
     latestComboId: "cardistry-packet-opener-01",
+    doodleIcon: "cardistry-icon.png",
   },
   {
     name: "Knucklebone",
@@ -85,6 +92,7 @@ export const skillToys: SkillToy[] = [
     currentFocus: "Slow rolls and controlled catches.",
     status: "archive",
     latestComboId: "knucklebone-roll-catch-01",
+    doodleIcon: "knucklebone-icon.png",
   },
   {
     name: "Contact Ball",
@@ -94,6 +102,7 @@ export const skillToys: SkillToy[] = [
     currentFocus: "Palm isolation and slow control.",
     status: "archive",
     latestComboId: "contact-ball-isolation-01",
+    doodleIcon: "contact-ball-icon.png",
   },
 ];
 

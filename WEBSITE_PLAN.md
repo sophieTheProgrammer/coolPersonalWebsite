@@ -1,368 +1,59 @@
-# Personal Website MVP Plan
+# Personal Website Roadmap
 
-## Summary
+## What This Site Is
 
-Build a polished static personal website with a simple animated homepage, a skill toy page focused on video cards, a coding page for projects and current work, and an art gallery page. The MVP should feel clean, playful, and easy to update without needing a backend.
+A small personal studio website for skill toy clips, coding projects, and art. It should feel polished, playful, and personal, with hand-drawn details added over time.
 
-The first priority is the skill toy page: each card represents a toy or practice area, such as Kendama or Begleri, and includes an embedded video showing the most recent trick combo or practice clip.
+## Current Pages
 
-## Pages
+- **Home** - intro, section links, and a studio avatar slot.
+- **Skill Toys** - progress chart, active practice clips, combo log, toy detail pages, and latest badges.
+- **Coding** - project cards and a tiny terminal.
+- **Art** - drawing packet covers, collection pages, process slider, sketchbook tile, page-fold notes, and animated garden background.
 
-### Home
+## Where To Edit Content
 
-- Simple polished landing page with your name, short intro, and links to the main sections.
-- Small animation on load, such as floating objects, subtle text reveal, or a looping canvas background, including drawn animated picture of me animated on hover
-- Featured links to Skill Toys, Coding, and Art.
-- Short "what I'm up to" line that can be edited from a content file.
+- `src/data/site.ts` - homepage text, section links, doodle sticker filenames, coding doodle filename.
+- `src/data/skillToys.ts` - toy progress, toy icons, combo logs, video embeds, notes.
+- `src/data/artworks.ts` - artwork entries, drawing packets, cover doodle filenames, process slider text.
+- `src/data/codingProjects.ts` - coding projects, terminal commands, links.
+- `public/doodles/` - transparent PNG drawings you make.
+- `DRAWING_TODO.md` - checklist of drawings, animations, and remaining placeholders.
 
-### Skill Toys
+## Hand-Drawn Studio Identity
 
-- Main MVP feature.
-- Card grid for different skill toys and hobbies.
-- Each card includes:
-  - Toy name
-  - Short description
-  - Current focus or latest trick
-  - Embedded video for the most recent combo or practice clip
-  - Tags such as `learning`, `combo`, `flow`, `daily practice`
-- Use lightweight hover/focus animation so cards feel tactile.
-- Keep video embeds responsive and mobile-friendly.
+- Use transparent PNG drawings in `public/doodles/`.
+- Missing PNGs automatically show polished placeholders, so unfinished art will not break the site.
+- Current drawing slots:
+  - `studio-avatar.png` on the homepage.
+  - Skill toy icons like `kendama-icon.png` and `begleri-icon.png`.
+  - Stickers like `latest-sticker.png`, `practice-sticker.png`, `trick-sticker.png`, and `combo-sticker.png`.
+  - Art packet covers like `drawings-vol-01-cover.png`.
+  - `terminal-note.png` on the coding page.
+- Keep animations gentle: float, bob, wiggle, and page-corner reveals.
 
-### Coding
+## Next Features
 
-- Simple project portfolio page.
-- Cards for coding projects with title, summary, tech stack, status, GitHub link, and live demo link when available.
-- Include a "what I'm up to" section for current builds, experiments, or learning goals.
-- MVP can use placeholder project content until real projects are added.
+- Add your first real transparent PNGs from `DRAWING_TODO.md`.
+- Replace empty skill toy video embeds with real clips.
+- Add real artwork images and better art packet covers.
+- Add project screenshots and real coding project links.
+- Later: try an ArtStation-style popup for art packets if page navigation feels too heavy.
+- Later: make terminal commands clickable and add filters for coding/skill toy pages.
 
-### Art
+## Deployment Notes
 
-- Simple gallery page.
-- Responsive image grid with title, medium, year/date, and optional notes.
-- Clicking an artwork opens a larger view.
-- MVP can start with placeholder artwork entries and local image placeholders.
+- GitHub Pages build: `npm run build`.
+- Root `public_html` build: `PUBLIC_BASE=/ npm run build`.
+- Manual upload zip: `coolPersonalWebsite-public_html.zip`.
+- After a root build, zip the contents of `dist/` for upload.
 
-## Technology Stack
+## Done Recently
 
-### Core Framework
-
-- **Astro** for the static site framework.
-  - Works well for GitHub Pages.
-  - Fast by default.
-  - Great for mostly static pages with small interactive pieces.
-  - Supports Markdown/MDX content collections cleanly.
-
-- **TypeScript** for safer component props, content schemas, and future maintainability.
-
-### Styling
-
-- **Tailwind CSS** for styling.
-  - Good for fast iteration.
-  - Keeps the design consistent across pages.
-  - Easy to create responsive layouts and polished cards.
-
-- **CSS custom properties** for theme colors and reusable design tokens.
-  - Use variables for background, text, accent colors, card borders, and shadows.
-
-### Content
-
-- **Astro Content Collections** for editable content.
-  - `skill-toys` collection for Kendama, Begleri, and other toy cards.
-  - `projects` collection for coding projects.
-  - `art` collection for gallery items.
-  - `site` or config file for homepage intro and "what I'm up to" text.
-
-- **Markdown / MDX** for content files.
-  - Markdown is enough for most cards and descriptions.
-  - MDX can be added later if a page needs custom interactive content inside an entry.
-
-### Video Embeds
-
-- Use responsive iframe embeds for YouTube, Vimeo, or other video platforms.
-- Store video provider and video URL in each skill toy content file.
-- Build a reusable `VideoEmbed` component that:
-  - Keeps a stable aspect ratio.
-  - Supports lazy loading.
-  - Has a title for accessibility.
-  - Falls back to an external link if the embed URL is missing.
-
-### Interactivity and Animation
-
-- **Astro view transitions** for smooth page navigation where supported.
-- **CSS animations** for the homepage intro and card hover states.
-- **Motion One** for small page-specific DOM animations, starting with the
-  Art packet opening animation.
-- **Framer Motion is not needed for MVP** because the site is not React-based,
-  and Motion One fits Astro's mostly-static model better.
-- **Canvas or simple CSS motion** can power the homepage animation.
-  - MVP recommendation: use CSS motion first to avoid unnecessary JavaScript.
-  - Add canvas later if the homepage needs a more playful interactive background.
-
-### Icons
-
-- **Lucide Icons** for small interface icons.
-  - Use for external links, play indicators, GitHub links, gallery expand buttons, and navigation details.
-
-### Images
-
-- Use Astro's built-in image handling where practical.
-- Keep gallery images in a local assets folder.
-- Use optimized sizes for thumbnails and full gallery views.
-
-### Deployment
-
-- **GitHub Pages** as the hosting target.
-- Use Astro's static output.
-- Add a GitHub Actions workflow to build and deploy the `dist` output.
-- Configure Astro's `site` and `base` values correctly if the site is deployed under a repository path.
-- Use `PUBLIC_BASE=/ npm run build` when creating a root-hosted
-  `public_html` package.
-
-## Recommended File Structure
-
-```txt
-src/
-  components/
-    ActiveClipCard.astro
-    ComboLogCard.astro
-    HomePersonFigure.astro
-    Nav.astro
-    TerminalPanel.astro
-    ToyProgressChart.astro
-    ToyProgressStrip.astro
-    VideoEmbed.astro
-  data/
-    artworks.ts
-    codingProjects.ts
-    site.ts
-    skillToys.ts
-  layouts/
-    BaseLayout.astro
-  pages/
-    index.astro
-    skill-toys.astro
-    skill-toys/[slug].astro
-    coding.astro
-    art.astro
-    art/[slug].astro
-    art/collections/[slug].astro
-  styles/
-    global.css
-public/
-  images/
-    art/
-    placeholders/
-```
-
-## MVP Implementation Order
-
-1. Scaffold Astro, TypeScript, and Tailwind.
-2. Configure GitHub Pages build settings.
-3. Create global layout, navigation, typography, and theme tokens.
-4. Build the homepage with simple animation and section links.
-5. Build the skill toy content collection and video card grid.
-6. Add reusable responsive video embed component.
-7. Build simple coding project cards and "what I'm up to" section.
-8. Build the art gallery grid and enlarged image view.
-9. Add placeholder content for all pages.
-10. Run build checks and visually test desktop and mobile layouts.
-
-## MVP Acceptance Criteria
-
-- Site builds as a static Astro site.
-- Main navigation has only:
-  - Home
-  - Skill Toys
-  - Coding
-  - Art
-- Skill Toys includes a progress chart, practice board, combo log, and toy detail pages.
-- Homepage has a CSS person, motion, and section links.
-- Coding page displays current work, a tiny terminal, and project cards.
-- Art page displays expandable drawing packets, collection detail pages, a
-  process slider, sketchbook tile, and artwork detail pages.
-- Content can be updated through simple data files in `src/data`.
-- Site builds and is ready to deploy to GitHub Pages.
-
-## Completed Enhancement Pass
-
-### Skill Toys
-
-- Expanded the skill toy data from 5 overview toys to 8 total toys:
-  Kendama, Begleri, Yoyo, Pen Spinning, Juggling, Cardistry, Knucklebone, and
-  Contact Ball.
-- Added toy detail routes for every toy in the overview.
-- Added latest combo badges to skill toy clip cards so newest/current clips are
-  easier to spot.
-- Refined the badge into a reusable `LatestBadge` component.
-- Limited latest badges to actual latest clips per toy, and removed duplicate
-  latest badges from the active practice board.
-- Replaced performance-result labels like `landed`, `cleaning`, and `rough`
-  with a simpler manual combo log tag:
-  - `practice`
-  - `trick`
-  - `combo`
-- Kept the weighted variety progress log model, including active toy promotion
-  and inactive/archive toy representation.
-- Kept the compact percentage scroller at the bottom of the Skill Toys page.
-
-### Art Gallery
-
-- Added `@motionone/dom` as a lightweight animation library for Astro-friendly
-  DOM animation.
-- Added a packet-opening animation on Art collection pages:
-  - intro copy rises in
-  - cover panel opens in with scale/depth motion
-  - drawings stagger into view
-- The animation respects reduced-motion preferences.
-- Art collection pages still work as static GitHub Pages routes.
-- Removed Palette Lab from the Art page and deleted the unused component.
-- Turned art volume cards into expandable drawing packets with:
-  - drawings inside each packet
-  - future feature chips controlled from `src/data/artworks.ts`
-  - a clear "Open drawing pack" link to the full collection route
-
-### Coding
-
-- Removed the unused `codingNow` data export and its old `CodingNowItem` type.
-- Kept current coding updates in the tiny terminal instead of maintaining a
-  second status-card data structure.
-- Cleaned up stale code by deleting an unused older `SkillToyCard` component.
-
-### Verification
-
-- Ran `npm run build` successfully:
-  - Astro check: 0 errors, 0 warnings, 0 hints.
-  - Static build completed.
-- Created `coolPersonalWebsite-public_html.zip` from the final `dist` output
-  for manual public_html-style hosting.
-- The public_html zip is built with `PUBLIC_BASE=/`, so extracted files link to
-  `/_astro`, `/art`, `/coding`, and `/skill-toys` instead of the GitHub Pages
-  `/coolPersonalWebsite` path.
-- Browser-checked Skill Toys:
-  - latest badges render
-  - active practice board has no duplicate latest badges
-  - new `practice`, `trick`, and `combo` tags appear
-  - old `landed`, `cleaning`, and `rough` labels are gone
-  - all 8 toy detail routes are linked
-  - no horizontal overflow
-- Browser-checked Art collection route:
-  - packet animation hooks render
-  - drawing packet content renders
-  - no console errors
-  - no horizontal overflow
-- Browser-checked Art page:
-  - Palette Lab UI is removed
-  - expandable packet cards render
-  - future feature chips render from data
-  - no horizontal overflow
-
-## Enhancement Roadmap
-
-### Content Editing
-
-- Add a private GUI editor/admin page for uploading art, pasting video links,
-  adding coding projects, editing homepage copy, and updating skill toy progress
-  without touching code.
-- Keep the current `src/data` files as the source of truth until the GUI exists.
-- Good future options:
-  - Decap CMS or another Git-backed CMS.
-  - A local-only admin page that writes JSON or Markdown.
-  - A hosted CMS if the site moves from GitHub Pages to Netlify or Vercel.
-
-### Home
-
-- Add small cards or buttons for YouTube and GitHub near the homepage studio
-  area.
-- Replace CSS person with hand-drawn gif that animates on hover
-- Let the homepage show a tiny "latest update" pulled from skill toys, coding,
-  or art data.
-- interacted background patteren to add interest
-
-### Skill Toys
-
-- Keep the compact toy percentage scroller at the bottom of the Skill Toys page
-  as a quick-jump area.
-- Improve the "latest combo" badge styling with more visual states once real
-  videos are added.
-- Continue using the simple manual tag field for combo logs:
-  - `practice`
-  - `trick`
-  - `combo`
-- Use that tag to control visual emphasis so difficult or important combos get
-  more attention without hiding normal practice clips.
-- Add filters for toy, status, and combo type once there are more real clips.
-- Add richer toy detail pages with personal notes, milestones, favorite combos,
-  and embedded clip history.
-- Automate skill toy uploads with YouTube or another video source later.
-
-### Art Gallery
-
-- Make art collections feel more like expandable drawing packets or volumes:
-  click a volume, enter a focused collection page, then browse the drawings
-  inside it.
-- Extend the new Motion One packet-opening animation with hover or click
-  reactions inside packets.
-- Keep the process widget as a two-column/two-slot feature when space allows.
-- Keep the sketchbook graphic feeling like a custom studio object, not just
-  another grid card.
-- Make sure new art packets can be added by editing data only, without changing
-  page code.
-- Add a soft animated botanical-garden-inspired background pattern.
-
-### Coding
-
-- Keep status updates inside the tiny terminal instead of separate "Current
-  build / Learning / Next push" cards.
-- Make terminal commands clickable later, so they can filter projects or jump to
-  related sections.
-- Add a small coding-side interactive prop near CS50 or the project cards.
-- Make project tags smarter:
-  - Completed projects fill their progress bar automatically.
-  - Completed status tags turn green.
-  - Active/building projects keep a warmer accent.
-- Add project detail pages with screenshots, lessons learned, demos, and repo
-  links.
-- game jam tab or integration
-- be able to highlight big projects so they pop out against small ones
-
-### Easter Eggs and Micro-Interactions
-
-- Add hidden cover-color swaps on art volume covers.
-- Add a random sketch button inside each art volume.
-- Add page-corner hover reveals with short handwritten-style notes.
-- Add a secret sketchbook mode on the Art page.
-- Add hidden "studio stamps" users can discover across Coding, Art, and Skill
-  Toys.
-- Add seasonal decorations or small temporary UI effects.
-- Add mobile/tablet motion effects later, such as shake-to-scatter objects.
-- Use Motion One for page-specific animation where CSS becomes awkward; keep
-  simple hover effects in CSS.
-- Consider Elevator.js on long scroll pages, especially Art or Skill Toys.
-
-### Time Tracker / Practice Tracker App
-
-- Plan a separate tracker section or app for importing drawing hours from iHour
-  and tracking projects over time.
-- MVP tracker data model:
-  - project name
-  - category, such as drawing, coding, skill toys, study
-  - start/end time or duration
-  - date
-  - notes
-  - optional energy/focus rating
-- Import path:
-  - Export from iHour as CSV if available.
-  - Normalize the CSV into a local data file first.
-  - Later, build an upload/import screen for CSV files.
-- Useful views:
-  - weekly hours
-  - project streaks
-  - time by category
-  - recent sessions
-  - project timeline
-- Behavioral science ideas:
-  - Show progress trends instead of only totals.
-  - Reward consistency, not just huge sessions.
-  - Use small reflection prompts after sessions.
-  - Keep goals adjustable so missing a day does not feel like failure.
-  - Highlight "next tiny action" for each project.
+- Added a reusable doodle image system with missing-file fallbacks.
+- Added homepage avatar, skill toy icon, sticker, art cover, and terminal accent slots.
+- Added `public/doodles/` for future transparent PNG drawings.
+- Added `DRAWING_TODO.md` as the drawing and placeholder checklist.
+- Simplified Art packet cards so they click into collection pages instead of expanding inline.
+- Added page-fold Easter eggs and an animated garden background on the Art page.
+- Removed Palette Lab and other stale art-card complexity.

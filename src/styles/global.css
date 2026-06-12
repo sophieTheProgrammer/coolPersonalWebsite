@@ -37,6 +37,164 @@ a {
   background: rgba(228, 87, 122, 0.24);
 }
 
+.doodle-image {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+.doodle-image img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.doodle-image__fallback {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border: 1px dashed rgba(30, 27, 46, 0.24);
+  color: var(--color-muted);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(251, 250, 247, 0.48)),
+    repeating-linear-gradient(
+      -8deg,
+      transparent,
+      transparent 0.52rem,
+      rgba(30, 27, 46, 0.055) 0.52rem,
+      rgba(30, 27, 46, 0.055) 0.62rem
+    );
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.doodle-image--avatar {
+  width: min(100%, 19rem);
+  min-height: 12rem;
+}
+
+.doodle-image--avatar.doodle-image--ready {
+  min-height: 0;
+}
+
+.doodle-image--avatar img {
+  max-height: 15rem;
+  filter: drop-shadow(0 1rem 1.4rem rgba(30, 27, 46, 0.18));
+}
+
+.doodle-image--icon {
+  width: 2rem;
+  height: 2rem;
+}
+
+.doodle-image--icon .doodle-image__fallback {
+  border-radius: 999px;
+  color: var(--color-ink);
+  background: rgba(244, 211, 94, 0.35);
+  letter-spacing: 0;
+}
+
+.doodle-image--sticker {
+  min-width: 0;
+}
+
+.doodle-image--sticker img {
+  max-width: 5.75rem;
+  max-height: 2.4rem;
+  filter: drop-shadow(0 0.35rem 0 rgba(30, 27, 46, 0.1));
+}
+
+.doodle-image--cover {
+  display: flex;
+  width: 100%;
+  height: 7.25rem;
+}
+
+.doodle-image--cover .doodle-image__fallback {
+  border-color: rgba(255, 255, 255, 0.48);
+  border-radius: 0.75rem;
+  color: rgba(30, 27, 46, 0.72);
+  background: rgba(255, 255, 255, 0.36);
+  backdrop-filter: blur(10px);
+}
+
+.doodle-image--cover img {
+  max-height: 7.25rem;
+  margin-inline: auto;
+  filter: drop-shadow(0 0.7rem 0 rgba(30, 27, 46, 0.12));
+}
+
+.doodle-image--accent {
+  width: 3.25rem;
+  height: 3.25rem;
+}
+
+.doodle-image--accent .doodle-image__fallback {
+  border-radius: 0.6rem;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.tiny-terminal .doodle-image--accent .doodle-image__fallback {
+  border-color: rgba(255, 255, 255, 0.24);
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.doodle-image--float {
+  animation: doodle-float 5.5s ease-in-out infinite;
+}
+
+.doodle-image--wiggle {
+  transform-origin: center;
+}
+
+.doodle-image--wiggle:hover,
+.group:hover .doodle-image--wiggle {
+  animation: doodle-wiggle 520ms ease-in-out;
+}
+
+.doodle-image--bob {
+  transition: transform 220ms ease;
+}
+
+.doodle-image--bob:hover,
+.group:hover .doodle-image--bob,
+.hero-with-person:hover .doodle-image--bob {
+  transform: translateY(-0.32rem) rotate(-1deg);
+}
+
+@keyframes doodle-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+
+  50% {
+    transform: translateY(-0.38rem) rotate(1deg);
+  }
+}
+
+@keyframes doodle-wiggle {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  33% {
+    transform: rotate(-4deg) scale(1.03);
+  }
+
+  66% {
+    transform: rotate(4deg) scale(1.03);
+  }
+}
+
 @keyframes soft-float {
   0%,
   100% {
@@ -292,6 +450,160 @@ a {
   background-size: 24px 24px;
 }
 
+.art-page-shell {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(251, 250, 247, 0.92), rgba(251, 250, 247, 0.72)),
+    radial-gradient(circle at 12% 18%, rgba(45, 156, 140, 0.12), transparent 32%),
+    radial-gradient(circle at 86% 28%, rgba(244, 211, 94, 0.16), transparent 30%);
+}
+
+.art-garden-field {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.art-garden-field__stem,
+.art-garden-field__leaf {
+  position: absolute;
+  display: block;
+  opacity: 0.42;
+}
+
+.art-garden-field__stem {
+  width: 13rem;
+  height: 34rem;
+  border: 2px solid rgba(45, 156, 140, 0.34);
+  border-bottom: 0;
+  border-left: 0;
+  border-radius: 0 100% 0 0;
+  transform-origin: bottom left;
+  animation: garden-sway 11s ease-in-out infinite;
+}
+
+.art-garden-field__stem--one {
+  left: -3rem;
+  top: 9rem;
+}
+
+.art-garden-field__stem--two {
+  right: -4rem;
+  top: 20rem;
+  border-color: rgba(228, 87, 122, 0.24);
+  transform: scaleX(-1);
+  animation-delay: -5s;
+}
+
+.art-garden-field__leaf {
+  width: 7rem;
+  height: 3rem;
+  border: 1px solid rgba(30, 27, 46, 0.14);
+  border-radius: 100% 0 100% 0;
+  background: rgba(45, 156, 140, 0.16);
+  animation: garden-leaf-drift 13s ease-in-out infinite;
+}
+
+.art-garden-field__leaf--one {
+  left: 7%;
+  top: 26rem;
+  transform: rotate(-18deg);
+}
+
+.art-garden-field__leaf--two {
+  right: 8%;
+  top: 11rem;
+  background: rgba(244, 211, 94, 0.2);
+  transform: rotate(22deg);
+  animation-delay: -4s;
+}
+
+.art-garden-field__leaf--three {
+  left: 48%;
+  bottom: 7rem;
+  background: rgba(228, 87, 122, 0.13);
+  transform: rotate(10deg);
+  animation-delay: -8s;
+}
+
+.page-fold-note {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 5.75rem;
+  height: 5.75rem;
+  overflow: hidden;
+  color: var(--color-ink);
+}
+
+.page-fold-note::before {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  border-top: 4.8rem solid rgba(255, 255, 255, 0.86);
+  border-left: 4.8rem solid transparent;
+  content: "";
+  filter: drop-shadow(-0.2rem 0.25rem 0.25rem rgba(30, 27, 46, 0.18));
+  transition:
+    border-top-width 220ms ease,
+    border-left-width 220ms ease,
+    filter 220ms ease;
+}
+
+.page-fold-note span {
+  position: absolute;
+  right: 0.7rem;
+  top: 0.7rem;
+  width: 4.4rem;
+  opacity: 0;
+  transform: rotate(45deg) translateY(-0.35rem);
+  font-size: 0.58rem;
+  font-weight: 900;
+  line-height: 1.15;
+  text-align: center;
+  transition:
+    opacity 180ms ease,
+    transform 220ms ease;
+}
+
+.art-volume-card:hover .page-fold-note::before,
+.art-volume-card:focus-within .page-fold-note::before {
+  border-top-width: 5.5rem;
+  border-left-width: 5.5rem;
+  filter: drop-shadow(-0.35rem 0.45rem 0.3rem rgba(30, 27, 46, 0.22));
+}
+
+.art-volume-card:hover .page-fold-note span,
+.art-volume-card:focus-within .page-fold-note span {
+  opacity: 1;
+  transform: rotate(45deg) translateY(0);
+}
+
+@keyframes garden-sway {
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+
+  50% {
+    transform: rotate(3deg) translateX(0.6rem);
+  }
+}
+
+@keyframes garden-leaf-drift {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+
+  50% {
+    translate: 0.8rem -1rem;
+  }
+}
+
 .sketchbook-page {
   position: relative;
   min-height: 12rem;
@@ -408,16 +720,6 @@ a {
   .art-gallery-grid > article:nth-child(1),
   .art-gallery-grid > article:nth-child(4) {
     grid-column: span 2;
-  }
-
-  .art-gallery-grid > article:nth-child(1) .aspect-\[4\/3\],
-  .art-gallery-grid > article:nth-child(4) .aspect-\[4\/3\] {
-    aspect-ratio: 16 / 9;
-  }
-
-  .art-gallery-grid > article:nth-child(2),
-  .art-gallery-grid > article:nth-child(5) {
-    transform: translateY(2rem);
   }
 }
 

@@ -1,5 +1,6 @@
 ---
 import ComboLogCard from "../../components/ComboLogCard.astro";
+import DoodleImage from "../../components/DoodleImage.astro";
 import {
   getCombosForToy,
   getToyBySlug,
@@ -41,9 +42,12 @@ const combos = getCombosForToy(toy.slug);
 
       <div class="mt-8 grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
         <div>
-          <p class="text-sm font-semibold uppercase tracking-[0.28em] text-[var(--color-muted)]">
-            {toy.status} / {toy.clipCount} clips logged
-          </p>
+          <div class="flex items-center gap-3">
+            <DoodleImage src={toy.doodleIcon} alt={`${toy.name} hand-drawn icon`} label={toy.name.slice(0, 2)} variant="accent" animation="bob" />
+            <p class="text-sm font-semibold uppercase tracking-[0.28em] text-[var(--color-muted)]">
+              {toy.status} / {toy.clipCount} clips logged
+            </p>
+          </div>
           <h1 class="mt-4 text-4xl font-black leading-none sm:text-6xl">
             {toy.name} trick log
           </h1>

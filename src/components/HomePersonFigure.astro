@@ -1,14 +1,26 @@
-<div class="home-person" aria-label="CSS placeholder person for a future portrait" role="img">
-  <div class="home-person__halo"></div>
-  <div class="home-person__head"></div>
-  <div class="home-person__body">
-    <div class="home-person__badge"></div>
+---
+import DoodleImage from "./DoodleImage.astro";
+
+type Props = {
+  src?: string;
+};
+
+const { src } = Astro.props;
+---
+
+<DoodleImage src={src} alt="Hand-drawn studio avatar" variant="avatar" animation="bob">
+  <div slot="fallback" class="home-person" aria-label="CSS placeholder person for a future portrait" role="img">
+    <div class="home-person__halo"></div>
+    <div class="home-person__head"></div>
+    <div class="home-person__body">
+      <div class="home-person__badge"></div>
+    </div>
+    <div class="home-person__arm home-person__arm--left"></div>
+    <div class="home-person__arm home-person__arm--right"></div>
+    <div class="home-person__desk">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
   </div>
-  <div class="home-person__arm home-person__arm--left"></div>
-  <div class="home-person__arm home-person__arm--right"></div>
-  <div class="home-person__desk">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-</div>
+</DoodleImage>

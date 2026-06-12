@@ -12,8 +12,15 @@ const moods = [...new Set(artworks.map((artwork) => artwork.mood))];
   title="Art | Cool Personal Website"
   description="A small art gallery with placeholder works, moods, and future interactive features."
 >
-  <main class="min-h-screen px-6 py-12 sm:px-10">
-    <section class="mx-auto max-w-6xl">
+  <main class="art-page-shell min-h-screen overflow-hidden px-6 py-12 sm:px-10">
+    <div class="art-garden-field" aria-hidden="true">
+      <span class="art-garden-field__stem art-garden-field__stem--one"></span>
+      <span class="art-garden-field__stem art-garden-field__stem--two"></span>
+      <span class="art-garden-field__leaf art-garden-field__leaf--one"></span>
+      <span class="art-garden-field__leaf art-garden-field__leaf--two"></span>
+      <span class="art-garden-field__leaf art-garden-field__leaf--three"></span>
+    </div>
+    <section class="relative z-10 mx-auto max-w-6xl">
       <div class="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
         <div>
           <p class="text-sm font-semibold uppercase tracking-[0.28em] text-[var(--color-muted)]">
@@ -64,7 +71,7 @@ const moods = [...new Set(artworks.map((artwork) => artwork.mood))];
         </div>
       </section>
 
-      <div class="art-gallery-stage mt-8 rounded-xl border border-[var(--color-line)] bg-[rgba(30,27,46,0.035)] p-3 shadow-sm">
+      <div class="art-gallery-stage mt-8 rounded-xl border border-[var(--color-line)] bg-[rgba(255,255,255,0.76)] p-3 shadow-sm backdrop-blur">
         <div class="mb-3 flex flex-wrap items-center justify-between gap-3 px-1">
           <p class="text-xs font-black uppercase tracking-[0.2em] text-[var(--color-muted)]">
             Volumes

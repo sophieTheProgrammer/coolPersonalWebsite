@@ -1,0 +1,54 @@
+---
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+
+type Props = {
+  src?: string;
+  alt: string;
+  label?: string;
+  variant?: "avatar" | "icon" | "sticker" | "cover" | "accent";
+  animation?: "float" | "wiggle" | "bob" | "none";
+};
+
+const {
+  src,
+  alt,
+  label,
+  variant = "icon",
+  animation = "none",
+} = Astro.props;
+
+const normalizedSrc = src
+  ?.replace(/^\/?doodles\//, "")
+  .replace(/^\/+/, "");
+const hasImage = Boolean(
+  normalizedSrc &&
+    existsSync(join(process.cwd(), "public", "doodles", normalizedSrc)),
+);
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const publicSrc = hasImage ? `${base}doodles/${normalizedSrc}` : "";
+const hasFallback = Astro.slots.has("fallback");
+---
+
+<figure
+  class:list={[
+    "doodle-image",
+    `doodle-image--${variant}`,
+    animation !== "none" ? `doodle-image--${animation}` : "",
+    hasImage ? "doodle-image--ready" : "doodle-image--placeholder",
+  ]}
+>
+  {
+    hasImage ? (
+      <img src={publicSrc} alt={alt} loading="lazy" decoding="async" />
+    ) : hasFallback ? (
+      <slot name="fallback" />
+    ) : (
+      <div class="doodle-image__fallback" role="img" aria-label={alt}>
+        <span>{label ?? "draw me"}</span>
+      </div>
+    )
+  }
+</figure>
