@@ -15,11 +15,22 @@ const getEmbedUrl = (url: string) => {
     const parsed = new URL(url);
     parsed.searchParams.set("autoplay", "1");
     parsed.searchParams.set("mute", "1");
+    parsed.searchParams.set("controls", "0");
+    parsed.searchParams.set("iv_load_policy", "3");
+    parsed.searchParams.set("modestbranding", "1");
+    parsed.searchParams.set("rel", "0");
     parsed.searchParams.set("playsinline", "1");
+
+    const embedId = parsed.pathname.split("/").filter(Boolean).pop();
+    if (embedId && parsed.hostname.includes("youtube")) {
+      parsed.searchParams.set("loop", "1");
+      parsed.searchParams.set("playlist", embedId);
+    }
+
     return parsed.toString();
   } catch {
     const separator = url.includes("?") ? "&" : "?";
-    return `${url}${separator}autoplay=1&mute=1&playsinline=1`;
+    return `${url}${separator}autoplay=1&mute=1&controls=0&iv_load_policy=3&modestbranding=1&rel=0&playsinline=1`;
   }
 };
 ---

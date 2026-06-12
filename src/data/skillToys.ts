@@ -5,11 +5,11 @@ export type SkillToy = {
   name: string;
   slug: string;
   progressScore: number;
-  clipCount: number;
   currentFocus: string;
+  doodleIcon?: string;
+  clipCount: number;
   status: SkillToyStatus;
   latestComboId: string;
-  doodleIcon?: string;
 };
 
 export type ComboLog = {
@@ -23,99 +23,96 @@ export type ComboLog = {
   featured: boolean;
 };
 
-export const skillToys: SkillToy[] = [
+type SkillToyEntry = Omit<SkillToy, "clipCount" | "status" | "latestComboId">;
+
+type ComboLogEntry = Omit<ComboLog, "embedUrl" | "featured"> & {
+  embedUrl?: string;
+  youtubeId?: string;
+  videoUrl?: string;
+  featured?: boolean;
+};
+
+const activeAfterDays = 30;
+const archiveAfterDays = 120;
+const today = new Date();
+
+// Add and edit toys here. Clip count, latest clip, and status are automatic.
+const skillToyEntries: SkillToyEntry[] = [
   {
     name: "Kendama",
     slug: "kendama",
     progressScore: 64,
-    clipCount: 8,
     currentFocus: "Cleaner catches and longer flow lines.",
-    status: "active",
-    latestComboId: "kendama-lunar-line-01",
     doodleIcon: "kendama-icon.png",
   },
   {
     name: "Begleri",
     slug: "begleri",
     progressScore: 47,
-    clipCount: 5,
     currentFocus: "Smoother transfers and longer unbroken sequences.",
-    status: "active",
-    latestComboId: "begleri-rebound-flow-01",
     doodleIcon: "begleri-icon.png",
   },
   {
     name: "Yoyo",
     slug: "yoyo",
     progressScore: 38,
-    clipCount: 3,
     currentFocus: "Basic string control and cleaner binds.",
-    status: "paused",
-    latestComboId: "yoyo-frontstyle-reset-01",
     doodleIcon: "yoyo-icon.png",
   },
   {
     name: "Pen Spinning",
     slug: "pen-spinning",
     progressScore: 11,
-    clipCount: 2,
     currentFocus: "ThumbAround consistency and simple links.",
-    status: "paused",
-    latestComboId: "pen-spinning-thumbaround-01",
     doodleIcon: "pen-spinning-icon.png",
   },
   {
     name: "Juggling",
     slug: "juggling",
     progressScore: 35,
-    clipCount: 2,
     currentFocus: "Three-ball rhythm and relaxed throws.",
-    status: "paused",
-    latestComboId: "juggling-cascade-check-01",
     doodleIcon: "juggling-icon.png",
+  },
+  {
+    name: "Freestyle Football",
+    slug: "freestyle-football",
+    progressScore: 2,
+    currentFocus: "Learning beginning tricks like toe and knee kicks.",
+    doodleIcon: "freestyle-football-icon.png",
   },
   {
     name: "Cardistry",
     slug: "cardistry",
-    progressScore: 31,
-    clipCount: 1,
-    currentFocus: "Packet control and clean displays.",
-    status: "paused",
-    latestComboId: "cardistry-packet-opener-01",
+    progressScore: 22,
+    currentFocus: "Packet cuts and clean openers.",
     doodleIcon: "cardistry-icon.png",
   },
   {
     name: "Knucklebone",
     slug: "knucklebone",
-    progressScore: 22,
-    clipCount: 1,
-    currentFocus: "Slow rolls and controlled catches.",
-    status: "archive",
-    latestComboId: "knucklebone-roll-catch-01",
+    progressScore: 18,
+    currentFocus: "Rolls, catches, and grip control.",
     doodleIcon: "knucklebone-icon.png",
   },
   {
     name: "Contact Ball",
     slug: "contact-ball",
-    progressScore: 26,
-    clipCount: 1,
-    currentFocus: "Palm isolation and slow control.",
-    status: "archive",
-    latestComboId: "contact-ball-isolation-01",
+    progressScore: 16,
+    currentFocus: "Slow isolations and smooth palm control.",
     doodleIcon: "contact-ball-icon.png",
   },
 ];
 
-export const comboLogs: ComboLog[] = [
+// Add new tricks here. Paste either youtubeId, videoUrl, or embedUrl.
+const comboLogEntries: ComboLogEntry[] = [
   {
     id: "kendama-lighthouse-flip-01",
     toySlug: "kendama",
     title: "Lunar Flip",
     date: "2026-06-11",
     tag: "trick",
-    embedUrl: "https://www.youtube.com/embed/-0ThsN6z6hE?si=R-cVjeOJFeQvGqlU",
+    youtubeId: "-0ThsN6z6hE",
     notes: "idk",
-    featured: true,
   },
   {
     id: "begleri-rebound-flow-01",
@@ -123,39 +120,34 @@ export const comboLogs: ComboLog[] = [
     title: "Rebound flow",
     date: "2026-06-10",
     tag: "combo",
-    embedUrl: "",
     notes: "Trying to keep the beads relaxed through the transfer.",
-    featured: true,
   },
   {
-    id: "kendama-around-japan-01",
-    toySlug: "kendama",
-    title: "Around Japan reset",
-    date: "2026-06-08",
-    tag: "trick",
-    embedUrl: "",
-    notes: "A small consistency check before harder lines.",
-    featured: true,
+    id: "freestyle-football-toekicks-01",
+    toySlug: "freestyle-football",
+    title: "First Toe Kicks",
+    date: "2026-06-12",
+    tag: "practice",
+    youtubeId: "npdo_oqOpw0",
+    notes: "Some of my very first toe kicks, wowie!!",
   },
   {
     id: "yoyo-frontstyle-reset-01",
-    toySlug: "yoyo",
-    title: "Frontstyle reset",
-    date: "2026-06-07",
+    toySlug: "freestyle-football",
+    title: "First Knee Kicks",
+    youtubeId: "El5o2PazF8A",
+    date: "2026-06-08",
     tag: "practice",
-    embedUrl: "",
-    notes: "Keeping this in the log as a baseline for future yoyo clips.",
-    featured: true,
+    notes: "Some of my very first knee kicks, AWESOME!!",
   },
   {
-    id: "begleri-transfer-check-01",
-    toySlug: "begleri",
-    title: "Transfer check",
-    date: "2026-06-04",
+    id: "kendama-earth-turn-01",
+    toySlug: "kendama",
+    title: "x10 Earth Turn",
+    date: "2026-06-06",
     tag: "practice",
-    embedUrl: "",
-    notes: "Short clip for seeing where the rhythm breaks.",
-    featured: true,
+    youtubeId: "LKVaUBB1Xoo",
+    notes: "Practicing consistency with Skill Addicts record section.",
   },
   {
     id: "cardistry-packet-opener-01",
@@ -163,9 +155,7 @@ export const comboLogs: ComboLog[] = [
     title: "Packet opener",
     date: "2026-06-02",
     tag: "trick",
-    embedUrl: "",
     notes: "Messy but useful for watching hand position.",
-    featured: true,
   },
   {
     id: "kendama-spike-flow-01",
@@ -173,9 +163,7 @@ export const comboLogs: ComboLog[] = [
     title: "Spike flow",
     date: "2026-05-31",
     tag: "combo",
-    embedUrl: "",
     notes: "A faster line that still needs a cleaner finish.",
-    featured: true,
   },
   {
     id: "pen-spinning-thumbaround-01",
@@ -183,9 +171,7 @@ export const comboLogs: ComboLog[] = [
     title: "ThumbAround drill",
     date: "2026-05-28",
     tag: "practice",
-    embedUrl: "",
     notes: "Tiny desk-session clip for tracking consistency.",
-    featured: true,
   },
   {
     id: "juggling-cascade-check-01",
@@ -193,9 +179,7 @@ export const comboLogs: ComboLog[] = [
     title: "Cascade check",
     date: "2026-05-25",
     tag: "practice",
-    embedUrl: "",
     notes: "Watching throw height and timing.",
-    featured: true,
   },
   {
     id: "knucklebone-roll-catch-01",
@@ -203,9 +187,7 @@ export const comboLogs: ComboLog[] = [
     title: "Roll and catch",
     date: "2026-05-21",
     tag: "trick",
-    embedUrl: "",
     notes: "Older clip kept around for variety in the log.",
-    featured: true,
   },
   {
     id: "contact-ball-isolation-01",
@@ -213,9 +195,7 @@ export const comboLogs: ComboLog[] = [
     title: "Palm isolation",
     date: "2026-05-18",
     tag: "practice",
-    embedUrl: "",
     notes: "Slow control practice from the archive.",
-    featured: true,
   },
   {
     id: "kendama-cup-flow-01",
@@ -223,11 +203,76 @@ export const comboLogs: ComboLog[] = [
     title: "Cup flow warmup",
     date: "2026-05-15",
     tag: "practice",
-    embedUrl: "",
     notes: "Basic flow warmup before trying harder tricks.",
     featured: false,
   },
 ];
+
+const getYouTubeId = (url: string) => {
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname.includes("youtu.be")) {
+      return parsed.pathname.split("/").filter(Boolean)[0] ?? "";
+    }
+    if (parsed.pathname.startsWith("/shorts/")) {
+      return parsed.pathname.split("/").filter(Boolean)[1] ?? "";
+    }
+    if (parsed.pathname.startsWith("/embed/")) {
+      return parsed.pathname.split("/").filter(Boolean)[1] ?? "";
+    }
+    return parsed.searchParams.get("v") ?? "";
+  } catch {
+    return "";
+  }
+};
+
+const getEmbedUrl = (combo: ComboLogEntry) => {
+  const youtubeId =
+    combo.youtubeId ?? (combo.videoUrl ? getYouTubeId(combo.videoUrl) : "");
+  if (youtubeId) {
+    return `https://www.youtube-nocookie.com/embed/${youtubeId}`;
+  }
+  if (combo.embedUrl) {
+    return combo.embedUrl.replace(
+      "youtube.com/embed",
+      "youtube-nocookie.com/embed",
+    );
+  }
+  return "";
+};
+
+const daysSince = (date: string) => {
+  const updatedAt = new Date(`${date}T00:00:00`);
+  return Math.floor((today.getTime() - updatedAt.getTime()) / 86_400_000);
+};
+
+const getStatusFromLatestDate = (date: string | undefined): SkillToyStatus => {
+  if (!date) return "archive";
+  const age = daysSince(date);
+  if (age <= activeAfterDays) return "active";
+  if (age <= archiveAfterDays) return "paused";
+  return "archive";
+};
+
+export const comboLogs: ComboLog[] = comboLogEntries.map((combo) => ({
+  ...combo,
+  embedUrl: getEmbedUrl(combo),
+  featured: combo.featured ?? true,
+}));
+
+export const skillToys: SkillToy[] = skillToyEntries.map((toy) => {
+  const combos = comboLogs
+    .filter((combo) => combo.toySlug === toy.slug)
+    .sort((first, second) => second.date.localeCompare(first.date));
+  const latestCombo = combos[0];
+
+  return {
+    ...toy,
+    clipCount: combos.length,
+    status: getStatusFromLatestDate(latestCombo?.date),
+    latestComboId: latestCombo?.id ?? "",
+  };
+});
 
 export function getToyBySlug(slug: string) {
   return skillToys.find((toy) => toy.slug === slug);
@@ -287,7 +332,7 @@ export function getWeightedProgressLog(limit = 12) {
   return selected.slice(0, limit);
 }
 
-export function getActivePracticeClips(limit = 5) {
+export function getActivePracticeClips(limit = 6) {
   const activeSlugs = skillToys
     .filter((toy) => toy.status === "active")
     .map((toy) => toy.slug);

@@ -21,11 +21,10 @@ export type CodingProject = {
 export const codingProjects: CodingProject[] = [
   {
     title: "Nand2Tetris",
-    slug: "cool-personal-website",
-    status: "building",
-    summary:
-      "A static personal website for my three loves in life: skill toys, art, and coding. Completely vibecoded.",
-    stack: ["Astro", "TypeScript", "Tailwind", "GitHub Pages", "ChatGPT"],
+    slug: "nand2tetris",
+    status: "learning",
+    summary: "Building a computer from first principles",
+    stack: ["HDL"],
     spotlight: false,
     accent: "teal",
     links: [
@@ -49,6 +48,11 @@ export const codingProjects: CodingProject[] = [
         label: "Repo",
         href: "https://github.com/sophieTheProgrammer/coolPersonalWebsite",
       },
+      {
+        label:
+          "You are looking at this very website : [link it when publihsed]",
+        href: "",
+      },
     ],
   },
 
@@ -57,7 +61,7 @@ export const codingProjects: CodingProject[] = [
     slug: "godot-game-jams",
     status: "complete",
     summary:
-      "SUPER FUN game jams made in only a couple days with a SUPER AWESOME TEAM! I did mostly the art.",
+      "SUPER FUN game jams made in only a couple days with a SUPER AWESOME TEAM! I did all the art.",
     stack: ["Godot", "Github", "Procreate"],
     spotlight: true,
     accent: "gold",
@@ -89,10 +93,20 @@ export const codingProjects: CodingProject[] = [
     status: "complete",
     spotlight: true,
     summary:
-      "Semester long intro to computer science from Harvard. Our very goat David Malan.",
+      "Semester long intro to computer science from Harvard, from our very goat David Malan and ddb.",
     stack: ["C", "Python", "SQL", "HTML/CSS/JS", "Flask", "Jinja"],
     accent: "gold",
-    links: [{ label: "View Github", href: "art/" }],
+    links: [
+      { label: "View coursework [login get link]", href: "art/" },
+      {
+        label: "The course!",
+        href: "https://cs50.harvard.edu/x/",
+      },
+      {
+        label: "Final Project",
+        href: "https://www.youtube.com/watch?v=6KGUI3v9m-o",
+      },
+    ],
   },
 ];
 

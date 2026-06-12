@@ -103,8 +103,8 @@ a {
 }
 
 .doodle-image--icon {
-  width: 2rem;
-  height: 2rem;
+  width: 2.4rem;
+  height: 2.4rem;
 }
 
 .doodle-image--icon .doodle-image__fallback {
@@ -472,6 +472,11 @@ a {
   border: 0;
   border-radius: 0;
   box-shadow: none;
+}
+
+.active-clip-card .doodle-image--icon {
+  width: 3.1rem;
+  height: 3.1rem;
 }
 
 .home-social-card {
