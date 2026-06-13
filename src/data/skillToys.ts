@@ -19,6 +19,7 @@ export type ComboLog = {
   date: string;
   tag: ComboLogTag;
   embedUrl: string;
+  youtubeId?: string;
   notes: string;
   featured: boolean;
 };

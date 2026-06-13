@@ -38,12 +38,6 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
         </p>
       </div>
 
-      <section class="mt-10" aria-labelledby="overview-heading">
-        <div class="grid gap-4">
-          <ToyProgressChart toys={skillToys} />
-        </div>
-      </section>
-
       <section class="mt-12" aria-labelledby="active-heading">
         <div class="flex flex-wrap items-end justify-between gap-4">
           <h2 id="active-heading" class="max-w-2xl text-4xl font-black leading-none sm:text-5xl">
@@ -71,6 +65,12 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
               ) : null;
             })
           }
+        </div>
+      </section>
+
+      <section class="mt-10" aria-labelledby="overview-heading">
+        <div class="grid gap-4">
+          <ToyProgressChart toys={skillToys} />
         </div>
       </section>
 
@@ -103,10 +103,10 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
             <p class="text-sm font-bold uppercase tracking-[0.22em] text-[var(--color-muted)]">
               Quick jump
             </p>
-            <h2 id="toy-strip-heading" class="mt-2 text-2xl font-black">Toy progress links</h2>
+            <h2 id="toy-strip-heading" class="mt-2 text-2xl font-black">Toy orbit</h2>
           </div>
           <p class="text-sm font-semibold text-[var(--color-muted)]">
-            scroll sideways
+            click a node
           </p>
         </div>
         <ToyProgressStrip toys={skillToys} />
@@ -118,6 +118,7 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
 <script>
   const visiblePracticeCards = 6;
   const maxPracticeCardsPerToy = 4;
+  const autoplayPracticeCards = 2;
 
   const shuffledPracticeCards = <T,>(items: T[]) => {
     const next = [...items];
@@ -165,7 +166,21 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
       cards.forEach((card) => {
         card.classList.toggle("hidden", !selected.includes(card));
       });
-      selected.forEach((card) => board.append(card));
+      selected.forEach((card, index) => {
+        const loader = card.querySelector<HTMLButtonElement>("[data-video-loader]");
+        if (loader && index < autoplayPracticeCards) {
+          const videoSrc = loader.dataset.videoSrc;
+          if (videoSrc) {
+            const url = new URL(videoSrc);
+            url.searchParams.set("autoplay", "1");
+            url.searchParams.set("mute", "1");
+            url.searchParams.set("playsinline", "1");
+            loader.dataset.videoSrc = url.toString();
+          }
+          loader.click();
+        }
+        board.append(card);
+      });
     });
   };
 

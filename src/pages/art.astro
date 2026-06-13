@@ -1,17 +1,12 @@
 ---
 import DoodleImage from "../components/DoodleImage.astro";
-import ArtProcessWidget from "../components/ArtProcessWidget.astro";
-import ArtVolumeCard from "../components/ArtVolumeCard.astro";
-import { artVolumes, artworks } from "../data/artworks";
-import SketchbookWidget from "../components/SketchbookWidget.astro";
+import { artworks, getArtAssetPath, isPdfArtwork } from "../data/artworks";
 import BaseLayout from "../layouts/BaseLayout.astro";
-
-const moods = [...new Set(artworks.map((artwork) => artwork.mood))];
 ---
 
 <BaseLayout
   title="Art | Cool Personal Website"
-  description="A small art gallery with placeholder works, moods, and future interactive features."
+  description="A simple art gallery for scans, drawings, and sketchbook pages."
 >
   <main class="art-page-shell min-h-screen overflow-hidden px-6 py-12 sm:px-10">
     <div class="art-garden-field" aria-hidden="true">
@@ -26,95 +21,63 @@ const moods = [...new Set(artworks.map((artwork) => artwork.mood))];
         <DoodleImage src="garden-blob-02.png" alt="Hand-drawn garden flower blob" variant="cover" animation="float" hideWhenMissing />
       </div>
     </div>
+
     <section class="relative z-10 mx-auto max-w-6xl">
       <div class="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
         <div>
           <p class="text-sm font-semibold uppercase tracking-[0.28em] text-[var(--color-muted)]">
-            Art gallery
+            Art Garden
           </p>
           <h1 class="mt-4 text-4xl font-black leading-none sm:text-6xl">
-            Drawing volumes, sketch packs, and visual notes.
+            See my drawings here!
           </h1>
         </div>
         <p class="max-w-2xl text-lg leading-8 text-[var(--color-muted)]">
-          See my art! Collections of illustrations, studies, sketches,
-          and doodles that grow over time.
+          A simple wall for scans, sketches, finished pieces, and PDFs I want to
+          keep visible without making every drawing a whole project page.
         </p>
       </div>
 
-      <section class="mt-10 rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] p-4 shadow-sm">
-        <div class="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h2 class="text-lg font-black">Gallery controls</h2>
-            <p class="mt-1 text-sm text-[var(--color-muted)]">
-              Volume packs now open into drawing collections. Filters and lightbox mode can come next.
-            </p>
-          </div>
-          <div class="flex flex-wrap gap-2">
-            <button class="rounded-md bg-[var(--color-ink)] px-3 py-2 text-sm font-bold text-white" type="button">
-              Gallery
-            </button>
-            <button class="rounded-md border border-[var(--color-line)] px-3 py-2 text-sm font-bold text-[var(--color-muted)]" type="button">
-              Process
-            </button>
-            <button class="rounded-md border border-[var(--color-line)] px-3 py-2 text-sm font-bold text-[var(--color-muted)]" type="button">
-              Sketchbook
-            </button>
-          </div>
-        </div>
+      <div class="art-simple-gallery mt-10">
+        {
+          artworks.map((artwork, index) => {
+            const src = getArtAssetPath(artwork.src);
+            const isPdf = isPdfArtwork(artwork.src);
 
-        <div class="mt-4 flex gap-2 overflow-x-auto pb-1">
-          <span class="rounded border border-[var(--color-line)] bg-[rgba(30,27,46,0.05)] px-3 py-1.5 text-xs font-black uppercase tracking-[0.12em]">
-            All moods
-          </span>
-          {
-            moods.map((mood) => (
-              <span class="rounded border border-[var(--color-line)] px-3 py-1.5 text-xs font-black uppercase tracking-[0.12em] text-[var(--color-muted)]">
-                {mood}
-              </span>
-            ))
-          }
-        </div>
-      </section>
-
-      <div class="art-gallery-stage mt-8 rounded-xl border border-[var(--color-line)] bg-[rgba(255,255,255,0.76)] p-3 shadow-sm backdrop-blur">
-        <div class="mb-3 flex flex-wrap items-center justify-between gap-3 px-1">
-          <p class="text-xs font-black uppercase tracking-[0.2em] text-[var(--color-muted)]">
-            Volumes
-          </p>
-          <p class="text-sm font-semibold text-[var(--color-muted)]">
-            click a pack to open the drawings inside
-          </p>
-        </div>
-        <div class="art-gallery-grid grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          {artVolumes.map((volume, index) => <ArtVolumeCard volume={volume} index={index} />)}
-          <ArtProcessWidget />
-          <SketchbookWidget />
-        </div>
+            return (
+              <figure class="art-simple-card" style={`--art-tilt: ${(index % 5 - 2) * 0.45}deg;`}>
+                <div class="art-simple-card__media">
+                  {
+                    isPdf ? (
+                      <object data={src} type="application/pdf" aria-label={artwork.alt ?? artwork.title ?? "Artwork PDF"}>
+                        <a href={src}>Open PDF</a>
+                      </object>
+                    ) : (
+                      <img
+                        src={src}
+                        alt={artwork.alt ?? artwork.title ?? "Artwork"}
+                        loading="lazy"
+                        onerror="this.closest('.art-simple-card')?.classList.add('art-simple-card--missing')"
+                      />
+                    )
+                  }
+                  <div class="art-simple-card__placeholder">
+                    <span>{artwork.title ?? "Art scan"}</span>
+                  </div>
+                </div>
+                {
+                  (artwork.title || artwork.note) && (
+                    <figcaption>
+                      {artwork.title && <strong>{artwork.title}</strong>}
+                      {artwork.note && <span>{artwork.note}</span>}
+                    </figcaption>
+                  )
+                }
+              </figure>
+            );
+          })
+        }
       </div>
-
-      <section class="mt-10 grid gap-4 md:grid-cols-3">
-        <article class="rounded-lg border border-dashed border-[var(--color-line)] p-4">
-          <h2 class="font-black">Future filter</h2>
-          <p class="mt-2 leading-7 text-[var(--color-muted)]">
-            Turn the mood chips into real filters once the gallery has enough
-            work to browse.
-          </p>
-        </article>
-        <article class="rounded-lg border border-dashed border-[var(--color-line)] p-4">
-          <h2 class="font-black">Process slider</h2>
-          <p class="mt-2 leading-7 text-[var(--color-muted)]">
-            Add sketch to final comparisons for pieces that have process shots.
-          </p>
-        </article>
-        <article class="rounded-lg border border-dashed border-[var(--color-line)] p-4">
-          <h2 class="font-black">Lightbox view</h2>
-          <p class="mt-2 leading-7 text-[var(--color-muted)]">
-            Open artwork in a focused viewer with notes, process details, and
-            related studies.
-          </p>
-        </article>
-      </section>
     </section>
   </main>
 </BaseLayout>

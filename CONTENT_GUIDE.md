@@ -1,119 +1,71 @@
 # Content Guide
 
-Use this file as the quick map for replacing placeholders with your real stuff.
-
-## Start Here
-
 Most content lives in `src/data/`.
 
+## Quick Helper
+
+Open `/admin/` locally to generate copy-paste snippets for:
+
+- New art scans/PDFs
+- New YouTube trick clips
+
+## Art
+
+Put files in:
+
 ```txt
-src/data/site.ts            homepage text, footer text, edit map
-src/data/skillToys.ts       skill toy progress, tricks, combo logs, video embeds
-src/data/artworks.ts        art gallery, process slider, palette lab
-src/data/codingProjects.ts  coding projects, terminal text, current status
+public/art/
 ```
 
-After edits, run:
+Then add one entry to `src/data/artworks.ts`:
 
-```bash
-npm run build
+```ts
+{
+  title: "Sketchbook scan",
+  src: "sketchbook-scan-01.jpg",
+  alt: "Sketchbook page with figure studies",
+  note: "Optional note.",
+}
 ```
 
-## Homepage
+PDFs work too:
 
-Edit `homeContent` in `src/data/site.ts`.
-
-You can change:
-
-- `eyebrow`
-- `headline`
-- `intro`
-- homepage section cards
+```ts
+{
+  title: "June drawing packet",
+  src: "june-drawings.pdf",
+}
+```
 
 ## Skill Toys
 
 Edit `src/data/skillToys.ts`.
 
-Toy progress is in `skillToys`:
+Toy status, clip count, and latest clip are automatic. For new clips, add:
 
 ```ts
 {
-  name: "Kendama",
-  slug: "kendama",
-  progressScore: 64,
-  clipCount: 8,
-  currentFocus: "Cleaner catches and longer flow lines.",
-  status: "active",
-  latestComboId: "kendama-lunar-line-01",
-}
-```
-
-Trick/video entries are in `comboLogs`:
-
-```ts
-{
-  id: "kendama-lunar-line-01",
+  id: "kendama-new-trick-2026-06-13",
   toySlug: "kendama",
-  title: "Lunar line practice",
-  date: "2026-06-11",
-  status: "landed",
-  embedUrl: "",
-  notes: "Working on smoother setup and catch control.",
-  featured: true,
+  title: "New trick",
+  date: "2026-06-13",
+  tag: "practice",
+  youtubeId: "YOUTUBE_ID",
+  notes: "Short note.",
 }
 ```
 
-Put YouTube/Vimeo embed URLs in `embedUrl`.
-
-## Art
-
-Edit `src/data/artworks.ts`.
-
-- `artVolumes`: top-level drawing packs/collections on the Art page
-- `artworks`: individual drawings inside volume pages and art detail pages
-- `currentArtwork`: what the process widget says you are working on
-- `processStages`: process slider stages
-
-To add a new volume, add an item to `artVolumes` and list drawing slugs in
-`drawingSlugs`:
-
-```ts
-{
-  title: "Drawings Vol. 03",
-  slug: "drawings-vol-03",
-  subtitle: "A short description of the pack",
-  year: "2026",
-  note: "What this volume contains.",
-  coverPalette: ["#e4577a", "#2d9c8c", "#f4d35e"],
-  drawingSlugs: ["signal-garden", "line-memory"],
-}
-```
-
-To add a drawing, add an item to `artworks`, then add its `slug` to one or more
-volume `drawingSlugs` arrays.
+The site does not currently read YouTube title/description automatically.
+That needs a YouTube Data API sync script.
 
 ## Coding
 
 Edit `src/data/codingProjects.ts`.
 
-- `codingNow`: status cards
-- `codingProjects`: project entries
-- `terminalCommands`: tiny terminal text
+- `status` controls color automatically.
+- `spotlight: true` marks a big project.
+- No manual accent color is needed.
 
-## Future GUI Upload Feature
+## Homepage
 
-A future version should add a private editor/admin GUI so you can upload art,
-paste video links, add projects, and update progress without touching code.
-Good future options:
-
-- Decap CMS or another Git-backed CMS
-- A local-only admin page that writes JSON/Markdown
-- A hosted CMS if the site moves from GitHub Pages to Netlify or Vercel
-
-## Easter Egg Ideas
-
-- Hidden clickable marks on volume covers that swap the palette.
-- A random sketch button inside each volume.
-- A tiny “page corner” hover reveal with a handwritten note.
-- Secret keyboard shortcut on the Art page that opens a sketchbook mode.
-- Hidden “studio stamps” users can find across Coding, Art, and Skill Toys.
+Edit `src/data/site.ts` for intro text and social links.

@@ -1,0 +1,127 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const fontPreviews = [
+  {
+    name: "Current mix",
+    heading: "Pangolin",
+    body: "Atkinson Hyperlegible",
+    meta: "IBM Plex Mono",
+    className: "font-preview--current",
+    note: "Friendly hand-drawn headings with clean readable body text.",
+  },
+  {
+    name: "Chunky studio",
+    heading: "Bricolage Grotesque",
+    body: "Atkinson Hyperlegible",
+    meta: "IBM Plex Mono",
+    className: "font-preview--bricolage",
+    note: "Bolder and more design-forward, good for coding/project cards.",
+  },
+  {
+    name: "Toy catalog",
+    heading: "Space Grotesk",
+    body: "Atkinson Hyperlegible",
+    meta: "IBM Plex Mono",
+    className: "font-preview--space",
+    note: "Cleaner and more technical, still playful with hand-drawn assets.",
+  },
+  {
+    name: "Sketchbook light",
+    heading: "Pangolin",
+    body: "Pangolin",
+    meta: "IBM Plex Mono",
+    className: "font-preview--pangolin",
+    note: "Most handmade, best used sparingly so it does not get too wobbly.",
+  },
+];
+
+const palette = [
+  { name: "Ink", value: "#24202c", token: "--color-ink" },
+  { name: "Paper", value: "#fff8ed", token: "--color-paper" },
+  { name: "Card", value: "#fffdf8", token: "--color-card" },
+  { name: "Rose", value: "#d94f68", token: "--color-accent" },
+  { name: "Leaf", value: "#247d70", token: "--color-accent-2" },
+  { name: "Muted", value: "#706779", token: "--color-muted" },
+];
+---
+
+<BaseLayout
+  title="Style Preview | Cool Personal Website"
+  description="Font and palette preview for the personal studio website."
+>
+  <main class="min-h-screen px-6 py-12 sm:px-10">
+    <section class="mx-auto max-w-6xl">
+      <p class="text-sm font-semibold uppercase tracking-[0.28em] text-[var(--color-muted)]">
+        Style lab
+      </p>
+      <h1 class="mt-4 max-w-3xl text-5xl leading-none sm:text-7xl">
+        Font and color directions
+      </h1>
+      <p class="mt-6 max-w-2xl text-lg leading-8 text-[var(--color-muted)]">
+        A quick page for comparing the typography directions before the site gets
+        more hand-drawn assets.
+      </p>
+
+      <section class="mt-10 grid gap-4 md:grid-cols-2">
+        {
+          fontPreviews.map((preview) => (
+            <article
+              class:list={[
+                "font-preview-card rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] p-5 shadow-sm",
+                preview.className,
+              ]}
+            >
+              <p class="font-preview-card__meta text-xs font-bold uppercase tracking-[0.18em] text-[var(--color-muted)]">
+                {preview.name}
+              </p>
+              <h2 class="font-preview-card__heading mt-3 text-4xl leading-none">
+                Latest tricks and pocket sketches
+              </h2>
+              <p class="font-preview-card__body mt-4 leading-7 text-[var(--color-muted)]">
+                {preview.note} This sample has title, body, and mono UI text so
+                you can compare the whole feeling at once.
+              </p>
+              <p class="font-preview-card__meta mt-5 rounded border border-[var(--color-line)] px-3 py-2 text-sm">
+                heading: {preview.heading} / body: {preview.body} / mono: {preview.meta}
+              </p>
+            </article>
+          ))
+        }
+      </section>
+
+      <section class="mt-12 rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] p-5 shadow-sm">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-[var(--color-muted)]">
+              Restricted palette
+            </p>
+            <h2 class="mt-2 text-4xl leading-none">Small set, more personality</h2>
+          </div>
+          <p class="max-w-md text-sm font-semibold leading-6 text-[var(--color-muted)]">
+            The site should mostly stay inside these colors, then your drawings
+            can add texture without making every page feel different.
+          </p>
+        </div>
+        <div class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {
+            palette.map((color) => (
+              <div class="rounded-md border border-[var(--color-line)] bg-white/60 p-3">
+                <div
+                  class="h-20 rounded border border-[var(--color-line)]"
+                  style={`background: ${color.value}`}
+                >
+                </div>
+                <div class="mt-3 flex items-center justify-between gap-3">
+                  <p class="font-black">{color.name}</p>
+                  <p class="font-mono text-xs text-[var(--color-muted)]">{color.token}</p>
+                </div>
+                <p class="mt-1 font-mono text-xs text-[var(--color-muted)]">{color.value}</p>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+    </section>
+  </main>
+</BaseLayout>

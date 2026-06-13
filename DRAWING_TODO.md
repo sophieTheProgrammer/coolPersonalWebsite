@@ -11,9 +11,6 @@ Use this as the checklist for replacing placeholders with your own transparent P
 - [ ] `combo-sticker.png` - sticker for longer combos.
 - [ ] `favorite-sticker.png` - optional sticker for favorite work later.
 - [ ] `terminal-note.png` - tiny coding page accent, such as a sticky note, cursor, laptop, or little console doodle.
-- [ ] `drawings-vol-01-cover.png` - cover drawing for the first art packet.
-- [ ] `studio-studies-cover.png` - cover drawing for the studio studies packet.
-- [ ] `pocket-sketchbook-cover.png` - cover drawing for the pocket sketchbook packet.
 - [ ] `garden-blob-01.png` - optional hand-drawn garden blob/leaf cluster for the Art page background.
 - [ ] `garden-blob-02.png` - optional second hand-drawn garden/blob variation.
 - [ ] cursor
@@ -40,7 +37,6 @@ Use this as the checklist for replacing placeholders with your own transparent P
 
 - [ ] Avatar hover wave or bob.
 - [ ] Sticker hover bounce/wiggle.
-- [ ] Art packet cover gentle float.
 - [ ] Garden blob slow drift.
 - [ ] Terminal note tiny float or cursor blink.
 
@@ -49,12 +45,10 @@ Use this as the checklist for replacing placeholders with your own transparent P
 - [ ] Replace empty skill toy `embedUrl` values in `src/data/skillToys.ts` with real video embeds.
 - [ ] Replace placeholder skill toy notes/current focus text with real notes.
 - [ ] Add more real combo logs and dates.
-- [ ] Replace art placeholder entries in `src/data/artworks.ts` with real artwork titles, media, notes, and palettes.
-- [ ] Add real artwork images later if you want thumbnails instead of gradient placeholders.
-- [ ] Replace art process slider placeholder stages with real sketch/process images or notes.
+- [ ] Add real art images or PDFs to `public/art/`.
+- [ ] Replace art placeholder entries in `src/data/artworks.ts` with real filenames.
 - [ ] Add real coding project links, screenshots, demos, and repo URLs in `src/data/codingProjects.ts`.
 - [ ] Update homepage intro/name/section descriptions in `src/data/site.ts`.
-- [ ] Decide whether future art packets should open as pages or ArtStation-style popups.
 
 ## Asset Naming Guide
 
@@ -66,6 +60,5 @@ Use this as the checklist for replacing placeholders with your own transparent P
   - `latest-sticker.png`
   - `kendama-icon.png`
   - `begleri-icon.png`
-  - `drawings-vol-01-cover.png`
   - `garden-blob-01.png`
   - `terminal-note.png`

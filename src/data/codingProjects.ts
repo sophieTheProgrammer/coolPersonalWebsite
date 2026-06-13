@@ -11,7 +11,6 @@ export type CodingProject = {
   summary: string;
   stack: string[];
   spotlight?: boolean;
-  accent?: "rose" | "teal" | "gold" | "violet";
   links: {
     label: string;
     href: string;
@@ -26,7 +25,6 @@ export const codingProjects: CodingProject[] = [
     summary: "Building a computer from first principles",
     stack: ["HDL"],
     spotlight: false,
-    accent: "teal",
     links: [
       {
         label: "Repo",
@@ -42,7 +40,6 @@ export const codingProjects: CodingProject[] = [
       "A static personal website for my three loves in life: skill toys, art, and coding. Completely vibecoded.",
     stack: ["Astro", "TypeScript", "Tailwind", "GitHub Pages", "ChatGPT"],
     spotlight: false,
-    accent: "teal",
     links: [
       {
         label: "Repo",
@@ -64,7 +61,6 @@ export const codingProjects: CodingProject[] = [
       "SUPER FUN game jams made in only a couple days with a SUPER AWESOME TEAM! I did all the art.",
     stack: ["Godot", "Github", "Procreate"],
     spotlight: true,
-    accent: "gold",
     links: [
       {
         label: "Itch.io profile",
@@ -79,7 +75,6 @@ export const codingProjects: CodingProject[] = [
     summary: "Sports info website for Mr. Floyd",
     stack: ["Bootstrap", "Mustache", "Hostinger", "Also vibecoded"],
     spotlight: false,
-    accent: "teal",
     links: [
       {
         label: "Website",
@@ -95,7 +90,6 @@ export const codingProjects: CodingProject[] = [
     summary:
       "Semester long intro to computer science from Harvard, from our very goat David Malan and ddb.",
     stack: ["C", "Python", "SQL", "HTML/CSS/JS", "Flask", "Jinja"],
-    accent: "gold",
     links: [
       { label: "View coursework [login get link]", href: "art/" },
       {

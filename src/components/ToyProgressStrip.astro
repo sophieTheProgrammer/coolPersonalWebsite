@@ -10,36 +10,35 @@ const { toys } = Astro.props;
 const base = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
+const loopedToys = [...toys, ...toys];
 ---
 
-<div class="flex gap-2 overflow-x-auto pb-2" aria-label="Open toy trick logs">
-  {
-    toys.map((toy) => (
-      <a
-        class="min-w-[10rem] rounded-md border border-[var(--color-line)] bg-[var(--color-card)] p-2.5 shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--color-accent)]"
-        href={`${base}skill-toys/${toy.slug}/`}
-      >
-        <div class="flex items-center justify-between gap-3">
-          <div class="flex items-center gap-2">
-            <DoodleImage src={toy.doodleIcon} alt={`${toy.name} hand-drawn icon`} label={toy.name.slice(0, 2)} variant="icon" animation="none" />
-            <h3 class="text-sm font-black">{toy.name}</h3>
-          </div>
-          <span class="text-xs font-bold text-[var(--color-muted)]">
-            {toy.progressScore}%
-          </span>
-        </div>
-        <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-[rgba(30,27,46,0.08)]">
-          <div
-            class="h-full rounded-full bg-[var(--color-accent-2)]"
-            style={`width: ${toy.progressScore}%`}
+<div class="toy-orbit-rail" aria-label="Open toy trick logs">
+  <div class="toy-orbit-rail__track">
+    {
+      loopedToys.map((toy, index) => {
+        const tilt = `${(index - 2) * 0.35}deg`;
+
+        return (
+          <a
+            class="toy-orbit-rail__node"
+            href={`${base}skill-toys/${toy.slug}/`}
+            style={`--toy-progress: ${toy.progressScore}%; --toy-tilt: ${tilt};`}
+            aria-hidden={index >= toys.length ? "true" : undefined}
+            tabindex={index >= toys.length ? "-1" : undefined}
           >
-          </div>
-        </div>
-        <div class="mt-2 flex items-center justify-between gap-3 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[var(--color-muted)]">
-          <span>{toy.status}</span>
-          <span>{toy.clipCount} clips</span>
-        </div>
-      </a>
-    ))
-  }
+            <div class="toy-orbit-rail__meter">
+              <span></span>
+            </div>
+            <div class="toy-orbit-rail__content">
+              <DoodleImage src={toy.doodleIcon} alt={`${toy.name} hand-drawn icon`} label={toy.name.slice(0, 2)} variant="icon" animation="none" />
+              <h3>{toy.name}</h3>
+              <p>{toy.status} / {toy.clipCount} clips</p>
+            </div>
+            <strong>{toy.progressScore}%</strong>
+          </a>
+        );
+      })
+    }
+  </div>
 </div>

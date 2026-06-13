@@ -6,9 +6,10 @@ import type { ComboLog, SkillToy } from "../data/skillToys";
 type Props = {
   combo: ComboLog;
   toy: SkillToy;
+  autoplay?: boolean;
 };
 
-const { combo, toy } = Astro.props;
+const { combo, toy, autoplay = false } = Astro.props;
 const base = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
@@ -16,7 +17,12 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 
 <article class="active-clip-card min-w-0 overflow-hidden rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
   <div class="active-clip-card__video">
-    <VideoEmbed title={combo.title} embedUrl={combo.embedUrl} autoplay />
+    <VideoEmbed
+      title={combo.title}
+      embedUrl={combo.embedUrl}
+      autoplay={autoplay}
+      load={autoplay ? "eager" : "poster"}
+    />
   </div>
   <div class="space-y-3 p-4">
     <div class="flex items-start justify-between gap-3">

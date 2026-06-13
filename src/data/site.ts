@@ -14,13 +14,15 @@ export const homeContent = {
   socialLinks: [
     {
       label: "YouTube",
-      href: "https://www.youtube.com/",
+      href: "https://www.youtube.com/@achubby-penguin",
       note: "clips",
+      kind: "youtube",
     },
     {
       label: "GitHub",
-      href: siteInfo.repo,
+      href: "https://github.com/sophieTheProgrammer",
       note: "code",
+      kind: "github",
     },
   ],
   sections: [
@@ -57,22 +59,3 @@ export const doodleStickers = {
 export const codingDoodles = {
   terminalAccent: "terminal-note.png",
 };
-
-export const editMap = [
-  {
-    label: "Skill toy progress and combo logs",
-    path: "src/data/skillToys.ts",
-  },
-  {
-    label: "Art packets, process slider, and sketchbook",
-    path: "src/data/artworks.ts",
-  },
-  {
-    label: "Coding projects and tiny terminal",
-    path: "src/data/codingProjects.ts",
-  },
-  {
-    label: "Homepage hero and section links",
-    path: "src/data/site.ts",
-  },
-];

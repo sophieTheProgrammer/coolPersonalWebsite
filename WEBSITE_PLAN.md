@@ -2,61 +2,43 @@
 
 ## What This Site Is
 
-A small personal studio website for skill toy clips, coding projects, and art. It should feel polished, playful, and personal, with hand-drawn details added over time.
+A playful personal studio for skill toy clips, coding projects, and art scans.
 
 ## Current Pages
 
-- **Home** - intro, section links, and a studio avatar slot.
-- **Skill Toys** - progress chart, active practice clips, combo log, toy detail pages, latest badges, and an Elevator.js back-to-top button.
-- **Coding** - project cards, spotlight accents for big projects, and a tiny terminal.
-- **Art** - drawing packet covers, collection pages, process slider, sketchbook tile, and animated garden blob background.
+- **Home** - intro, section links, studio avatar slot, YouTube/GitHub buttons.
+- **Skill Toys** - six-card practice board, progress chart, combo log, toy detail pages, looping toy orbit.
+- **Coding** - project cards, automatic status colors, spotlight flag for big projects, tiny terminal.
+- **Art** - simple image/PDF gallery with a garden background.
+- **Style** - font and palette preview.
+- **Admin** - local helper that generates art/trick data snippets.
 
 ## Where To Edit Content
 
-- `src/data/site.ts` - homepage text, section links, doodle sticker filenames, coding doodle filename.
-- `src/data/skillToys.ts` - toy progress, toy icons, combo logs, video embeds, notes.
-- `src/data/artworks.ts` - artwork entries, drawing packets, cover doodle filenames, process slider text.
-- `src/data/codingProjects.ts` - coding projects, terminal commands, links.
-- `public/doodles/` - transparent PNG drawings you make.
-- `DRAWING_TODO.md` - checklist of drawings, animations, and remaining placeholders.
-
-## Hand-Drawn Studio Identity
-
-- Use transparent PNG drawings in `public/doodles/`.
-- Missing PNGs automatically show polished placeholders, so unfinished art will not break the site.
-- Current drawing slots:
-  - `studio-avatar.png` on the homepage.
-  - Skill toy icons like `kendama-icon.png` and `begleri-icon.png`.
-  - Stickers like `latest-sticker.png`, `practice-sticker.png`, `trick-sticker.png`, and `combo-sticker.png`.
-  - Art packet covers like `drawings-vol-01-cover.png`.
-  - Garden blob variations like `garden-blob-01.png`.
-  - `terminal-note.png` on the coding page.
-- Keep animations gentle: float, bob, wiggle, and slow garden drift.
+- `src/data/site.ts` - homepage text and social links.
+- `src/data/skillToys.ts` - skill toys and combo logs.
+- `src/data/artworks.ts` - simple art scan/PDF entries.
+- `src/data/codingProjects.ts` - coding projects and terminal commands.
+- `public/art/` - art images and PDFs.
+- `public/doodles/` - transparent PNG doodles.
 
 ## Next Features
 
-- Add your first real transparent PNGs from `DRAWING_TODO.md`.
-- Replace empty skill toy video embeds with real clips.
-- Add real artwork images and better art packet covers.
-- Add project screenshots and real coding project links.
-- Later: try an ArtStation-style popup for art packets if page navigation feels too heavy.
-- Later: make terminal commands clickable and add filters for coding/skill toy pages.
+- Add real art files to `public/art/`.
+- Add a real YouTube sync script for titles/descriptions.
+- Turn `/admin/` from snippet generator into a real local writer.
+- Add real hand-drawn doodles and stickers.
 
 ## Deployment Notes
 
 - GitHub Pages build: `npm run build`.
 - Root `public_html` build: `PUBLIC_BASE=/ npm run build`.
 - Manual upload zip: `coolPersonalWebsite-public_html.zip`.
-- After a root build, zip the contents of `dist/` for upload.
 
 ## Done Recently
 
-- Added a reusable doodle image system with missing-file fallbacks.
-- Added homepage avatar, skill toy icon, sticker, art cover, and terminal accent slots.
-- Added coding project `spotlight` and `accent` fields for highlighting bigger projects.
-- Added `public/doodles/` for future transparent PNG drawings.
-- Added `DRAWING_TODO.md` as the drawing and placeholder checklist.
-- Simplified Art packet cards so they click into collection pages instead of expanding inline.
-- Removed the page-fold feature and added an animated garden blob background on the Art page.
-- Added Elevator.js to the Skill Toys page.
-- Removed Palette Lab and other stale art-card complexity.
+- Simplified Art into a flat scan/PDF gallery.
+- Added `/admin/` snippet generator for art and trick entries.
+- Moved the Skill Toys chart below the main practice board.
+- Made the toy orbit loop continuously.
+- Kept only a couple Skill Toys videos autoplaying; the rest load on click.

@@ -38,11 +38,17 @@ const base = import.meta.env.BASE_URL.endsWith("/")
           {
             homeContent.socialLinks.map((link) => (
               <a
-                class="home-social-card rounded-md border border-[var(--color-line)] bg-[var(--color-card)] px-4 py-3 shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--color-accent)]"
+                class:list={[
+                  "home-social-card group rounded-md border border-[var(--color-line)] bg-[var(--color-card)] px-4 py-3 shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--color-accent)]",
+                  link.kind === "youtube" ? "home-social-card--youtube" : "home-social-card--github",
+                ]}
                 href={link.href}
                 target="_blank"
                 rel="noreferrer"
               >
+                <span class="home-social-card__icon" aria-hidden="true">
+                  <span></span>
+                </span>
                 <span class="block text-xs font-black uppercase tracking-[0.18em] text-[var(--color-accent)]">
                   {link.note}
                 </span>

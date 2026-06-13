@@ -26,16 +26,16 @@ npm run build
 - Main editing guide: `CONTENT_GUIDE.md`
 - Homepage copy: `src/data/site.ts`
 - Skill toys, progress scores, active status, combo logs, video embeds: `src/data/skillToys.ts`
-- Art gallery, process slider, palette lab: `src/data/artworks.ts`
+- Art gallery images/PDFs: `src/data/artworks.ts` and `public/art/`
 - Coding projects, status cards, terminal commands: `src/data/codingProjects.ts`
-- Site footer/edit map: `src/data/site.ts`
+- Snippet helper: `/admin/`
 
 ## MVP Sections
 
 - Home: animated CSS person, section links
-- Skill Toys: Chart.js progress graph, active practice board, practice picker, trick logs, toy detail pages
+- Skill Toys: Chart.js progress graph, active practice board, trick logs, toy detail pages, looping toy orbit
 - Coding: dashboard/workbench, animated tiny terminal, project cards
-- Art: drawing volumes, visual board, process slider, palette lab, sketchbook tile, collection pages, artwork detail pages
+- Art: simple scan/PDF gallery with garden background
 
 ## Deploy
 
