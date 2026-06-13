@@ -8,23 +8,32 @@ type Props = {
 
 const { artwork, index } = Astro.props;
 const [first, second, third] = artwork.palette;
-const base = import.meta.env.BASE_URL.endsWith("/")
-  ? import.meta.env.BASE_URL
-  : `${import.meta.env.BASE_URL}/`;
+const hasImage = Boolean(artwork.imageSrc);
 ---
 
 <article class="group overflow-hidden rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-  <a class="block" href={`${base}art/${artwork.slug}/`}>
-    <div
-      class="relative aspect-[3/4] overflow-hidden"
-      style={`background: linear-gradient(135deg, ${first}, ${second} 58%, ${third});`}
-    >
+  <div
+    class="relative aspect-[3/4] overflow-hidden"
+    style={hasImage ? undefined : `background: linear-gradient(135deg, ${first}, ${second} 58%, ${third});`}
+  >
+    {
+      artwork.imageSrc ? (
+        <img
+          class="h-full w-full object-cover"
+          src={artwork.imageSrc}
+          alt={artwork.title}
+          loading="lazy"
+        />
+      ) : (
+        <>
       <div class="absolute inset-0 opacity-25 mix-blend-screen art-tile-pattern"></div>
       <div class="absolute right-3 top-3 rounded bg-white/70 px-2 py-1 text-xs font-black backdrop-blur">
         {String(index + 1).padStart(2, "0")}
       </div>
-    </div>
-  </a>
+        </>
+      )
+    }
+  </div>
   <div class="p-4">
     <p class="text-xs font-black uppercase tracking-[0.18em] text-[var(--color-accent)]">
       {artwork.medium}

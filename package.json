@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
     "build": "ASTRO_TELEMETRY_DISABLED=1 astro check && ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "admin:server": "node scripts/admin-server.mjs",
     "auto-commit": "node scripts/auto-commit.mjs",
     "checkpoint": "npm run auto-commit",
     "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",

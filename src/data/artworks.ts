@@ -7,6 +7,8 @@ export type Artwork = {
   status: "finished" | "study" | "wip";
   note: string;
   palette: string[];
+  imageSrc?: string;
+  processSrc?: string;
 };
 
 export type ProcessStage = {
