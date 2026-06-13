@@ -27,7 +27,7 @@ export const codingProjects: CodingProject[] = [
     spotlight: false,
     links: [
       {
-        label: "Coursework",
+        label: "My Coursework",
         href: "https://github.com/sophieTheProgrammer/coolPersonalWebsite",
       },
       {
@@ -62,13 +62,17 @@ export const codingProjects: CodingProject[] = [
     slug: "godot-game-jams",
     status: "complete",
     summary:
-      "SUPER FUN game jams made in only a couple days with a SUPER AWESOME TEAM! I did all the art.",
+      "SUPER FUN game jams submissions made in only a couple days with a SUPER AWESOME TEAM! I did the art, and a bit of coding.",
     stack: ["Godot", "Github", "Procreate"],
     spotlight: true,
     links: [
       {
-        label: "Itch.io profile",
+        label: "Itch.io page",
         href: "https://itch.io/profile/sophietheprogrammer",
+      },
+      {
+        label: "My favorite submission",
+        href: "https://superduperpotato.itch.io/broke-photographer",
       },
     ],
   },

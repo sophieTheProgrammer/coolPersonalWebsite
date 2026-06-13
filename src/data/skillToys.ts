@@ -49,21 +49,21 @@ const skillToyEntries: SkillToyEntry[] = [
   {
     name: "Begleri",
     slug: "begleri",
-    progressScore: 47,
+    progressScore: 3,
     currentFocus: "Smoother transfers and longer unbroken sequences.",
     doodleIcon: "begleri-icon.png",
   },
   {
     name: "Yoyo",
     slug: "yoyo",
-    progressScore: 38,
+    progressScore: 28,
     currentFocus: "Basic string control and cleaner binds.",
     doodleIcon: "yoyo-icon.png",
   },
   {
     name: "Pen Spinning",
     slug: "pen-spinning",
-    progressScore: 11,
+    progressScore: 5,
     currentFocus: "ThumbAround consistency and simple links.",
     doodleIcon: "pen-spinning-icon.png",
   },
@@ -92,7 +92,7 @@ const comboLogEntries: ComboLogEntry[] = [
     date: "2026-06-11",
     tag: "trick",
     youtubeId: "-0ThsN6z6hE",
-    notes: "idk",
+    notes: "",
   },
   {
     id: "kendama-inward-whirlwind-01",
@@ -120,6 +120,15 @@ const comboLogEntries: ComboLogEntry[] = [
     tag: "practice",
     youtubeId: "LKVaUBB1Xoo",
     notes: "Practicing consistency with Skill Addicts record section.",
+  },
+  {
+    id: "freestyle-football-first-knee-kicks-01",
+    toySlug: "freestyle-football",
+    title: "First Knee Kicks",
+    date: "2026-06-12",
+    tag: "practice",
+    youtubeId: "El5o2PazF8A",
+    notes: "",
   },
 ];
 
