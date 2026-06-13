@@ -56,9 +56,14 @@ const base = import.meta.env.BASE_URL.endsWith("/")
       <div class="relative rounded-lg border border-[var(--color-line)] bg-white p-5 shadow-sm">
         <div class="grid gap-3">
           {
-            homeContent.sections.map((section) => (
+            homeContent.sections.map((section, index) => (
               <a
-                class="rounded-md border border-[var(--color-line)] p-5 transition hover:-translate-y-0.5 hover:border-[var(--color-accent)]"
+                class:list={[
+                  "home-section-card rounded-md border border-[var(--color-line)] p-5 transition hover:border-[var(--color-accent)]",
+                  index === 0 && "home-section-card--wide",
+                  index === 1 && "home-section-card--tilt-left",
+                  index === 2 && "home-section-card--tilt-right",
+                ]}
                 href={`${base}${section.href}`}
               >
                 {

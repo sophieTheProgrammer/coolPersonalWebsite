@@ -42,93 +42,125 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 
   Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
-  const canvases = document.querySelectorAll("[data-toy-progress-chart]");
+  const windowWithToyCharts = window as Window & {
+    __toyProgressChartInit?: () => void;
+    __toyProgressCharts?: WeakMap<HTMLCanvasElement, Chart>;
+  };
 
-  canvases.forEach((canvas) => {
-    if (!(canvas instanceof HTMLCanvasElement)) return;
+  if (windowWithToyCharts.__toyProgressChartInit) {
+    document.removeEventListener(
+      "astro:page-load",
+      windowWithToyCharts.__toyProgressChartInit,
+    );
+  }
 
-    const toys = JSON.parse(canvas.dataset.toys ?? "[]") as Array<{
-      name: string;
-      slug: string;
-      progressScore: number;
-      status: string;
-    }>;
-    const baseUrl = canvas.dataset.baseUrl ?? "/";
-    const styles = getComputedStyle(document.documentElement);
-    const accent = styles.getPropertyValue("--color-accent").trim();
-    const accentTwo = styles.getPropertyValue("--color-accent-2").trim();
-    const muted = styles.getPropertyValue("--color-muted").trim();
+  windowWithToyCharts.__toyProgressCharts ??= new WeakMap<
+    HTMLCanvasElement,
+    Chart
+  >();
 
-    new Chart(canvas, {
-      type: "bar",
-      data: {
-        labels: toys.map((toy) => toy.name),
-        datasets: [
-          {
-            label: "Progress",
-            data: toys.map((toy) => toy.progressScore),
-            backgroundColor: toys.map((toy) =>
-              toy.status === "active" ? accent : accentTwo,
-            ),
-            borderColor: "rgba(30, 27, 46, 0.16)",
-            borderWidth: 1,
-            borderRadius: 10,
-            barThickness: 34,
-            maxBarThickness: 44,
-            hoverBackgroundColor: accent,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: { duration: 220 },
-        layout: {
-          padding: {
-            top: 8,
-          },
+  windowWithToyCharts.__toyProgressChartInit = () => {
+    const canvases = document.querySelectorAll("[data-toy-progress-chart]");
+
+    canvases.forEach((canvas) => {
+      if (!(canvas instanceof HTMLCanvasElement)) return;
+
+      const existingChart = windowWithToyCharts.__toyProgressCharts?.get(canvas);
+      existingChart?.destroy();
+
+      const toys = JSON.parse(canvas.dataset.toys ?? "[]") as Array<{
+        name: string;
+        slug: string;
+        progressScore: number;
+        status: string;
+      }>;
+      const baseUrl = canvas.dataset.baseUrl ?? "/";
+      const styles = getComputedStyle(document.documentElement);
+      const accent = styles.getPropertyValue("--color-accent").trim();
+      const accentTwo = styles.getPropertyValue("--color-accent-2").trim();
+      const muted = styles.getPropertyValue("--color-muted").trim();
+
+      const chart = new Chart(canvas, {
+        type: "bar",
+        data: {
+          labels: toys.map((toy) => toy.name),
+          datasets: [
+            {
+              label: "Progress",
+              data: toys.map((toy) => toy.progressScore),
+              backgroundColor: toys.map((toy) =>
+                toy.status === "active" ? accent : accentTwo,
+              ),
+              borderColor: "rgba(30, 27, 46, 0.16)",
+              borderWidth: 1,
+              borderRadius: 10,
+              barThickness: 34,
+              maxBarThickness: 44,
+              hoverBackgroundColor: accent,
+            },
+          ],
         },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            displayColors: false,
-            callbacks: {
-              label: (context) => {
-                const toy = toys[context.dataIndex];
-                return `${context.parsed.y}% progress / ${toy.status}`;
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: { duration: 220 },
+          layout: {
+            padding: {
+              top: 8,
+            },
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              displayColors: false,
+              callbacks: {
+                label: (context) => {
+                  const toy = toys[context.dataIndex];
+                  return `${context.parsed.y}% progress / ${toy.status}`;
+                },
               },
             },
           },
-        },
-        scales: {
-          x: {
-            grid: { display: false },
-            ticks: { color: muted, font: { weight: "bold" } },
-          },
-          y: {
-            beginAtZero: true,
-            max: 100,
-            grid: { color: "rgba(30, 27, 46, 0.08)" },
-            ticks: {
-              color: muted,
-              callback: (value) => `${value}%`,
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { color: muted, font: { weight: "bold" } },
+            },
+            y: {
+              beginAtZero: true,
+              max: 100,
+              grid: { color: "rgba(30, 27, 46, 0.08)" },
+              ticks: {
+                color: muted,
+                callback: (value) => `${value}%`,
+              },
             },
           },
+          onClick: (_event, elements) => {
+            const first = elements[0];
+            if (!first) return;
+            const toy = toys[first.index];
+            if (toy) {
+              window.location.href = `${baseUrl}skill-toys/${toy.slug}/`;
+            }
+          },
+          onHover: (event, elements) => {
+            if (event.native?.target instanceof HTMLElement) {
+              event.native.target.style.cursor = elements.length
+                ? "pointer"
+                : "default";
+            }
+          },
         },
-        onClick: (_event, elements) => {
-          const first = elements[0];
-          if (!first) return;
-          const toy = toys[first.index];
-          if (toy) {
-            window.location.href = `${baseUrl}skill-toys/${toy.slug}/`;
-          }
-        },
-        onHover: (event, elements) => {
-          if (event.native?.target instanceof HTMLElement) {
-            event.native.target.style.cursor = elements.length ? "pointer" : "default";
-          }
-        },
-      },
+      });
+
+      windowWithToyCharts.__toyProgressCharts?.set(canvas, chart);
     });
-  });
+  };
+
+  document.addEventListener(
+    "astro:page-load",
+    windowWithToyCharts.__toyProgressChartInit,
+  );
+  windowWithToyCharts.__toyProgressChartInit();
 </script>

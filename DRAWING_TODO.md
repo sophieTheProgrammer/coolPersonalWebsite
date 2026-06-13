@@ -16,6 +16,7 @@ Use this as the checklist for replacing placeholders with your own transparent P
 - [ ] `pocket-sketchbook-cover.png` - cover drawing for the pocket sketchbook packet.
 - [ ] `garden-blob-01.png` - optional hand-drawn garden blob/leaf cluster for the Art page background.
 - [ ] `garden-blob-02.png` - optional second hand-drawn garden/blob variation.
+- [ ] cursor
 
 ## Skill Toy Icons
 
@@ -24,9 +25,7 @@ Use this as the checklist for replacing placeholders with your own transparent P
 - [ ] `yoyo-icon.png`
 - [ ] `pen-spinning-icon.png`
 - [ ] `juggling-icon.png`
-- [ ] `cardistry-icon.png`
-- [ ] `knucklebone-icon.png`
-- [ ] `contact-ball-icon.png`
+- [ ] `freestyle-football-icon.png`
 
 ## Optional Fun Drawings
 

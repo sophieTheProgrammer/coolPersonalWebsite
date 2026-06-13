@@ -80,27 +80,6 @@ const skillToyEntries: SkillToyEntry[] = [
     currentFocus: "Learning beginning tricks like toe and knee kicks.",
     doodleIcon: "freestyle-football-icon.png",
   },
-  {
-    name: "Cardistry",
-    slug: "cardistry",
-    progressScore: 22,
-    currentFocus: "Packet cuts and clean openers.",
-    doodleIcon: "cardistry-icon.png",
-  },
-  {
-    name: "Knucklebone",
-    slug: "knucklebone",
-    progressScore: 18,
-    currentFocus: "Rolls, catches, and grip control.",
-    doodleIcon: "knucklebone-icon.png",
-  },
-  {
-    name: "Contact Ball",
-    slug: "contact-ball",
-    progressScore: 16,
-    currentFocus: "Slow isolations and smooth palm control.",
-    doodleIcon: "contact-ball-icon.png",
-  },
 ];
 
 // Add new tricks here. Paste either youtubeId, videoUrl, or embedUrl.
@@ -113,14 +92,6 @@ const comboLogEntries: ComboLogEntry[] = [
     tag: "trick",
     youtubeId: "-0ThsN6z6hE",
     notes: "idk",
-  },
-  {
-    id: "begleri-rebound-flow-01",
-    toySlug: "begleri",
-    title: "Rebound flow",
-    date: "2026-06-10",
-    tag: "combo",
-    notes: "Trying to keep the beads relaxed through the transfer.",
   },
   {
     id: "freestyle-football-toekicks-01",
@@ -150,14 +121,6 @@ const comboLogEntries: ComboLogEntry[] = [
     notes: "Practicing consistency with Skill Addicts record section.",
   },
   {
-    id: "cardistry-packet-opener-01",
-    toySlug: "cardistry",
-    title: "Packet opener",
-    date: "2026-06-02",
-    tag: "trick",
-    notes: "Messy but useful for watching hand position.",
-  },
-  {
     id: "kendama-spike-flow-01",
     toySlug: "kendama",
     title: "Spike flow",
@@ -180,22 +143,6 @@ const comboLogEntries: ComboLogEntry[] = [
     date: "2026-05-25",
     tag: "practice",
     notes: "Watching throw height and timing.",
-  },
-  {
-    id: "knucklebone-roll-catch-01",
-    toySlug: "knucklebone",
-    title: "Roll and catch",
-    date: "2026-05-21",
-    tag: "trick",
-    notes: "Older clip kept around for variety in the log.",
-  },
-  {
-    id: "contact-ball-isolation-01",
-    toySlug: "contact-ball",
-    title: "Palm isolation",
-    date: "2026-05-18",
-    tag: "practice",
-    notes: "Slow control practice from the archive.",
   },
   {
     id: "kendama-cup-flow-01",
@@ -341,4 +288,31 @@ export function getActivePracticeClips(limit = 6) {
     .filter((combo) => activeSlugs.includes(combo.toySlug))
     .sort((first, second) => second.date.localeCompare(first.date))
     .slice(0, limit);
+}
+
+export function getPracticeNowPool(limit = 12): ComboLog[] {
+  const recentCutoffDays = 75;
+  const recentCombos = comboLogs.filter(
+    (combo) => combo.featured && daysSince(combo.date) <= recentCutoffDays,
+  );
+  const recentIds = new Set(recentCombos.map((combo) => combo.id));
+  const weightedLog = getWeightedProgressLog(limit * 2).filter((combo) =>
+    recentIds.has(combo.id),
+  );
+  const newestCombos = [...recentCombos].sort((first, second) =>
+    second.date.localeCompare(first.date),
+  );
+  const selected: ComboLog[] = [];
+  const selectedIds = new Set<string>();
+
+  const addCombo = (combo: ComboLog | undefined) => {
+    if (!combo || selectedIds.has(combo.id) || selected.length >= limit) return;
+    selected.push(combo);
+    selectedIds.add(combo.id);
+  };
+
+  weightedLog.forEach(addCombo);
+  newestCombos.forEach(addCombo);
+
+  return selected.slice(0, limit);
 }

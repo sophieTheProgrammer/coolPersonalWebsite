@@ -5,14 +5,14 @@ import ToyProgressStrip from "../components/ToyProgressStrip.astro";
 import ToyProgressChart from "../components/ToyProgressChart.astro";
 import {
   comboLogs,
-  getActivePracticeClips,
+  getPracticeNowPool,
   getToyBySlug,
   getWeightedProgressLog,
   skillToys,
 } from "../data/skillToys";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
-const activeClips = getActivePracticeClips(6);
+const practiceNowClips = getPracticeNowPool(12);
 const progressLog = getWeightedProgressLog(comboLogs.length);
 ---
 
@@ -47,17 +47,28 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
       <section class="mt-12" aria-labelledby="active-heading">
         <div class="flex flex-wrap items-end justify-between gap-4">
           <h2 id="active-heading" class="max-w-2xl text-4xl font-black leading-none sm:text-5xl">
-            What is getting practice now
+            What is getting practiced now
           </h2>
           <p class="max-w-sm text-sm font-semibold leading-6 text-[var(--color-muted)]">
             Tricks and combos I've been working on
           </p>
         </div>
-        <div class="practice-board mt-6 grid grid-cols-1 gap-5 rounded-xl border border-[var(--color-line)] bg-[rgba(30,27,46,0.035)] p-3 shadow-sm lg:grid-cols-2">
+        <div
+          class="practice-board mt-6 grid grid-cols-1 gap-5 rounded-xl border border-[var(--color-line)] bg-[rgba(30,27,46,0.035)] p-3 shadow-sm lg:grid-cols-2"
+          data-practice-board
+        >
           {
-            activeClips.map((combo) => {
+            practiceNowClips.map((combo, index) => {
               const toy = getToyBySlug(combo.toySlug);
-              return toy ? <ActiveClipCard combo={combo} toy={toy} /> : null;
+              return toy ? (
+                <div
+                  class:list={[index >= 6 ? "hidden" : ""]}
+                  data-practice-card
+                  data-toy-slug={combo.toySlug}
+                >
+                  <ActiveClipCard combo={combo} toy={toy} />
+                </div>
+              ) : null;
             })
           }
         </div>
@@ -103,3 +114,64 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
     </section>
   </main>
 </BaseLayout>
+
+<script>
+  const visiblePracticeCards = 6;
+  const maxPracticeCardsPerToy = 4;
+
+  const shuffledPracticeCards = <T,>(items: T[]) => {
+    const next = [...items];
+    for (let index = next.length - 1; index > 0; index -= 1) {
+      const randomIndex = Math.floor(Math.random() * (index + 1));
+      [next[index], next[randomIndex]] = [next[randomIndex], next[index]];
+    }
+    return next;
+  };
+
+  const windowWithPracticeBoard = window as Window & {
+    __practiceBoardInit?: () => void;
+  };
+
+  if (windowWithPracticeBoard.__practiceBoardInit) {
+    document.removeEventListener(
+      "astro:page-load",
+      windowWithPracticeBoard.__practiceBoardInit,
+    );
+  }
+
+  windowWithPracticeBoard.__practiceBoardInit = () => {
+    document.querySelectorAll("[data-practice-board]").forEach((board) => {
+      const cards = Array.from(
+        board.querySelectorAll<HTMLElement>("[data-practice-card]"),
+      );
+      const selected: HTMLElement[] = [];
+      const toyCounts = new Map<string, number>();
+
+      shuffledPracticeCards(cards).forEach((card) => {
+        const toySlug = card.dataset.toySlug ?? "";
+        const currentCount = toyCounts.get(toySlug) ?? 0;
+
+        if (
+          selected.length >= visiblePracticeCards ||
+          currentCount >= maxPracticeCardsPerToy
+        ) {
+          return;
+        }
+
+        selected.push(card);
+        toyCounts.set(toySlug, currentCount + 1);
+      });
+
+      cards.forEach((card) => {
+        card.classList.toggle("hidden", !selected.includes(card));
+      });
+      selected.forEach((card) => board.append(card));
+    });
+  };
+
+  document.addEventListener(
+    "astro:page-load",
+    windowWithPracticeBoard.__practiceBoardInit,
+  );
+  windowWithPracticeBoard.__practiceBoardInit();
+</script>
