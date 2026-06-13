@@ -21,56 +21,56 @@ import { skillToys } from "../data/skillToys";
       </p>
 
       <div class="mt-10 grid gap-5 lg:grid-cols-2">
-        <form class="admin-card" data-art-form>
+        <form class="admin-card admin-panel site-card" data-art-form>
           <div>
             <p class="text-xs font-black uppercase tracking-[0.18em] text-[var(--color-muted)]">
               Art entry
             </p>
             <h2 class="mt-2 text-3xl leading-none">Scans and PDFs</h2>
           </div>
-          <label>
+          <label class="field-stack">
             <span>File in public/art/</span>
-            <input name="src" placeholder="my-sketch.pdf or scan-01.jpg" required />
+            <input class="form-field" name="src" placeholder="my-sketch.pdf or scan-01.jpg" required />
           </label>
-          <label>
+          <label class="field-stack">
             <span>Title</span>
-            <input name="title" placeholder="Sketchbook scan" />
+            <input class="form-field" name="title" placeholder="Sketchbook scan" />
           </label>
-          <label>
+          <label class="field-stack">
             <span>Note</span>
-            <textarea name="note" placeholder="Optional tiny note"></textarea>
+            <textarea class="form-field form-field--textarea" name="note" placeholder="Optional tiny note"></textarea>
           </label>
-          <button type="submit">Generate art snippet</button>
-          <pre data-art-output></pre>
+          <button class="site-button site-button--dark" type="submit">Generate art snippet</button>
+          <pre class="admin-output" data-art-output></pre>
         </form>
 
-        <form class="admin-card" data-trick-form>
+        <form class="admin-card admin-panel site-card" data-trick-form>
           <div>
             <p class="text-xs font-black uppercase tracking-[0.18em] text-[var(--color-muted)]">
               Trick entry
             </p>
             <h2 class="mt-2 text-3xl leading-none">YouTube clip</h2>
           </div>
-          <label>
+          <label class="field-stack">
             <span>Toy</span>
-            <select name="toySlug">
+            <select class="form-field" name="toySlug">
               {skillToys.map((toy) => <option value={toy.slug}>{toy.name}</option>)}
             </select>
           </label>
-          <label>
+          <label class="field-stack">
             <span>YouTube URL or ID</span>
-            <input name="youtube" placeholder="https://youtu.be/..." required />
+            <input class="form-field" name="youtube" placeholder="https://youtu.be/..." required />
           </label>
-          <label>
+          <label class="field-stack">
             <span>Title</span>
-            <input name="title" placeholder="Leave as YouTube title later" />
+            <input class="form-field" name="title" placeholder="Leave as YouTube title later" />
           </label>
-          <label>
+          <label class="field-stack">
             <span>Notes</span>
-            <textarea name="notes" placeholder="Leave as YouTube description later"></textarea>
+            <textarea class="form-field form-field--textarea" name="notes" placeholder="Leave as YouTube description later"></textarea>
           </label>
-          <button type="submit">Generate trick snippet</button>
-          <pre data-trick-output></pre>
+          <button class="site-button site-button--dark" type="submit">Generate trick snippet</button>
+          <pre class="admin-output" data-trick-output></pre>
         </form>
       </div>
     </section>

@@ -15,7 +15,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
   : `${import.meta.env.BASE_URL}/`;
 ---
 
-<article class="active-clip-card min-w-0 overflow-hidden rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+<article class="active-clip-card site-card site-card--interactive min-w-0 overflow-hidden rounded-lg transition hover:-translate-y-1 hover:shadow-xl">
   <div class="active-clip-card__video">
     <VideoEmbed
       title={combo.title}
@@ -36,14 +36,14 @@ const base = import.meta.env.BASE_URL.endsWith("/")
         <h3 class="mt-1 text-lg font-black leading-tight">{combo.title}</h3>
       </div>
       <div class="flex shrink-0 flex-col items-end gap-1">
-        <span class="rounded border border-[var(--color-line)] px-2 py-1 text-xs font-bold text-[var(--color-muted)]">
+        <span class="site-chip px-2 py-1">
           {combo.tag}
         </span>
       </div>
     </div>
     <p class="line-clamp-2 text-sm leading-6 text-[var(--color-muted)]">{combo.notes}</p>
     <a
-      class="inline-flex rounded border border-[var(--color-line)] px-2.5 py-1.5 text-xs font-black uppercase tracking-[0.12em] text-[var(--color-muted)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-ink)]"
+      class="site-button px-2.5 py-1.5 text-xs uppercase tracking-[0.12em]"
       href={`${base}skill-toys/${toy.slug}/`}
     >
       All {toy.name} tricks

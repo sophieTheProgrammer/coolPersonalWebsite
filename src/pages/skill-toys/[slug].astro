@@ -34,7 +34,7 @@ const combos = getCombosForToy(toy.slug);
   <main class="min-h-screen px-6 py-12 sm:px-10">
     <section class="mx-auto max-w-6xl">
       <a
-        class="inline-flex rounded border border-[var(--color-line)] px-3 py-2 text-sm font-bold text-[var(--color-muted)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-ink)]"
+        class="site-button px-3 py-2 text-sm"
         href={`${base}skill-toys/`}
       >
         Back to skill toys
@@ -52,7 +52,7 @@ const combos = getCombosForToy(toy.slug);
             {toy.name} trick log
           </h1>
         </div>
-        <div class="rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] p-4 shadow-sm">
+        <div class="site-card rounded-lg p-4">
           <div class="flex items-center justify-between gap-4 text-sm font-bold">
             <span>Progress</span>
             <span>{toy.progressScore}%</span>

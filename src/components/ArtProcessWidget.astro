@@ -1,0 +1,103 @@
+---
+import { currentArtwork, processStages } from "../data/artworks";
+---
+
+<article
+  class="art-process-widget overflow-hidden rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] text-[var(--color-ink)] shadow-sm sm:col-span-2 xl:col-span-2"
+  data-stages={JSON.stringify(processStages)}
+>
+  <div class="grid gap-0 md:grid-cols-[1fr_18rem]">
+    <div class="p-5">
+      <p class="text-xs font-black uppercase tracking-[0.2em] text-[var(--color-muted)]">
+        Process slider
+      </p>
+      <h2 class="mt-3 text-3xl font-black leading-none">{currentArtwork.title}</h2>
+      <p class="mt-4 max-w-xl leading-7 text-[var(--color-muted)]">{currentArtwork.note}</p>
+
+      <div class="mt-6">
+        <div
+          class="process-preview relative aspect-[16/9] overflow-hidden rounded-lg border border-[var(--color-line)]"
+          data-process-preview
+          style={`background: linear-gradient(135deg, ${processStages[0].palette[0]}, ${processStages[0].palette[1]} 55%, ${processStages[0].palette[2]});`}
+        >
+          <div class="absolute inset-0 opacity-25 art-tile-pattern"></div>
+          <div class="absolute left-6 top-6 h-24 w-24 rounded-full border border-white/40 bg-white/15 backdrop-blur-sm"></div>
+          <div class="absolute bottom-6 right-8 h-20 w-40 rounded-md border border-white/30 bg-black/20"></div>
+          <div class="absolute bottom-4 left-4 rounded-md bg-white/70 px-3 py-2 text-sm font-black text-[var(--color-ink)] backdrop-blur" data-process-label>
+            {processStages[0].label} / {processStages[0].title}
+          </div>
+        </div>
+
+        <input
+          class="mt-5 w-full accent-[var(--color-accent)]"
+          data-process-range
+          type="range"
+          min="0"
+          max={processStages.length - 1}
+          value="0"
+          step="1"
+          aria-label="Artwork process stage"
+        />
+      </div>
+    </div>
+
+    <div class="border-t border-[var(--color-line)] bg-[rgba(30,27,46,0.025)] p-5 md:border-l md:border-t-0">
+      <p class="text-xs font-black uppercase tracking-[0.2em] text-[var(--color-muted)]">
+        Currently working on
+      </p>
+      <p class="mt-3 text-xl font-black">{currentArtwork.status}</p>
+      <p class="mt-4 leading-7 text-[var(--color-muted)]">{currentArtwork.nextStep}</p>
+
+      <div class="mt-8 rounded-lg border border-[var(--color-line)] bg-white/60 p-4">
+        <p class="text-xs font-black uppercase tracking-[0.18em] text-[var(--color-muted)]">
+          Stage note
+        </p>
+        <h3 class="mt-3 text-2xl font-black" data-process-title>{processStages[0].title}</h3>
+        <p class="mt-3 leading-7 text-[var(--color-muted)]" data-process-description>
+          {processStages[0].description}
+        </p>
+      </div>
+    </div>
+  </div>
+</article>
+
+<script>
+  const widgets = document.querySelectorAll(".art-process-widget");
+
+  widgets.forEach((widget) => {
+    const stages = JSON.parse(widget.getAttribute("data-stages") ?? "[]") as Array<{
+      label: string;
+      title: string;
+      description: string;
+      palette: string[];
+    }>;
+    if (!stages) return;
+
+    const range = widget.querySelector("[data-process-range]");
+    const preview = widget.querySelector("[data-process-preview]");
+    const label = widget.querySelector("[data-process-label]");
+    const title = widget.querySelector("[data-process-title]");
+    const description = widget.querySelector("[data-process-description]");
+
+    if (
+      !(range instanceof HTMLInputElement) ||
+      !(preview instanceof HTMLElement) ||
+      !(label instanceof HTMLElement) ||
+      !(title instanceof HTMLElement) ||
+      !(description instanceof HTMLElement)
+    ) {
+      return;
+    }
+
+    const renderStage = () => {
+      const stage = stages[Number(range.value)] ?? stages[0];
+      preview.style.background = `linear-gradient(135deg, ${stage.palette[0]}, ${stage.palette[1]} 55%, ${stage.palette[2]})`;
+      label.textContent = `${stage.label} / ${stage.title}`;
+      title.textContent = stage.title;
+      description.textContent = stage.description;
+    };
+
+    range.addEventListener("input", renderStage);
+    renderStage();
+  });
+</script>

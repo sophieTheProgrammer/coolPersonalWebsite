@@ -95,6 +95,15 @@ const comboLogEntries: ComboLogEntry[] = [
     notes: "idk",
   },
   {
+    id: "kendama-inward-whirlwind-01",
+    toySlug: "kendama",
+    title: "Inward Whirlwind",
+    date: "2026-06-13",
+    tag: "trick",
+    youtubeId: "9lxmVI3U8dU",
+    notes: "",
+  },
+  {
     id: "freestyle-football-toekicks-01",
     toySlug: "freestyle-football",
     title: "First Toe Kicks",

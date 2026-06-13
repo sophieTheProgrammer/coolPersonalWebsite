@@ -23,7 +23,7 @@ const formattedDate = new Intl.DateTimeFormat("en", {
 
 <details
   id={combo.id}
-  class="group min-w-[13.5rem] overflow-hidden rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] shadow-sm transition hover:border-[var(--color-accent)] hover:shadow-lg md:min-w-0"
+  class="group site-card site-card--interactive min-w-[13.5rem] overflow-hidden rounded-lg transition hover:shadow-lg md:min-w-0"
 >
   <summary class="cursor-pointer list-none space-y-3 p-3 marker:hidden">
     <div class="flex items-start justify-between gap-3">
@@ -43,7 +43,7 @@ const formattedDate = new Intl.DateTimeFormat("en", {
           )
         }
         <DoodleImage src={doodleStickers[combo.tag]} alt={`${combo.tag} hand-drawn sticker`} label={combo.tag} variant="sticker" animation="none">
-          <span slot="fallback" class="rounded border border-[var(--color-line)] px-2 py-1 text-xs font-bold text-[var(--color-muted)]">
+          <span slot="fallback" class="site-chip px-2 py-1">
             {combo.tag}
           </span>
         </DoodleImage>

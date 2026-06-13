@@ -1,0 +1,132 @@
+---
+import VolumeDrawingCard from "../../../components/VolumeDrawingCard.astro";
+import {
+  artVolumes,
+  getArtVolumeBySlug,
+  getArtworksForVolume,
+} from "../../../data/artworks";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+export function getStaticPaths() {
+  return artVolumes.map((volume) => ({
+    params: { slug: volume.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const volume = slug ? getArtVolumeBySlug(slug) : undefined;
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
+if (!volume) {
+  return Astro.redirect(`${base}art/`);
+}
+
+const drawings = getArtworksForVolume(volume.slug);
+const [first, second, third] = volume.coverPalette;
+---
+
+<BaseLayout
+  title={`${volume.title} | Art | Cool Personal Website`}
+  description={volume.note}
+>
+  <main class="min-h-screen px-6 py-12 sm:px-10">
+    <section class="mx-auto max-w-6xl">
+      <a
+        class="inline-flex rounded border border-[var(--color-line)] px-3 py-2 text-sm font-bold text-[var(--color-muted)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-ink)]"
+        href={`${base}art/`}
+      >
+        Back to volumes
+      </a>
+
+      <div class="mt-8 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+        <div data-packet-open>
+          <p class="text-sm font-black uppercase tracking-[0.22em] text-[var(--color-accent)]">
+            {volume.year} / {drawings.length} drawings
+          </p>
+          <h1 class="mt-4 text-5xl font-black leading-none">{volume.title}</h1>
+          <p class="mt-4 text-xl font-bold text-[var(--color-muted)]">{volume.subtitle}</p>
+        </div>
+        <div
+          data-packet-cover
+          class="relative min-h-64 overflow-hidden rounded-xl border border-[var(--color-line)] shadow-sm"
+          style={`background: linear-gradient(135deg, ${first}, ${second} 58%, ${third});`}
+        >
+          <div class="absolute inset-0 opacity-25 mix-blend-screen art-tile-pattern"></div>
+          <div class="absolute bottom-5 left-5 right-5 rounded-lg bg-white/70 p-4 backdrop-blur">
+            <p class="leading-7 text-[var(--color-muted)]">{volume.note}</p>
+          </div>
+        </div>
+      </div>
+
+      <section class="mt-10" aria-labelledby="drawing-pack-heading">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p class="text-sm font-bold uppercase tracking-[0.22em] text-[var(--color-muted)]">
+              Drawing pack
+            </p>
+            <h2 id="drawing-pack-heading" class="mt-2 text-3xl font-black">
+              Inside this volume
+            </h2>
+          </div>
+          <p class="max-w-md text-sm font-semibold leading-6 text-[var(--color-muted)]">
+            {drawings.length} pieces in this drawing packet.
+          </p>
+        </div>
+
+        <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-packet-grid>
+          {
+            drawings.map((artwork, index) => (
+              <div data-packet-drawing>
+                <VolumeDrawingCard artwork={artwork} index={index} />
+              </div>
+            ))
+          }
+        </div>
+      </section>
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  import { animate, stagger } from "@motionone/dom";
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!reduceMotion) {
+    const intro = document.querySelector("[data-packet-open]");
+    const cover = document.querySelector("[data-packet-cover]");
+    const drawings = document.querySelectorAll("[data-packet-drawing]");
+
+    if (intro) {
+      animate(
+        intro,
+        { opacity: [0, 1], transform: ["translateY(14px)", "translateY(0)"] },
+        { duration: 0.45, easing: "ease-out" },
+      );
+    }
+
+    if (cover) {
+      animate(
+        cover,
+        {
+          opacity: [0, 1],
+          transform: [
+            "translateY(20px) rotateX(8deg) scale(0.98)",
+            "translateY(0) rotateX(0deg) scale(1)",
+          ],
+        },
+        { duration: 0.65, delay: 0.08, easing: "ease-out" },
+      );
+    }
+
+    if (drawings.length) {
+      animate(
+        drawings,
+        { opacity: [0, 1], transform: ["translateY(18px)", "translateY(0)"] },
+        { duration: 0.42, delay: stagger(0.055, { start: 0.18 }), easing: "ease-out" },
+      );
+    }
+  }
+</script>

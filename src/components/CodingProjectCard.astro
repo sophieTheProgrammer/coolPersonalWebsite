@@ -27,7 +27,7 @@ const getHref = (href: string) =>
 
 <article
   class:list={[
-    "coding-project-card grid gap-5 rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg md:grid-cols-[1fr_14rem]",
+    "coding-project-card site-card site-card--interactive grid gap-5 rounded-lg p-4 transition hover:-translate-y-0.5 hover:shadow-lg md:grid-cols-[1fr_14rem]",
     `coding-project-card--${accent}`,
     project.spotlight ? "coding-project-card--spotlight" : "",
   ]}
@@ -50,7 +50,7 @@ const getHref = (href: string) =>
     <div class="flex flex-wrap gap-2">
       {
         project.stack.map((item) => (
-          <span class="rounded border border-[var(--color-line)] px-2.5 py-1 text-xs font-bold text-[var(--color-muted)]">
+          <span class="site-chip px-2.5 py-1">
             {item}
           </span>
         ))
@@ -64,7 +64,7 @@ const getHref = (href: string) =>
         project.links.length > 0 ? (
           project.links.map((link) => (
             <a
-              class="rounded-md border border-[var(--color-line)] px-3 py-2 text-center text-sm font-bold transition hover:border-[var(--color-accent)]"
+              class="site-button rounded-md px-3 py-2 text-center text-sm"
               href={getHref(link.href)}
             >
               {link.label}

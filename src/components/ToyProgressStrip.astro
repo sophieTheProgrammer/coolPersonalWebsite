@@ -13,7 +13,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 const loopedToys = [...toys, ...toys];
 ---
 
-<div class="toy-orbit-rail" aria-label="Open toy trick logs">
+<div class="toy-orbit-rail" aria-label="Open toy trick logs" data-toy-orbit-rail>
   <div class="toy-orbit-rail__track">
     {
       loopedToys.map((toy, index) => {
@@ -21,7 +21,7 @@ const loopedToys = [...toys, ...toys];
 
         return (
           <a
-            class="toy-orbit-rail__node"
+            class="toy-orbit-rail__node orbit-node"
             href={`${base}skill-toys/${toy.slug}/`}
             style={`--toy-progress: ${toy.progressScore}%; --toy-tilt: ${tilt};`}
             aria-hidden={index >= toys.length ? "true" : undefined}
@@ -42,3 +42,39 @@ const loopedToys = [...toys, ...toys];
     }
   </div>
 </div>
+
+<script>
+  const windowWithToyOrbit = window as Window & {
+    __toyOrbitInit?: () => void;
+  };
+
+  if (windowWithToyOrbit.__toyOrbitInit) {
+    document.removeEventListener("astro:page-load", windowWithToyOrbit.__toyOrbitInit);
+  }
+
+  windowWithToyOrbit.__toyOrbitInit = () => {
+    document.querySelectorAll<HTMLElement>("[data-toy-orbit-rail]").forEach((rail) => {
+      if (rail.dataset.orbitReady === "true") {
+        return;
+      }
+
+      rail.dataset.orbitReady = "true";
+      let pauseTimer: number | undefined;
+
+      const pauseForInteraction = () => {
+        rail.classList.add("toy-orbit-rail--paused");
+        window.clearTimeout(pauseTimer);
+        pauseTimer = window.setTimeout(() => {
+          rail.classList.remove("toy-orbit-rail--paused");
+        }, 1400);
+      };
+
+      ["pointerdown", "touchstart", "wheel", "scroll", "keydown"].forEach((eventName) => {
+        rail.addEventListener(eventName, pauseForInteraction, { passive: true });
+      });
+    });
+  };
+
+  document.addEventListener("astro:page-load", windowWithToyOrbit.__toyOrbitInit);
+  windowWithToyOrbit.__toyOrbitInit();
+</script>
