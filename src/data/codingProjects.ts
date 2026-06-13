@@ -27,8 +27,12 @@ export const codingProjects: CodingProject[] = [
     spotlight: false,
     links: [
       {
-        label: "Repo",
+        label: "Coursework",
         href: "https://github.com/sophieTheProgrammer/coolPersonalWebsite",
+      },
+      {
+        label: "Syllabus",
+        href: "https://acastano.com/wp-content/uploads/Nand2Tetris-Harvard-2005.pdf",
       },
     ],
   },
