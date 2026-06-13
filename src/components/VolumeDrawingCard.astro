@@ -9,6 +9,13 @@ type Props = {
 const { artwork, index } = Astro.props;
 const [first, second, third] = artwork.palette;
 const hasImage = Boolean(artwork.imageSrc);
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const mediaSrc = artwork.imageSrc?.startsWith("/")
+  ? `${base}${artwork.imageSrc.slice(1)}`
+  : artwork.imageSrc;
+const isPdf = mediaSrc?.toLowerCase().endsWith(".pdf");
 ---
 
 <article class="group overflow-hidden rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
@@ -17,10 +24,17 @@ const hasImage = Boolean(artwork.imageSrc);
     style={hasImage ? undefined : `background: linear-gradient(135deg, ${first}, ${second} 58%, ${third});`}
   >
     {
-      artwork.imageSrc ? (
+      mediaSrc && isPdf ? (
+        <iframe
+          class="h-full w-full bg-white"
+          src={mediaSrc}
+          title={artwork.title}
+          loading="lazy"
+        />
+      ) : mediaSrc ? (
         <img
           class="h-full w-full object-cover"
-          src={artwork.imageSrc}
+          src={mediaSrc}
           alt={artwork.title}
           loading="lazy"
         />

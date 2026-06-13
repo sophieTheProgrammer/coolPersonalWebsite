@@ -177,12 +177,12 @@ import { skillToys } from "../data/skillToys";
 
       uploadedFile = result.file;
       if (saveArtworkButton instanceof HTMLButtonElement) {
-        saveArtworkButton.disabled = uploadedFile?.kind !== "image";
+        saveArtworkButton.disabled = false;
       }
 
       writeOutput(
         uploadedFile?.kind === "pdf"
-          ? `Uploaded ${result.file.src}\nPDF splitting is next; for now PDFs are saved only.`
+          ? `Uploaded ${result.file.src}\nReady to save this PDF into the selected packet.`
           : `Uploaded ${result.file.src}\nReady to save this image into the selected packet.`,
       );
     } catch (error) {
@@ -191,7 +191,7 @@ import { skillToys } from "../data/skillToys";
   });
 
   saveArtworkButton?.addEventListener("click", async () => {
-    if (!(artForm instanceof HTMLFormElement) || !uploadedFile || uploadedFile.kind !== "image") {
+    if (!(artForm instanceof HTMLFormElement) || !uploadedFile) {
       return;
     }
 
@@ -207,6 +207,7 @@ import { skillToys } from "../data/skillToys";
           title: data.get("title"),
           note: data.get("note"),
           imageSrc: uploadedFile.src,
+          kind: uploadedFile.kind,
         }),
       });
       const result = await response.json();

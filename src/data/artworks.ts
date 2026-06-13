@@ -38,6 +38,40 @@ export type ArtVolume = {
 
 export const artworks: Artwork[] = [
   {
+    title: "kymm from purple hyacinth!!!",
+    slug: "kymm-from-purple-hyacinth",
+    year: "2026",
+    medium: "Uploaded scan",
+    mood: "study",
+    status: "study",
+    note: "Uploaded from the local admin helper.",
+    palette: ["#fbfaf7", "#1e1b2e", "#d8d3c8"],
+    imageSrc: "/art/26-1-2-kymmmm-d50310d1.png",
+  },
+  {
+    title: "Everest",
+    slug: "everest",
+    year: "2026",
+    medium: "Uploaded scan",
+    mood: "study",
+    status: "study",
+    note: "Uploaded from the local admin helper.",
+    palette: ["#fbfaf7", "#1e1b2e", "#d8d3c8"],
+    imageSrc:
+      "/art/26-4-18-everest-form-ref-hehe-back-from-hiatus-2e49fdef.png",
+  },
+  {
+    title: "Drawings from Chinese School",
+    slug: "drawings-from-chinese-school",
+    year: "2026",
+    medium: "Uploaded PDF",
+    mood: "study",
+    status: "study",
+    note: "Uploaded from the local admin helper.",
+    palette: ["#fbfaf7", "#1e1b2e", "#d8d3c8"],
+    imageSrc: "/art/drawings-from-chinese-school-a85462d0.pdf",
+  },
+  {
     title: "Signal Garden",
     slug: "signal-garden",
     year: "2026",
@@ -108,7 +142,13 @@ export const artVolumes: ArtVolume[] = [
     note: "A starter pack for sketches that feel like UI fragments, toy motion, and abstract little studio notes.",
     coverPalette: ["#e4577a", "#2d9c8c", "#f4d35e"],
     coverDoodle: "drawings-vol-01-cover.png",
-    drawingSlugs: ["signal-garden", "pocket-orbit", "line-memory"],
+    drawingSlugs: [
+      "signal-garden",
+      "pocket-orbit",
+      "line-memory",
+      "drawings-from-chinese-school",
+      "everest",
+    ],
   },
   {
     title: "Studio Studies",
@@ -118,7 +158,12 @@ export const artVolumes: ArtVolume[] = [
     note: "A second pack for more finished-looking studies and placeholders for future drawing batches.",
     coverPalette: ["#1e1b2e", "#fbfaf7", "#7c6cff"],
     coverDoodle: "studio-studies-cover.png",
-    drawingSlugs: ["quiet-interface", "practice-room", "tiny-poster"],
+    drawingSlugs: [
+      "quiet-interface",
+      "practice-room",
+      "tiny-poster",
+      "kymm-from-purple-hyacinth",
+    ],
   },
   {
     title: "Pocket Sketchbook",

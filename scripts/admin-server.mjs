@@ -93,10 +93,11 @@ const createArtwork = async (entry) => {
   const packetSlug = String(entry.packetSlug ?? "").trim();
   const imageSrc = String(entry.imageSrc ?? "").trim();
   const processSrc = String(entry.processSrc ?? "").trim();
+  const kind = String(entry.kind ?? "").trim();
   const note = String(entry.note ?? "").trim();
 
   if (!title || !packetSlug || !imageSrc.startsWith("/art/")) {
-    throw new Error("Title, packet slug, and uploaded art image are required.");
+    throw new Error("Title, packet slug, and uploaded art file are required.");
   }
 
   const source = await readFile(artDataFile, "utf8");
@@ -114,7 +115,7 @@ const createArtwork = async (entry) => {
     title: ${JSON.stringify(title)},
     slug: ${JSON.stringify(slug)},
     year: ${JSON.stringify(String(new Date().getFullYear()))},
-    medium: "Uploaded scan",
+    medium: ${JSON.stringify(kind === "pdf" ? "Uploaded PDF" : "Uploaded scan")},
     mood: "study",
     status: "study",
     note: ${JSON.stringify(note || "Uploaded from the local admin helper.")},
