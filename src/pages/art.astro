@@ -57,34 +57,34 @@ const moods = [...new Set(artworks.map((artwork) => artwork.mood))];
         </div>
       </section>
 
-      <div class="art-gallery-stage mt-8 rounded-xl bg-[rgba(255,255,255,0.58)] p-3">
+      <div class="art-gallery-stage mt-10 rounded-[1.25rem] bg-[rgba(255,255,255,0.48)] p-3 sm:p-5">
         <div class="mb-3 flex flex-wrap items-center justify-between gap-3 px-1">
           <p class="text-sm font-semibold text-[var(--color-muted)]">
             click a pack to open the drawings inside
           </p>
         </div>
-        <div class="art-gallery-grid grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <div class="art-gallery-grid grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {artVolumes.map((volume, index) => <ArtVolumeCard volume={volume} index={index} />)}
           <ArtProcessWidget />
           <SketchbookWidget />
         </div>
       </div>
 
-      <section class="mt-10 grid gap-4 md:grid-cols-3">
-        <article class="rounded-lg bg-white/38 p-4">
+      <section class="mt-12 grid gap-3 opacity-72 md:grid-cols-3">
+        <article class="rounded-lg bg-white/24 p-4">
           <h2 class="font-black">Future filter</h2>
           <p class="mt-2 leading-7 text-[var(--color-muted)]">
             Turn the mood chips into real filters once the gallery has enough
             work to browse.
           </p>
         </article>
-        <article class="rounded-lg bg-white/38 p-4">
+        <article class="rounded-lg bg-white/24 p-4">
           <h2 class="font-black">Process slider</h2>
           <p class="mt-2 leading-7 text-[var(--color-muted)]">
             Add sketch to final comparisons for pieces that have process shots.
           </p>
         </article>
-        <article class="rounded-lg bg-white/38 p-4">
+        <article class="rounded-lg bg-white/24 p-4">
           <h2 class="font-black">Lightbox view</h2>
           <p class="mt-2 leading-7 text-[var(--color-muted)]">
             Open artwork in a focused viewer with notes, process details, and

@@ -18,13 +18,16 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 
 <article
   class:list={[
-    "art-volume-card group overflow-hidden rounded-lg bg-[var(--color-card)] transition hover:-translate-y-1 hover:shadow-lg",
+    "art-volume-card group overflow-hidden rounded-xl bg-[rgba(255,253,248,0.92)] transition hover:-translate-y-1 hover:shadow-lg",
     index === 0 ? "xl:col-span-2" : "",
   ]}
 >
   <a class="block h-full" href={`${base}art/collections/${volume.slug}/`}>
     <div
-      class="relative min-h-64 overflow-hidden"
+      class:list={[
+        "relative overflow-hidden",
+        index === 0 ? "min-h-80" : "min-h-64",
+      ]}
       style={`background: linear-gradient(135deg, ${first}, ${second} 58%, ${third});`}
     >
       <div class="absolute inset-0 opacity-25 mix-blend-screen art-tile-pattern"></div>
@@ -53,9 +56,9 @@ const base = import.meta.env.BASE_URL.endsWith("/")
       </div>
     </div>
 
-    <div class="space-y-4 p-4">
+    <div class:list={["space-y-4", index === 0 ? "p-6" : "p-4"]}>
       <div>
-        <h2 class="text-2xl font-black">{volume.title}</h2>
+        <h2 class:list={["font-black", index === 0 ? "text-4xl leading-none" : "text-2xl"]}>{volume.title}</h2>
         <p class="mt-2 leading-7 text-[var(--color-muted)]">{volume.subtitle}</p>
       </div>
       <p class="leading-7 text-[var(--color-muted)]">{volume.note}</p>

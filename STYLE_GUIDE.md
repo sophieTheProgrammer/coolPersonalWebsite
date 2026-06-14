@@ -26,6 +26,12 @@ Preview the options at `/style/`.
 - Avoid decorative floating blobs, halos, or soft light shapes.
 - Keep borders for controls, forms, media frames, and places where separation is functionally useful.
 
+## MVP Hierarchy Pass
+
+- Give each page one primary focal point before secondary tools or feeds.
+- Use larger type and more space for primary content; use softer fills and lower opacity for support sections.
+- Feature real content first: practice videos, packet covers, project rows, and the home navigation board.
+
 ## Restricted Palette
 
 - Ink: `#24202c`

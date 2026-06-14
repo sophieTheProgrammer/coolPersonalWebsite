@@ -30,9 +30,9 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
         </div>
       </div>
 
-      <section class="mt-12" aria-labelledby="active-heading">
+      <section class="mt-14 rounded-[1.25rem] bg-[rgba(255,255,255,0.48)] p-3 sm:p-5" aria-labelledby="active-heading">
         <div class="flex flex-wrap items-end justify-between gap-4">
-          <h2 id="active-heading" class="max-w-2xl text-4xl font-black leading-none sm:text-5xl">
+          <h2 id="active-heading" class="max-w-2xl text-4xl font-black leading-none sm:text-6xl">
             What is getting practiced now
           </h2>
           <p class="max-w-sm text-sm font-semibold leading-6 text-[var(--color-muted)]">
@@ -60,8 +60,8 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
         </div>
       </section>
 
-      <section class="mt-10" aria-labelledby="overview-heading">
-        <div class="grid gap-4">
+      <section class="mt-16 opacity-90" aria-labelledby="overview-heading">
+        <div class="grid gap-4 rounded-xl bg-white/32 p-3">
           <ToyProgressChart toys={skillToys} />
         </div>
       </section>
@@ -86,7 +86,7 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
         </div>
       </section>
 
-      <section class="mt-14" aria-labelledby="toy-strip-heading">
+      <section class="mt-18 rounded-xl bg-white/28 p-3" aria-labelledby="toy-strip-heading">
         <div class="mb-3 flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 id="toy-strip-heading" class="text-2xl font-black">Toy orbit</h2>
