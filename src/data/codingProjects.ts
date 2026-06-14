@@ -26,7 +26,8 @@ export const codingProjects: CodingProject[] = [
     status: "learning",
     summary: "Building a computer from first principles",
     stack: ["HDL"],
-    notes: "Current focus: keep the course notes and HDL experiments easy to revisit.",
+    notes:
+      "Current focus: keep the course notes and HDL experiments easy to revisit.",
     nextAction: "Open the syllabus, then continue the next HDL chip.",
     spotlight: false,
     links: [
@@ -47,7 +48,8 @@ export const codingProjects: CodingProject[] = [
     summary:
       "A static personal website for my three loves in life: skill toys, art, and coding. Completely vibecoded.",
     stack: ["Astro", "TypeScript", "Tailwind", "GitHub Pages", "ChatGPT"],
-    notes: "Main personal site workbench: art uploads, skill toy logs, and coding projects.",
+    notes:
+      "Main personal site workbench: art uploads, skill toy logs, and coding projects.",
     nextAction: "Run npm run dev and polish the next page section.",
     spotlight: false,
     links: [
@@ -56,9 +58,8 @@ export const codingProjects: CodingProject[] = [
         href: "https://github.com/sophieTheProgrammer/coolPersonalWebsite",
       },
       {
-        label:
-          "You are looking at this very website : [link it when publihsed]",
-        href: "",
+        label: "You are looking at this very website!",
+        href: "https://sophietheprogrammer.github.io/coolPersonalWebsite/",
       },
     ],
   },
@@ -70,7 +71,8 @@ export const codingProjects: CodingProject[] = [
     summary:
       "SUPER FUN game jams submissions made in only a couple days with a SUPER AWESOME TEAM! I did the art, and a bit of coding.",
     stack: ["Godot", "Github", "Procreate"],
-    notes: "Archive the best jam builds and write short postmortems for what worked.",
+    notes:
+      "Archive the best jam builds and write short postmortems for what worked.",
     nextAction: "Pick one jam and add screenshots or notes.",
     spotlight: true,
     links: [
@@ -109,7 +111,8 @@ export const codingProjects: CodingProject[] = [
       "Semester long intro to computer science from Harvard, from our very goat David Malan and ddb.",
     stack: ["C", "Python", "SQL", "HTML/CSS/JS", "Flask", "Jinja"],
     notes: "Coursework archive with a final project video and course links.",
-    nextAction: "Replace placeholder coursework link when the archive is ready.",
+    nextAction:
+      "Replace placeholder coursework link when the archive is ready.",
     links: [
       { label: "View coursework [login get link]", href: "art/" },
       {
