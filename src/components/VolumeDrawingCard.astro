@@ -35,11 +35,18 @@ const isPdf = mediaSrc?.toLowerCase().endsWith(".pdf");
           loading="lazy"
         />
       ) : mediaSrc ? (
-        <>
+        <button
+          class="art-lightbox-trigger group/lightbox block w-full cursor-zoom-in text-left"
+          type="button"
+          data-art-lightbox-trigger
+          data-art-src={mediaSrc}
+          data-art-process-src={processSrc}
+          data-art-title={artwork.title}
+        >
           <img
             class:list={[
               "block h-auto w-full transition duration-300",
-              processSrc ? "group-hover:opacity-0 group-focus-within:opacity-0" : "",
+              processSrc ? "group-hover:opacity-0 group-focus-within:opacity-0 group-hover/lightbox:opacity-0 group-focus/lightbox:opacity-0" : "",
             ]}
             src={mediaSrc}
             alt={artwork.title}
@@ -48,14 +55,14 @@ const isPdf = mediaSrc?.toLowerCase().endsWith(".pdf");
           {
             processSrc && (
               <img
-                class="absolute inset-0 h-full w-full object-contain opacity-0 transition duration-300 group-hover:opacity-100 group-focus-within:opacity-100"
+                class="absolute inset-0 h-full w-full object-contain opacity-0 transition duration-300 group-hover:opacity-100 group-focus-within:opacity-100 group-hover/lightbox:opacity-100 group-focus/lightbox:opacity-100"
                 src={processSrc}
                 alt={`${artwork.title} process sketch`}
                 loading="lazy"
               />
             )
           }
-        </>
+        </button>
       ) : (
         <>
           <div class="min-h-64">

@@ -69,6 +69,23 @@ const drawings = getArtworksForVolume(volume.slug);
           }
         </div>
       </section>
+
+      <dialog class="art-lightbox" data-art-lightbox>
+        <div class="art-lightbox__inner">
+          <div class="art-lightbox__toolbar">
+            <h2 data-art-lightbox-title></h2>
+            <div class="art-lightbox__actions">
+              <button class="site-button px-3 py-2 text-sm" type="button" data-art-lightbox-toggle hidden>
+                Show process
+              </button>
+              <button class="site-button px-3 py-2 text-sm" type="button" data-art-lightbox-close>
+                Close
+              </button>
+            </div>
+          </div>
+          <img data-art-lightbox-image alt="" />
+        </div>
+      </dialog>
     </section>
   </main>
 </BaseLayout>
@@ -98,4 +115,62 @@ const drawings = getArtworksForVolume(volume.slug);
       );
     }
   }
+
+  const lightbox = document.querySelector<HTMLDialogElement>("[data-art-lightbox]");
+  const lightboxImage = document.querySelector<HTMLImageElement>("[data-art-lightbox-image]");
+  const lightboxTitle = document.querySelector<HTMLElement>("[data-art-lightbox-title]");
+  const lightboxToggle = document.querySelector<HTMLButtonElement>("[data-art-lightbox-toggle]");
+  const lightboxClose = document.querySelector<HTMLButtonElement>("[data-art-lightbox-close]");
+  let lightboxFinalSrc = "";
+  let lightboxProcessSrc = "";
+  let showingProcess = false;
+
+  const renderLightboxImage = () => {
+    if (!lightboxImage) return;
+    lightboxImage.src = showingProcess && lightboxProcessSrc ? lightboxProcessSrc : lightboxFinalSrc;
+    lightboxImage.alt = lightboxTitle?.textContent ?? "";
+
+    if (lightboxToggle) {
+      lightboxToggle.textContent = showingProcess ? "Show finished" : "Show process";
+    }
+  };
+
+  document.querySelectorAll<HTMLButtonElement>("[data-art-lightbox-trigger]").forEach((trigger) => {
+    trigger.addEventListener("click", () => {
+      if (!lightbox || !lightboxImage || !lightboxTitle) return;
+
+      lightboxFinalSrc = trigger.dataset.artSrc ?? "";
+      lightboxProcessSrc = trigger.dataset.artProcessSrc ?? "";
+      showingProcess = false;
+      lightboxTitle.textContent = trigger.dataset.artTitle ?? "Drawing";
+
+      if (lightboxToggle) {
+        lightboxToggle.hidden = !lightboxProcessSrc;
+      }
+
+      renderLightboxImage();
+      lightbox.showModal();
+    });
+  });
+
+  lightboxToggle?.addEventListener("click", () => {
+    showingProcess = !showingProcess;
+    renderLightboxImage();
+  });
+
+  lightboxClose?.addEventListener("click", () => {
+    lightbox?.close();
+  });
+
+  lightbox?.addEventListener("click", (event) => {
+    if (event.target === lightbox) {
+      lightbox.close();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && lightbox?.open) {
+      lightbox.close();
+    }
+  });
 </script>

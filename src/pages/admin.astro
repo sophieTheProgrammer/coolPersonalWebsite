@@ -130,7 +130,20 @@ import { skillToys } from "../data/skillToys";
   const preview = document.querySelector("[data-upload-preview]");
   const pdfPagesPreview = document.querySelector("[data-pdf-pages]");
   let uploadedFile: { src: string; kind: "image" | "pdf" } | null = null;
-  let renderedPdfPages: { pageNumber: number; dataUrl: string; width: number; height: number }[] = [];
+  type RenderedPdfPage = {
+    pageNumber: number;
+    dataUrl: string;
+    width: number;
+    height: number;
+  };
+
+  type PdfPagePayload = RenderedPdfPage & {
+    title: string;
+    role: "final" | "process";
+    processPageNumber?: number;
+  };
+
+  let renderedPdfPages: RenderedPdfPage[] = [];
 
   const writeOutput = (message: string) => {
     if (artOutput instanceof HTMLElement) {
@@ -147,7 +160,7 @@ import { skillToys } from "../data/skillToys";
 
     const bytes = new Uint8Array(await file.arrayBuffer());
     const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
-    const pages: { pageNumber: number; dataUrl: string; width: number; height: number }[] = [];
+    const pages: RenderedPdfPage[] = [];
 
     pdfPagesPreview.innerHTML = "";
 
@@ -169,19 +182,108 @@ import { skillToys } from "../data/skillToys";
       const dataUrl = canvas.toDataURL("image/png");
       pages.push({ pageNumber, dataUrl, width: canvas.width, height: canvas.height });
 
-      const label = document.createElement("label");
-      label.className = "admin-pdf-page";
-      label.innerHTML = `
-        <input type="checkbox" value="${pageNumber}" checked />
-        <img src="${dataUrl}" alt="PDF page ${pageNumber}" />
-        <span>Page ${pageNumber} / ${canvas.width}x${canvas.height}</span>
+      const pageCard = document.createElement("article");
+      pageCard.className = "admin-pdf-page";
+      pageCard.dataset.pdfPage = String(pageNumber);
+
+      const includeLabel = document.createElement("label");
+      includeLabel.className = "admin-pdf-page__include";
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.value = String(pageNumber);
+      checkbox.checked = true;
+      checkbox.dataset.pdfInclude = String(pageNumber);
+
+      const includeText = document.createElement("span");
+      includeText.textContent = `Page ${pageNumber} / ${canvas.width}x${canvas.height}`;
+
+      includeLabel.append(checkbox, includeText);
+
+      const image = document.createElement("img");
+      image.src = dataUrl;
+      image.alt = `PDF page ${pageNumber}`;
+
+      const titleLabel = document.createElement("label");
+      titleLabel.className = "field-stack";
+      const titleText = document.createElement("span");
+      titleText.textContent = "Title";
+      const titleInput = document.createElement("input");
+      titleInput.className = "form-field";
+      titleInput.dataset.pdfTitle = String(pageNumber);
+      titleInput.value = `${file.name.replace(/\.[^.]+$/, "")} p. ${pageNumber}`;
+      titleLabel.append(titleText, titleInput);
+
+      const roleLabel = document.createElement("label");
+      roleLabel.className = "field-stack";
+      const roleText = document.createElement("span");
+      roleText.textContent = "Use as";
+      const roleSelect = document.createElement("select");
+      roleSelect.className = "form-field";
+      roleSelect.dataset.pdfRole = String(pageNumber);
+      roleSelect.innerHTML = `
+        <option value="final">finished/gallery image</option>
+        <option value="process">process/hover image</option>
       `;
-      pdfPagesPreview.append(label);
+      roleLabel.append(roleText, roleSelect);
+
+      const processLabel = document.createElement("label");
+      processLabel.className = "field-stack";
+      const processText = document.createElement("span");
+      processText.textContent = "Show on hover";
+      const processSelect = document.createElement("select");
+      processSelect.className = "form-field";
+      processSelect.dataset.pdfProcessFor = String(pageNumber);
+      processLabel.append(processText, processSelect);
+
+      pageCard.append(includeLabel, image, titleLabel, roleLabel, processLabel);
+      pdfPagesPreview.append(pageCard);
     }
 
     renderedPdfPages = pages;
+    syncPdfProcessSelectors();
     writeOutput(`Rendered ${pages.length} PDF page${pages.length === 1 ? "" : "s"} for packet import.`);
   };
+
+  const syncPdfProcessSelectors = () => {
+    if (!(pdfPagesPreview instanceof HTMLElement)) return;
+
+    const processOptions = renderedPdfPages.filter((page) => {
+      const role = pdfPagesPreview.querySelector<HTMLSelectElement>(`[data-pdf-role="${page.pageNumber}"]`);
+      const include = pdfPagesPreview.querySelector<HTMLInputElement>(`[data-pdf-include="${page.pageNumber}"]`);
+      return include?.checked && role?.value === "process";
+    });
+
+    pdfPagesPreview.querySelectorAll<HTMLSelectElement>("[data-pdf-process-for]").forEach((select) => {
+      const pageNumber = Number(select.dataset.pdfProcessFor);
+      const currentValue = select.value;
+      const role = pdfPagesPreview.querySelector<HTMLSelectElement>(`[data-pdf-role="${pageNumber}"]`);
+
+      select.innerHTML = `<option value="">none</option>`;
+      processOptions
+        .filter((page) => page.pageNumber !== pageNumber)
+        .forEach((page) => {
+          const option = document.createElement("option");
+          option.value = String(page.pageNumber);
+          option.textContent = `Page ${page.pageNumber}`;
+          select.append(option);
+        });
+
+      select.value = currentValue;
+      select.disabled = role?.value === "process";
+    });
+  };
+
+  pdfPagesPreview?.addEventListener("change", (event) => {
+    const target = event.target;
+
+    if (
+      target instanceof HTMLSelectElement ||
+      target instanceof HTMLInputElement
+    ) {
+      syncPdfProcessSelectors();
+    }
+  });
 
   const renderPreview = async (file: File) => {
     if (!(preview instanceof HTMLElement)) return;
@@ -260,10 +362,26 @@ import { skillToys } from "../data/skillToys";
     try {
       if (uploadedFile.kind === "pdf") {
         const selectedPageNumbers = new Set(
-          Array.from(document.querySelectorAll<HTMLInputElement>("[data-pdf-pages] input:checked"))
+          Array.from(document.querySelectorAll<HTMLInputElement>("[data-pdf-include]:checked"))
             .map((input) => Number(input.value)),
         );
-        const pages = renderedPdfPages.filter((page) => selectedPageNumbers.has(page.pageNumber));
+        const pages: PdfPagePayload[] = renderedPdfPages
+          .filter((page) => selectedPageNumbers.has(page.pageNumber))
+          .map((page) => {
+            const titleInput = document.querySelector<HTMLInputElement>(`[data-pdf-title="${page.pageNumber}"]`);
+            const roleInput = document.querySelector<HTMLSelectElement>(`[data-pdf-role="${page.pageNumber}"]`);
+            const processInput = document.querySelector<HTMLSelectElement>(`[data-pdf-process-for="${page.pageNumber}"]`);
+            const role = roleInput?.value === "process" ? "process" : "final";
+
+            return {
+              ...page,
+              title: titleInput?.value.trim() || `${String(data.get("title") ?? "PDF page")} p. ${page.pageNumber}`,
+              role,
+              processPageNumber: role === "final" && processInput?.value
+                ? Number(processInput.value)
+                : undefined,
+            };
+          });
 
         const response = await fetch(`${writerUrl}/api/pdf-pages`, {
           method: "POST",

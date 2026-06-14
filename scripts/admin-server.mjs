@@ -232,7 +232,7 @@ const savePdfPages = async (entry) => {
 
   await mkdir(artDir, { recursive: true });
 
-  const artworkEntries = await Promise.all(
+  const savedPages = await Promise.all(
     pages.map(async (page) => {
       const pageNumber = Number(page.pageNumber);
       const dataUrl = String(page.dataUrl ?? "");
@@ -246,13 +246,35 @@ const savePdfPages = async (entry) => {
       await writeFile(join(artDir.pathname, filename), Buffer.from(match[1], "base64"));
 
       return {
-        title: pages.length === 1 ? title : `${title} p. ${pageNumber}`,
-        imageSrc: `/art/${filename}`,
-        medium: "PDF page",
-        note: note || "Extracted from an uploaded PDF.",
+        ...page,
+        pageNumber,
+        src: `/art/${filename}`,
       };
     }),
   );
+
+  const srcByPage = new Map(savedPages.map((page) => [page.pageNumber, page.src]));
+  const finalPages = savedPages.filter((page) => page.role !== "process");
+
+  if (finalPages.length === 0) {
+    throw new Error("Choose at least one finished/gallery PDF page.");
+  }
+
+  const artworkEntries = finalPages.map((page) => {
+    const pageTitle = String(page.title ?? "").trim();
+    const processPageNumber = Number(page.processPageNumber);
+    const processSrc = Number.isFinite(processPageNumber)
+      ? srcByPage.get(processPageNumber)
+      : "";
+
+    return {
+      title: pageTitle || (finalPages.length === 1 ? title : `${title} p. ${page.pageNumber}`),
+      imageSrc: page.src,
+      processSrc,
+      medium: "PDF page",
+      note: note || "Extracted from an uploaded PDF.",
+    };
+  });
 
   const result = await writeArtworkEntries(targetPacketSlug, artworkEntries);
   return { ...result, packetSlug: targetPacketSlug };
