@@ -47,9 +47,14 @@ import { skillToys } from "../data/skillToys";
             <span>Note</span>
             <textarea class="form-field form-field--textarea" name="note" placeholder="Optional tiny note"></textarea>
           </label>
+          <label class="field-stack">
+            <span>Process/sketch image path</span>
+            <input class="form-field" name="processSrc" placeholder="/art/sketch-upload.png" />
+          </label>
           <div class="media-frame admin-upload-preview" data-upload-preview>
             <span>Select an image or PDF</span>
           </div>
+          <div class="admin-pdf-pages" data-pdf-pages hidden></div>
           <div class="flex flex-wrap gap-2">
             <button class="site-button site-button--dark px-4 py-3" type="submit">
               Upload file
@@ -95,6 +100,11 @@ import { skillToys } from "../data/skillToys";
 </BaseLayout>
 
 <script>
+  import * as pdfjsLib from "pdfjs-dist";
+  import pdfWorkerSrc from "pdfjs-dist/build/pdf.worker.mjs?url";
+
+  pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerSrc;
+
   const writerUrl = "http://localhost:8787";
 
   const slugify = (value: string) =>
@@ -123,7 +133,9 @@ import { skillToys } from "../data/skillToys";
   const artOutput = document.querySelector("[data-art-output]");
   const saveArtworkButton = document.querySelector("[data-save-artwork]");
   const preview = document.querySelector("[data-upload-preview]");
+  const pdfPagesPreview = document.querySelector("[data-pdf-pages]");
   let uploadedFile: { src: string; kind: "image" | "pdf" } | null = null;
+  let renderedPdfPages: { pageNumber: number; dataUrl: string }[] = [];
 
   const writeOutput = (message: string) => {
     if (artOutput instanceof HTMLElement) {
@@ -131,19 +143,67 @@ import { skillToys } from "../data/skillToys";
     }
   };
 
-  const renderPreview = (file: File) => {
+  const renderPdfPages = async (file: File) => {
+    if (!(pdfPagesPreview instanceof HTMLElement)) return;
+
+    renderedPdfPages = [];
+    pdfPagesPreview.hidden = false;
+    pdfPagesPreview.textContent = "Rendering PDF pages...";
+
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+    const pages: { pageNumber: number; dataUrl: string }[] = [];
+
+    pdfPagesPreview.innerHTML = "";
+
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+      const page = await pdf.getPage(pageNumber);
+      const viewport = page.getViewport({ scale: 1.45 });
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      if (!context) continue;
+
+      canvas.width = Math.ceil(viewport.width);
+      canvas.height = Math.ceil(viewport.height);
+      await page.render({ canvas, canvasContext: context, viewport }).promise;
+
+      const dataUrl = canvas.toDataURL("image/png");
+      pages.push({ pageNumber, dataUrl });
+
+      const label = document.createElement("label");
+      label.className = "admin-pdf-page";
+      label.innerHTML = `
+        <input type="checkbox" value="${pageNumber}" checked />
+        <img src="${dataUrl}" alt="PDF page ${pageNumber}" />
+        <span>Page ${pageNumber}</span>
+      `;
+      pdfPagesPreview.append(label);
+    }
+
+    renderedPdfPages = pages;
+    writeOutput(`Rendered ${pages.length} PDF page${pages.length === 1 ? "" : "s"} for packet import.`);
+  };
+
+  const renderPreview = async (file: File) => {
     if (!(preview instanceof HTMLElement)) return;
     const url = URL.createObjectURL(file);
+    renderedPdfPages = [];
+
+    if (pdfPagesPreview instanceof HTMLElement) {
+      pdfPagesPreview.hidden = true;
+      pdfPagesPreview.innerHTML = "";
+    }
 
     if (file.type === "application/pdf") {
       preview.innerHTML = `<iframe title="PDF preview" src="${url}"></iframe>`;
+      await renderPdfPages(file);
       return;
     }
 
     preview.innerHTML = `<img src="${url}" alt="Upload preview" />`;
   };
 
-  artForm?.querySelector<HTMLInputElement>('input[type="file"]')?.addEventListener("change", (event) => {
+  artForm?.querySelector<HTMLInputElement>('input[type="file"]')?.addEventListener("change", async (event) => {
     const input = event.currentTarget;
     if (!(input instanceof HTMLInputElement)) return;
     const file = input.files?.[0];
@@ -154,7 +214,7 @@ import { skillToys } from "../data/skillToys";
     }
 
     if (file) {
-      renderPreview(file);
+      await renderPreview(file);
       writeOutput(`Ready to upload: ${file.name}`);
     }
   });
@@ -199,6 +259,30 @@ import { skillToys } from "../data/skillToys";
     writeOutput("Writing drawing data...");
 
     try {
+      if (uploadedFile.kind === "pdf") {
+        const selectedPageNumbers = new Set(
+          Array.from(document.querySelectorAll<HTMLInputElement>("[data-pdf-pages] input:checked"))
+            .map((input) => Number(input.value)),
+        );
+        const pages = renderedPdfPages.filter((page) => selectedPageNumbers.has(page.pageNumber));
+
+        const response = await fetch(`${writerUrl}/api/pdf-pages`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            packetSlug: data.get("packetSlug"),
+            title: data.get("title"),
+            note: data.get("note"),
+            pages,
+          }),
+        });
+        const result = await response.json();
+        if (!result.ok) throw new Error(result.error);
+
+        writeOutput(`Saved PDF pages: ${result.artwork.slugs.join(", ")}\nRefresh dev server to see them.`);
+        return;
+      }
+
       const response = await fetch(`${writerUrl}/api/artwork`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -207,6 +291,7 @@ import { skillToys } from "../data/skillToys";
           title: data.get("title"),
           note: data.get("note"),
           imageSrc: uploadedFile.src,
+          processSrc: data.get("processSrc"),
           kind: uploadedFile.kind,
         }),
       });

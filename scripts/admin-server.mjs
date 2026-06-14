@@ -88,56 +88,123 @@ const saveUpload = async (file) => {
   };
 };
 
-const createArtwork = async (entry) => {
-  const title = String(entry.title ?? "").trim();
-  const packetSlug = String(entry.packetSlug ?? "").trim();
-  const imageSrc = String(entry.imageSrc ?? "").trim();
-  const processSrc = String(entry.processSrc ?? "").trim();
-  const kind = String(entry.kind ?? "").trim();
-  const note = String(entry.note ?? "").trim();
-
-  if (!title || !packetSlug || !imageSrc.startsWith("/art/")) {
-    throw new Error("Title, packet slug, and uploaded art file are required.");
-  }
-
+const writeArtworkEntries = async (packetSlug, entries) => {
   const source = await readFile(artDataFile, "utf8");
-  const existingSlugs = [...source.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => match[1]);
-  const baseSlug = slugify(title) || "uploaded-drawing";
-  let slug = baseSlug;
-  let counter = 2;
+  const volumePattern = new RegExp(`(slug: "${packetSlug}",[\\s\\S]*?drawingSlugs: \\[)([\\s\\S]*?)(\\])`);
 
-  while (existingSlugs.includes(slug)) {
-    slug = `${baseSlug}-${counter}`;
-    counter += 1;
+  if (!volumePattern.test(source)) {
+    throw new Error(`Packet not found: ${packetSlug}`);
   }
 
-  const object = `  {
+  const usedSlugs = new Set([...source.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => match[1]));
+  const slugs = [];
+  const objects = entries.map((entry) => {
+    const title = String(entry.title ?? "").trim();
+    const imageSrc = String(entry.imageSrc ?? "").trim();
+    const processSrc = String(entry.processSrc ?? "").trim();
+    const medium = String(entry.medium ?? "Uploaded scan").trim();
+    const note = String(entry.note ?? "").trim();
+
+    if (!title || !imageSrc.startsWith("/art/")) {
+      throw new Error("Title and uploaded art file are required.");
+    }
+
+    const baseSlug = slugify(title) || "uploaded-drawing";
+    let slug = baseSlug;
+    let counter = 2;
+
+    while (usedSlugs.has(slug)) {
+      slug = `${baseSlug}-${counter}`;
+      counter += 1;
+    }
+
+    usedSlugs.add(slug);
+    slugs.push(slug);
+
+    return `  {
     title: ${JSON.stringify(title)},
     slug: ${JSON.stringify(slug)},
     year: ${JSON.stringify(String(new Date().getFullYear()))},
-    medium: ${JSON.stringify(kind === "pdf" ? "Uploaded PDF" : "Uploaded scan")},
+    medium: ${JSON.stringify(medium)},
     mood: "study",
     status: "study",
     note: ${JSON.stringify(note || "Uploaded from the local admin helper.")},
     palette: ["#fbfaf7", "#1e1b2e", "#d8d3c8"],
     imageSrc: ${JSON.stringify(imageSrc)},${processSrc ? `\n    processSrc: ${JSON.stringify(processSrc)},` : ""}
   },`;
+  });
 
-  let next = source.replace(/export const artworks: Artwork\[] = \[\n/, (match) => `${match}${object}\n`);
-  const volumePattern = new RegExp(`(slug: "${packetSlug}",[\\s\\S]*?drawingSlugs: \\[)([\\s\\S]*?)(\\])`);
-
-  if (!volumePattern.test(next)) {
-    throw new Error(`Packet not found: ${packetSlug}`);
-  }
+  let next = source.replace(
+    /export const artworks: Artwork\[] = \[\n/,
+    (match) => `${match}${objects.join("\n")}\n`,
+  );
 
   next = next.replace(volumePattern, (_match, before, drawings, after) => {
     const trimmed = drawings.trim();
     const prefix = trimmed ? `${drawings.trimEnd()},\n      ` : "\n      ";
-    return `${before}${prefix}${JSON.stringify(slug)},\n    ${after}`;
+    return `${before}${prefix}${slugs.map((slug) => JSON.stringify(slug)).join(",\n      ")},\n    ${after}`;
   });
 
   await writeFile(artDataFile, next);
-  return { slug };
+  return { slugs };
+};
+
+const createArtwork = async (entry) => {
+  const packetSlug = String(entry.packetSlug ?? "").trim();
+  const kind = String(entry.kind ?? "").trim();
+
+  if (!packetSlug) {
+    throw new Error("Packet slug is required.");
+  }
+
+  const result = await writeArtworkEntries(packetSlug, [
+    {
+      title: entry.title,
+      imageSrc: entry.imageSrc,
+      processSrc: entry.processSrc,
+      note: entry.note,
+      medium: kind === "pdf" ? "Uploaded PDF" : "Uploaded scan",
+    },
+  ]);
+
+  return { slug: result.slugs[0] };
+};
+
+const savePdfPages = async (entry) => {
+  const packetSlug = String(entry.packetSlug ?? "").trim();
+  const title = String(entry.title ?? "").trim();
+  const note = String(entry.note ?? "").trim();
+  const pages = Array.isArray(entry.pages) ? entry.pages : [];
+
+  if (!packetSlug || !title || pages.length === 0) {
+    throw new Error("Packet, title, and selected PDF pages are required.");
+  }
+
+  await mkdir(artDir, { recursive: true });
+
+  const artworkEntries = await Promise.all(
+    pages.map(async (page) => {
+      const pageNumber = Number(page.pageNumber);
+      const dataUrl = String(page.dataUrl ?? "");
+      const match = dataUrl.match(/^data:image\/png;base64,([a-z0-9+/=]+)$/i);
+
+      if (!Number.isFinite(pageNumber) || !match) {
+        throw new Error("Invalid rendered PDF page.");
+      }
+
+      const filename = `${slugify(title) || "pdf-page"}-page-${pageNumber}-${randomUUID().slice(0, 8)}.png`;
+      await writeFile(join(artDir.pathname, filename), Buffer.from(match[1], "base64"));
+
+      return {
+        title: pages.length === 1 ? title : `${title} p. ${pageNumber}`,
+        imageSrc: `/art/${filename}`,
+        medium: "PDF page",
+        note: note || "Extracted from an uploaded PDF.",
+      };
+    }),
+  );
+
+  return writeArtworkEntries(packetSlug, artworkEntries);
 };
 
 createServer(async (request, response) => {
@@ -166,6 +233,13 @@ createServer(async (request, response) => {
       const body = await readBody(request);
       const entry = JSON.parse(body.toString("utf8"));
       send(response, 200, { ok: true, artwork: await createArtwork(entry) });
+      return;
+    }
+
+    if (request.method === "POST" && url.pathname === "/api/pdf-pages") {
+      const body = await readBody(request);
+      const entry = JSON.parse(body.toString("utf8"));
+      send(response, 200, { ok: true, artwork: await savePdfPages(entry) });
       return;
     }
 

@@ -15,6 +15,9 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 const mediaSrc = artwork.imageSrc?.startsWith("/")
   ? `${base}${artwork.imageSrc.slice(1)}`
   : artwork.imageSrc;
+const processSrc = artwork.processSrc?.startsWith("/")
+  ? `${base}${artwork.processSrc.slice(1)}`
+  : artwork.processSrc;
 const isPdf = mediaSrc?.toLowerCase().endsWith(".pdf");
 ---
 
@@ -32,12 +35,27 @@ const isPdf = mediaSrc?.toLowerCase().endsWith(".pdf");
           loading="lazy"
         />
       ) : mediaSrc ? (
-        <img
-          class="h-full w-full object-cover"
-          src={mediaSrc}
-          alt={artwork.title}
-          loading="lazy"
-        />
+        <>
+          <img
+            class:list={[
+              "h-full w-full object-cover transition duration-300",
+              processSrc ? "group-hover:opacity-0 group-focus-within:opacity-0" : "",
+            ]}
+            src={mediaSrc}
+            alt={artwork.title}
+            loading="lazy"
+          />
+          {
+            processSrc && (
+              <img
+                class="absolute inset-0 h-full w-full object-cover opacity-0 transition duration-300 group-hover:opacity-100 group-focus-within:opacity-100"
+                src={processSrc}
+                alt={`${artwork.title} process sketch`}
+                loading="lazy"
+              />
+            )
+          }
+        </>
       ) : (
         <>
       <div class="absolute inset-0 opacity-25 mix-blend-screen art-tile-pattern"></div>
