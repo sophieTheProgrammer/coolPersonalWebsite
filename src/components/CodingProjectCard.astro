@@ -31,7 +31,6 @@ const getHref = (href: string) =>
     `coding-project-card--${accent}`,
     project.spotlight ? "coding-project-card--spotlight" : "",
   ]}
-  data-project-card={project.slug}
 >
   <div class="space-y-4">
     <div class="flex flex-wrap items-center gap-3">
@@ -61,13 +60,6 @@ const getHref = (href: string) =>
 
   <div class="flex flex-col justify-center rounded-md border border-[var(--color-line)] p-3">
     <div class="grid gap-2">
-      <button
-        class="site-button site-button--dark rounded-md px-3 py-2 text-center text-sm"
-        type="button"
-        data-project-select={project.slug}
-      >
-        Load console
-      </button>
       {
         project.links.length > 0 ? (
           project.links.map((link) => (

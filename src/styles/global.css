@@ -394,13 +394,6 @@ pre,
     0 18px 48px color-mix(in srgb, var(--project-accent, var(--color-accent)) 18%, transparent);
 }
 
-.coding-project-card[data-project-active] {
-  border-color: var(--project-accent, var(--color-accent));
-  box-shadow:
-    0 1px 2px rgba(30, 27, 46, 0.08),
-    0 18px 42px color-mix(in srgb, var(--project-accent, var(--color-accent)) 16%, transparent);
-}
-
 .coding-project-card--rose {
   --project-accent: var(--color-accent);
 }
