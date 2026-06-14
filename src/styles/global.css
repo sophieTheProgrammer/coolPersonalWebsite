@@ -73,10 +73,8 @@ pre,
 
 @layer components {
   .site-card {
-    border: 1px solid var(--color-line);
     border-radius: 0.5rem;
     background: var(--color-card);
-    box-shadow: 0 1px 2px rgb(var(--color-ink-rgb) / 0.08);
   }
 
   .site-card--soft {
@@ -85,44 +83,39 @@ pre,
 
   .site-card--interactive {
     transition:
-      border-color 220ms ease,
       box-shadow 220ms ease,
       transform 220ms ease;
   }
 
   .site-card--interactive:hover {
-    border-color: var(--color-accent);
-    box-shadow: 0 18px 42px rgb(var(--color-ink-rgb) / 0.12);
+    box-shadow: 0 14px 34px rgb(var(--color-ink-rgb) / 0.09);
   }
 
   .site-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--color-line);
     border-radius: 0.45rem;
+    background: rgb(255 255 255 / 0.5);
     color: var(--color-muted);
     font-weight: 900;
     transition:
-      border-color 220ms ease,
       color 220ms ease,
       background-color 220ms ease,
       transform 220ms ease;
   }
 
   .site-button:hover {
-    border-color: var(--color-accent);
+    background: rgb(255 255 255 / 0.82);
     color: var(--color-ink);
   }
 
   .site-button--dark {
-    border-color: var(--color-ink);
     background: var(--color-ink);
     color: #fff;
   }
 
   .site-button--dark:hover {
-    border-color: var(--color-accent);
     background: var(--color-accent);
     color: #fff;
   }
@@ -130,8 +123,8 @@ pre,
   .site-chip {
     display: inline-flex;
     align-items: center;
-    border: 1px solid var(--color-line);
     border-radius: 0.35rem;
+    background: rgb(var(--color-ink-rgb) / 0.055);
     color: var(--color-muted);
     font-size: 0.75rem;
     font-weight: 800;
@@ -139,10 +132,8 @@ pre,
 
   .media-frame {
     overflow: hidden;
-    border: 1px solid var(--color-line);
     border-radius: 0.45rem;
     background: var(--color-ink);
-    box-shadow: 0 1px 2px rgb(var(--color-ink-rgb) / 0.08);
   }
 
   .field-stack {
@@ -479,15 +470,6 @@ pre,
   }
 }
 
-.home-orbit {
-  animation: soft-float 7s ease-in-out infinite;
-}
-
-.home-orbit-delayed {
-  animation: soft-float 8s ease-in-out infinite;
-  animation-delay: -3s;
-}
-
 .hero-with-person {
   display: grid;
   gap: 1.5rem;
@@ -499,22 +481,16 @@ pre,
   height: 12rem;
   width: min(100%, 19rem);
   overflow: hidden;
-  border: 1px solid var(--color-line);
   border-radius: 0.75rem;
-  background:
-    radial-gradient(circle at 78% 24%, rgba(45, 156, 140, 0.18), transparent 28%),
-    linear-gradient(135deg, rgba(228, 87, 122, 0.08), rgba(45, 156, 140, 0.08));
-  box-shadow: 0 1px 2px rgba(30, 27, 46, 0.08);
+  background: linear-gradient(135deg, rgba(228, 87, 122, 0.08), rgba(45, 156, 140, 0.08));
   transition:
     transform 220ms ease,
-    border-color 220ms ease,
     box-shadow 220ms ease;
 }
 
 .hero-with-person:hover .home-person,
 .home-person:hover {
-  border-color: rgba(228, 87, 122, 0.5);
-  box-shadow: 0 16px 40px rgba(30, 27, 46, 0.14);
+  box-shadow: 0 14px 34px rgba(30, 27, 46, 0.1);
   transform: translateY(-0.35rem) rotate(1deg);
 }
 
@@ -537,13 +513,7 @@ pre,
 }
 
 .home-person__halo {
-  left: 4.8rem;
-  top: 1.5rem;
-  width: 6.5rem;
-  height: 6.5rem;
-  border: 1px dashed rgba(30, 27, 46, 0.2);
-  border-radius: 999px;
-  animation: soft-float 9s ease-in-out infinite;
+  display: none;
 }
 
 .home-person__head {
@@ -593,7 +563,6 @@ pre,
 .home-person__arm--right {
   left: 9.2rem;
   transform: rotate(17deg);
-  animation: soft-float 5s ease-in-out infinite;
 }
 
 .home-person__desk {
@@ -1123,95 +1092,7 @@ pre,
 
 .art-page-shell {
   position: relative;
-  background:
-    linear-gradient(180deg, rgba(251, 250, 247, 0.92), rgba(251, 250, 247, 0.72)),
-    radial-gradient(circle at 12% 18%, rgba(45, 156, 140, 0.13), transparent 32%),
-    radial-gradient(circle at 86% 28%, rgba(244, 211, 94, 0.18), transparent 30%);
-}
-
-.art-garden-field {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.art-garden-blob,
-.art-garden-doodle {
-  position: absolute;
-  display: block;
-  pointer-events: none;
-}
-
-.art-garden-blob {
-  opacity: 0.32;
-  filter: blur(0.15px);
-  animation: garden-blob-drift 15s ease-in-out infinite;
-}
-
-.art-garden-blob--one {
-  left: -5rem;
-  top: 8rem;
-  width: 22rem;
-  height: 18rem;
-  border-radius: 42% 58% 66% 34% / 44% 38% 62% 56%;
-  background: rgba(45, 156, 140, 0.18);
-}
-
-.art-garden-blob--two {
-  right: -7rem;
-  top: 15rem;
-  width: 26rem;
-  height: 20rem;
-  border-radius: 63% 37% 42% 58% / 48% 61% 39% 52%;
-  background: rgba(244, 211, 94, 0.22);
-  animation-delay: -5s;
-}
-
-.art-garden-blob--three {
-  left: 42%;
-  bottom: 5rem;
-  width: 18rem;
-  height: 16rem;
-  border-radius: 56% 44% 37% 63% / 39% 55% 45% 61%;
-  background: rgba(228, 87, 122, 0.13);
-  animation-delay: -9s;
-}
-
-.art-garden-blob--four {
-  left: 12%;
-  bottom: 16rem;
-  width: 12rem;
-  height: 10rem;
-  border-radius: 45% 55% 48% 52% / 60% 44% 56% 40%;
-  background: rgba(124, 108, 255, 0.09);
-  animation-delay: -2s;
-}
-
-.art-garden-doodle {
-  width: 12rem;
-  opacity: 0.62;
-}
-
-.art-garden-doodle--one {
-  left: 8%;
-  top: 21rem;
-}
-
-.art-garden-doodle--two {
-  right: 10%;
-  bottom: 8rem;
-}
-
-@keyframes garden-blob-drift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
-  }
-
-  50% {
-    transform: translate3d(1rem, -1.4rem, 0) rotate(4deg) scale(1.04);
-  }
+  background: linear-gradient(180deg, rgba(251, 250, 247, 0.96), rgba(251, 250, 247, 0.84));
 }
 
 .sketchbook-page {

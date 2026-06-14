@@ -34,7 +34,7 @@ const [first, second, third] = volume.coverPalette;
   <main class="min-h-screen px-6 py-12 sm:px-10">
     <section class="mx-auto max-w-6xl">
       <a
-        class="inline-flex rounded border border-[var(--color-line)] px-3 py-2 text-sm font-bold text-[var(--color-muted)] transition hover:border-[var(--color-accent)] hover:text-[var(--color-ink)]"
+        class="inline-flex rounded bg-white/50 px-3 py-2 text-sm font-bold text-[var(--color-muted)] transition hover:bg-white/80 hover:text-[var(--color-ink)]"
         href={`${base}art/`}
       >
         Back to volumes
@@ -47,7 +47,7 @@ const [first, second, third] = volume.coverPalette;
         </div>
         <div
           data-packet-cover
-          class="relative min-h-64 overflow-hidden rounded-xl border border-[var(--color-line)] shadow-sm"
+          class="relative min-h-64 overflow-hidden rounded-xl"
           style={`background: linear-gradient(135deg, ${first}, ${second} 58%, ${third});`}
         >
           <div class="absolute inset-0 opacity-25 mix-blend-screen art-tile-pattern"></div>

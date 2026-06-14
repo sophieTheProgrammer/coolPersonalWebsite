@@ -1,5 +1,4 @@
 ---
-import DoodleImage from "../components/DoodleImage.astro";
 import ArtProcessWidget from "../components/ArtProcessWidget.astro";
 import ArtVolumeCard from "../components/ArtVolumeCard.astro";
 import { artVolumes, artworks } from "../data/artworks";
@@ -14,18 +13,6 @@ const moods = [...new Set(artworks.map((artwork) => artwork.mood))];
   description="A small art gallery with placeholder works, moods, and future interactive features."
 >
   <main class="art-page-shell min-h-screen overflow-hidden px-6 py-12 sm:px-10">
-    <div class="art-garden-field" aria-hidden="true">
-      <span class="art-garden-blob art-garden-blob--one"></span>
-      <span class="art-garden-blob art-garden-blob--two"></span>
-      <span class="art-garden-blob art-garden-blob--three"></span>
-      <span class="art-garden-blob art-garden-blob--four"></span>
-      <div class="art-garden-doodle art-garden-doodle--one">
-        <DoodleImage src="garden-blob-01.png" alt="Hand-drawn garden blob" variant="cover" animation="float" hideWhenMissing />
-      </div>
-      <div class="art-garden-doodle art-garden-doodle--two">
-        <DoodleImage src="garden-blob-02.png" alt="Hand-drawn garden flower blob" variant="cover" animation="float" hideWhenMissing />
-      </div>
-    </div>
     <section class="relative z-10 mx-auto max-w-6xl">
       <div class="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
         <div>
@@ -35,7 +22,7 @@ const moods = [...new Set(artworks.map((artwork) => artwork.mood))];
         </div>
       </div>
 
-      <section class="mt-10 rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] p-4 shadow-sm">
+      <section class="mt-10 rounded-lg bg-white/52 p-4">
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h2 class="text-lg font-black">Gallery controls</h2>
@@ -47,22 +34,22 @@ const moods = [...new Set(artworks.map((artwork) => artwork.mood))];
             <button class="rounded-md bg-[var(--color-ink)] px-3 py-2 text-sm font-bold text-white" type="button">
               Gallery
             </button>
-            <button class="rounded-md border border-[var(--color-line)] px-3 py-2 text-sm font-bold text-[var(--color-muted)]" type="button">
+            <button class="rounded-md bg-white/50 px-3 py-2 text-sm font-bold text-[var(--color-muted)]" type="button">
               Process
             </button>
-            <button class="rounded-md border border-[var(--color-line)] px-3 py-2 text-sm font-bold text-[var(--color-muted)]" type="button">
+            <button class="rounded-md bg-white/50 px-3 py-2 text-sm font-bold text-[var(--color-muted)]" type="button">
               Sketchbook
             </button>
           </div>
         </div>
 
         <div class="mt-4 flex gap-2 overflow-x-auto pb-1">
-          <span class="rounded border border-[var(--color-line)] bg-[rgba(30,27,46,0.05)] px-3 py-1.5 text-xs font-black uppercase tracking-[0.12em]">
+          <span class="rounded bg-[rgba(30,27,46,0.07)] px-3 py-1.5 text-xs font-black uppercase tracking-[0.12em]">
             All moods
           </span>
           {
             moods.map((mood) => (
-              <span class="rounded border border-[var(--color-line)] px-3 py-1.5 text-xs font-black uppercase tracking-[0.12em] text-[var(--color-muted)]">
+              <span class="rounded bg-white/45 px-3 py-1.5 text-xs font-black uppercase tracking-[0.12em] text-[var(--color-muted)]">
                 {mood}
               </span>
             ))
@@ -70,7 +57,7 @@ const moods = [...new Set(artworks.map((artwork) => artwork.mood))];
         </div>
       </section>
 
-      <div class="art-gallery-stage mt-8 rounded-xl border border-[var(--color-line)] bg-[rgba(255,255,255,0.76)] p-3 shadow-sm backdrop-blur">
+      <div class="art-gallery-stage mt-8 rounded-xl bg-[rgba(255,255,255,0.58)] p-3">
         <div class="mb-3 flex flex-wrap items-center justify-between gap-3 px-1">
           <p class="text-sm font-semibold text-[var(--color-muted)]">
             click a pack to open the drawings inside
@@ -84,20 +71,20 @@ const moods = [...new Set(artworks.map((artwork) => artwork.mood))];
       </div>
 
       <section class="mt-10 grid gap-4 md:grid-cols-3">
-        <article class="rounded-lg border border-dashed border-[var(--color-line)] p-4">
+        <article class="rounded-lg bg-white/38 p-4">
           <h2 class="font-black">Future filter</h2>
           <p class="mt-2 leading-7 text-[var(--color-muted)]">
             Turn the mood chips into real filters once the gallery has enough
             work to browse.
           </p>
         </article>
-        <article class="rounded-lg border border-dashed border-[var(--color-line)] p-4">
+        <article class="rounded-lg bg-white/38 p-4">
           <h2 class="font-black">Process slider</h2>
           <p class="mt-2 leading-7 text-[var(--color-muted)]">
             Add sketch to final comparisons for pieces that have process shots.
           </p>
         </article>
-        <article class="rounded-lg border border-dashed border-[var(--color-line)] p-4">
+        <article class="rounded-lg bg-white/38 p-4">
           <h2 class="font-black">Lightbox view</h2>
           <p class="mt-2 leading-7 text-[var(--color-muted)]">
             Open artwork in a focused viewer with notes, process details, and

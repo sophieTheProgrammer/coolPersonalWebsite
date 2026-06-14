@@ -20,6 +20,12 @@ Preview the options at `/style/`.
 - Avoid generic intro blurbs under page heroes.
 - Let page headings, cards, and controls carry the structure.
 
+## Layout Texture
+
+- Use borders sparingly; prefer spacing, scale, muted fills, and type weight for hierarchy.
+- Avoid decorative floating blobs, halos, or soft light shapes.
+- Keep borders for controls, forms, media frames, and places where separation is functionally useful.
+
 ## Restricted Palette
 
 - Ink: `#24202c`
@@ -40,18 +46,18 @@ background shapes. Suggested format:
 
 - Transparent PNG
 - One dark ink drawing: `#24202c`
-- Optional soft background blob using rose or leaf at low opacity
+- Optional flat backing shape using rose or leaf at low opacity
 - Export around `512x512`
 - Keep the toy silhouette larger than the hands
 
-Suggested backgrounds:
+Suggested backing shapes:
 
-- Kendama: soft rose blob
-- Begleri: soft leaf blob
-- Yoyo: paper blob with rose edge
-- Pen spinning: leaf blob with ink pen
+- Kendama: soft rose shape
+- Begleri: soft leaf shape
+- Yoyo: paper shape with rose edge
+- Pen spinning: leaf shape with ink pen
 - Juggling: rose dots on paper
-- Freestyle football: leaf blob with ink ball
+- Freestyle football: leaf shape with ink ball
 
 ## Hand-Drawn Rules
 

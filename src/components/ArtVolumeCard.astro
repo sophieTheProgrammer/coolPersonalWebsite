@@ -18,7 +18,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 
 <article
   class:list={[
-    "art-volume-card group overflow-hidden rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] shadow-sm transition hover:-translate-y-1 hover:shadow-xl",
+    "art-volume-card group overflow-hidden rounded-lg bg-[var(--color-card)] transition hover:-translate-y-1 hover:shadow-lg",
     index === 0 ? "xl:col-span-2" : "",
   ]}
 >
@@ -44,7 +44,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
         {
           drawings.slice(0, 3).map((drawing) => (
             <div
-              class="aspect-[3/4] rounded-md border border-white/40 shadow-sm transition group-hover:-translate-y-1"
+              class="aspect-[3/4] rounded-md transition group-hover:-translate-y-1"
               style={`background: linear-gradient(135deg, ${drawing.palette[0]}, ${drawing.palette[1]} 58%, ${drawing.palette[2]});`}
             >
             </div>

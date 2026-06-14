@@ -21,7 +21,7 @@ const processSrc = artwork.processSrc?.startsWith("/")
 const isPdf = mediaSrc?.toLowerCase().endsWith(".pdf");
 ---
 
-<article class="group overflow-hidden rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+<article class="group overflow-hidden rounded-lg bg-[var(--color-card)] transition hover:-translate-y-1 hover:shadow-lg">
   <div
     class="relative aspect-[3/4] overflow-hidden"
     style={hasImage ? undefined : `background: linear-gradient(135deg, ${first}, ${second} 58%, ${third});`}
