@@ -130,6 +130,15 @@ const comboLogEntries: ComboLogEntry[] = [
     youtubeId: "El5o2PazF8A",
     notes: "",
   },
+  {
+    id: "freestyle-football-inside-kicks-01",
+    toySlug: "freestyle-football",
+    title: "First Inside Kicks",
+    date: "2026-06-13",
+    tag: "practice",
+    youtubeId: "n6nJIT22rOQ",
+    notes: "",
+  },
 ];
 
 const getYouTubeId = (url: string) => {
