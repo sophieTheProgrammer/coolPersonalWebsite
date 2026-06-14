@@ -9,8 +9,8 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 ---
 
 <BaseLayout title="Cool Personal Website">
-  <main class="min-h-screen overflow-hidden px-6 py-16 sm:px-10">
-    <section class="mx-auto grid min-h-[78vh] max-w-6xl items-center gap-16 lg:grid-cols-[1.28fr_0.72fr]">
+  <main class="page-shell overflow-hidden">
+    <section class="content-frame grid min-h-[78vh] items-center gap-16 lg:grid-cols-[1.28fr_0.72fr]">
       <div class="relative">
         <div class="hero-with-person">
           <h1 class="max-w-3xl text-5xl font-black leading-[0.95] sm:text-7xl">
@@ -41,14 +41,14 @@ const base = import.meta.env.BASE_URL.endsWith("/")
         </div>
       </div>
 
-      <div class="relative rounded-xl bg-white/48 p-3 sm:p-4">
+      <div class="home-nav-board relative">
         <div class="grid gap-3">
           {
             homeContent.sections.map((section, index) => (
               <a
                 class:list={[
-                  "home-section-card rounded-lg bg-white/46 p-5 transition hover:bg-white/82",
-                  index === 0 && "home-section-card--wide min-h-48 content-end bg-[rgba(217,79,104,0.12)] p-7",
+                  "home-section-card",
+                  index === 0 && "home-section-card--wide",
                   index === 1 && "home-section-card--tilt-left",
                   index === 2 && "home-section-card--tilt-right",
                 ]}

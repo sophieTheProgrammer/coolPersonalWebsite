@@ -12,8 +12,8 @@ const moods = [...new Set(artworks.map((artwork) => artwork.mood))];
   title="Art | Cool Personal Website"
   description="A small art gallery with placeholder works, moods, and future interactive features."
 >
-  <main class="art-page-shell min-h-screen overflow-hidden px-6 py-12 sm:px-10">
-    <section class="relative z-10 mx-auto max-w-6xl">
+  <main class="art-page-shell page-shell overflow-hidden">
+    <section class="content-frame relative z-10">
       <div class="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
         <div>
           <h1 class="text-4xl font-black leading-none sm:text-6xl">
@@ -22,7 +22,7 @@ const moods = [...new Set(artworks.map((artwork) => artwork.mood))];
         </div>
       </div>
 
-      <section class="mt-10 rounded-lg bg-white/52 p-4">
+      <section class="feature-panel section-rhythm--tight">
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h2 class="text-lg font-black">Gallery controls</h2>
@@ -57,7 +57,7 @@ const moods = [...new Set(artworks.map((artwork) => artwork.mood))];
         </div>
       </section>
 
-      <div class="art-gallery-stage mt-10 rounded-[1.25rem] bg-[rgba(255,255,255,0.48)] p-3 sm:p-5">
+      <div class="art-gallery-stage feature-panel section-rhythm--tight">
         <div class="mb-3 flex flex-wrap items-center justify-between gap-3 px-1">
           <p class="text-sm font-semibold text-[var(--color-muted)]">
             click a pack to open the drawings inside
@@ -70,21 +70,21 @@ const moods = [...new Set(artworks.map((artwork) => artwork.mood))];
         </div>
       </div>
 
-      <section class="mt-12 grid gap-3 opacity-72 md:grid-cols-3">
-        <article class="rounded-lg bg-white/24 p-4">
+      <section class="art-roadmap section-rhythm--tight grid gap-3 md:grid-cols-3">
+        <article class="art-roadmap-card">
           <h2 class="font-black">Future filter</h2>
           <p class="mt-2 leading-7 text-[var(--color-muted)]">
             Turn the mood chips into real filters once the gallery has enough
             work to browse.
           </p>
         </article>
-        <article class="rounded-lg bg-white/24 p-4">
+        <article class="art-roadmap-card">
           <h2 class="font-black">Process slider</h2>
           <p class="mt-2 leading-7 text-[var(--color-muted)]">
             Add sketch to final comparisons for pieces that have process shots.
           </p>
         </article>
-        <article class="rounded-lg bg-white/24 p-4">
+        <article class="art-roadmap-card">
           <h2 class="font-black">Lightbox view</h2>
           <p class="mt-2 leading-7 text-[var(--color-muted)]">
             Open artwork in a focused viewer with notes, process details, and

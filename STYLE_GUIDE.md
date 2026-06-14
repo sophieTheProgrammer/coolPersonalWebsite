@@ -25,6 +25,7 @@ Preview the options at `/style/`.
 - Use borders sparingly; prefer spacing, scale, muted fills, and type weight for hierarchy.
 - Avoid decorative floating blobs, halos, or soft light shapes.
 - Keep borders for controls, forms, media frames, and places where separation is functionally useful.
+- Prefer named layout/component classes for repeated spacing and surfaces instead of long one-off utility stacks.
 
 ## MVP Hierarchy Pass
 

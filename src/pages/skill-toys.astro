@@ -20,8 +20,8 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
   title="Skill Toys | Cool Personal Website"
   description="Latest trick combo cards."
 >
-  <main class="min-h-screen px-6 py-12 sm:px-10">
-    <section class="mx-auto max-w-6xl">
+  <main class="page-shell">
+    <section class="content-frame">
       <div class="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
         <div>
           <h1 class="text-4xl font-black leading-none sm:text-6xl">
@@ -30,7 +30,7 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
         </div>
       </div>
 
-      <section class="mt-14 rounded-[1.25rem] bg-[rgba(255,255,255,0.48)] p-3 sm:p-5" aria-labelledby="active-heading">
+      <section class="practice-stage section-rhythm--tight" aria-labelledby="active-heading">
         <div class="flex flex-wrap items-end justify-between gap-4">
           <h2 id="active-heading" class="max-w-2xl text-4xl font-black leading-none sm:text-6xl">
             What is getting practiced now
@@ -40,7 +40,7 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
           </p>
         </div>
         <div
-          class="practice-board mt-6 grid grid-cols-1 gap-5 rounded-xl bg-[rgba(30,27,46,0.035)] p-3 lg:grid-cols-2"
+          class="practice-board"
           data-practice-board
         >
           {
@@ -60,13 +60,13 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
         </div>
       </section>
 
-      <section class="mt-16 opacity-90" aria-labelledby="overview-heading">
-        <div class="grid gap-4 rounded-xl bg-white/32 p-3">
+      <section class="section-rhythm opacity-90" aria-labelledby="overview-heading">
+        <div class="support-panel grid gap-4">
           <ToyProgressChart toys={skillToys} />
         </div>
       </section>
 
-      <section class="mt-14" aria-labelledby="log-heading">
+      <section class="section-rhythm--tight" aria-labelledby="log-heading">
         <div class="grid gap-4 lg:grid-cols-[0.7fr_1fr] lg:items-end">
           <div>
             <h2 id="log-heading" class="mt-2 text-3xl font-black">Progress Log</h2>
@@ -86,7 +86,7 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
         </div>
       </section>
 
-      <section class="mt-18 rounded-xl bg-white/28 p-3" aria-labelledby="toy-strip-heading">
+      <section class="support-panel section-rhythm" aria-labelledby="toy-strip-heading">
         <div class="mb-3 flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 id="toy-strip-heading" class="text-2xl font-black">Toy orbit</h2>

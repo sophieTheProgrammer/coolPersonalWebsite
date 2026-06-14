@@ -91,6 +91,77 @@ pre,
     box-shadow: 0 14px 34px rgb(var(--color-ink-rgb) / 0.09);
   }
 
+  .page-shell {
+    min-height: 100vh;
+    padding: clamp(3rem, 7vw, 5rem) clamp(1.5rem, 5vw, 2.5rem);
+  }
+
+  .content-frame {
+    width: min(100%, 72rem);
+    margin-inline: auto;
+  }
+
+  .feature-panel {
+    border-radius: 1.35rem;
+    background: rgb(255 255 255 / 0.42);
+    padding: clamp(0.85rem, 2vw, 1.35rem);
+  }
+
+  .feature-panel--quiet {
+    background: rgb(255 255 255 / 0.26);
+  }
+
+  .section-rhythm {
+    margin-top: clamp(3rem, 7vw, 5rem);
+  }
+
+  .section-rhythm--tight {
+    margin-top: clamp(2rem, 5vw, 3.25rem);
+  }
+
+  .home-nav-board {
+    border-radius: 1.2rem;
+    background: rgb(255 255 255 / 0.46);
+    padding: clamp(0.75rem, 1.5vw, 1rem);
+  }
+
+  .practice-stage {
+    border-radius: 1.35rem;
+    background: rgb(255 255 255 / 0.46);
+    padding: clamp(0.85rem, 2vw, 1.4rem);
+  }
+
+  .support-panel {
+    border-radius: 1.1rem;
+    background: rgb(255 255 255 / 0.26);
+    padding: clamp(0.75rem, 1.6vw, 1rem);
+  }
+
+  .art-roadmap {
+    opacity: 0.68;
+  }
+
+  .art-roadmap-card {
+    border-radius: 0.85rem;
+    background: rgb(255 255 255 / 0.2);
+    padding: 1rem;
+  }
+
+  .project-hero {
+    display: grid;
+    gap: clamp(1.75rem, 4vw, 2.75rem);
+    border-radius: 1.35rem;
+    background: rgb(255 255 255 / 0.34);
+    padding: clamp(1rem, 2.3vw, 1.5rem);
+  }
+
+  @media (min-width: 1024px) {
+    .project-hero {
+      grid-template-columns: minmax(0, 0.95fr) minmax(26rem, 1.05fr);
+      align-items: start;
+    }
+  }
+
   .site-button {
     display: inline-flex;
     align-items: center;
@@ -367,7 +438,12 @@ pre,
 
 .coding-project-card {
   position: relative;
+  display: grid;
+  gap: clamp(1.25rem, 3vw, 1.75rem);
   overflow: hidden;
+  border-radius: 1.1rem;
+  background: rgb(255 255 255 / 0.5);
+  padding: clamp(1rem, 2vw, 1.4rem);
 }
 
 .coding-project-card::before {
@@ -408,6 +484,20 @@ pre,
 
 .coding-project-card__progress {
   background: var(--project-accent, var(--color-accent));
+}
+
+.coding-project-card__links {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.55rem;
+  padding-block: 0.25rem;
+}
+
+@media (min-width: 768px) {
+  .coding-project-card {
+    grid-template-columns: minmax(0, 1fr) 14rem;
+  }
 }
 
 .doodle-image--float {
@@ -727,12 +817,8 @@ pre,
   overflow-x: auto;
   overflow-y: hidden;
   overscroll-behavior-inline: contain;
-  border: 1px solid var(--color-line);
   border-radius: 1rem;
-  background:
-    radial-gradient(circle at 8% 20%, rgb(var(--color-accent-rgb) / 0.12), transparent 22%),
-    radial-gradient(circle at 90% 80%, rgb(var(--color-accent-2-rgb) / 0.14), transparent 24%),
-    var(--color-card);
+  background: rgb(255 255 255 / 0.44);
   padding: 1rem 1rem 1.15rem;
   scrollbar-color: var(--color-accent-2) transparent;
   scrollbar-width: thin;
@@ -961,20 +1047,30 @@ pre,
 
 .home-section-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.78);
+  display: grid;
+  min-height: 7.5rem;
+  align-content: end;
+  border-radius: 0.85rem;
+  background: rgba(255, 255, 255, 0.48);
+  padding: clamp(1.15rem, 3vw, 1.65rem);
   box-shadow: 0 1px 2px rgba(30, 27, 46, 0.08);
   transform-origin: center;
+  transition:
+    background-color 220ms ease,
+    box-shadow 220ms ease,
+    transform 220ms ease;
 }
 
 .home-section-card:hover {
+  background: rgba(255, 255, 255, 0.82);
   box-shadow: 0 18px 42px rgba(30, 27, 46, 0.12);
   transform: translateY(-0.22rem) rotate(0deg);
 }
 
 .home-section-card--wide {
-  background:
-    radial-gradient(circle at 92% 18%, rgba(244, 211, 94, 0.2), transparent 24%),
-    rgba(255, 255, 255, 0.86);
+  min-height: 12rem;
+  background: rgb(var(--color-accent-rgb) / 0.12);
+  padding: clamp(1.5rem, 4vw, 2rem);
 }
 
 .home-section-card--tilt-left {
@@ -987,6 +1083,22 @@ pre,
 
 .practice-board [data-practice-card] {
   min-width: 0;
+}
+
+.practice-board {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1rem, 2vw, 1.35rem);
+  margin-top: 1.65rem;
+  border-radius: 1.1rem;
+  background: rgb(var(--color-ink-rgb) / 0.03);
+  padding: clamp(0.65rem, 1.6vw, 1rem);
+}
+
+@media (min-width: 1024px) {
+  .practice-board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 ::view-transition-old(page-main) {
