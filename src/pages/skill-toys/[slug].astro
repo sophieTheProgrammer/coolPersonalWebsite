@@ -44,9 +44,6 @@ const combos = getCombosForToy(toy.slug);
         <div>
           <div class="flex items-center gap-3">
             <DoodleImage src={toy.doodleIcon} alt={`${toy.name} hand-drawn icon`} label={toy.name.slice(0, 2)} variant="accent" animation="bob" />
-            <p class="text-sm font-semibold uppercase tracking-[0.28em] text-[var(--color-muted)]">
-              {toy.status} / {toy.clipCount} clips logged
-            </p>
           </div>
           <h1 class="mt-4 text-4xl font-black leading-none sm:text-6xl">
             {toy.name} trick log
@@ -74,10 +71,7 @@ const combos = getCombosForToy(toy.slug);
       <section class="mt-10" aria-labelledby="toy-log-heading">
         <div class="flex items-end justify-between gap-4">
           <div>
-            <p class="text-sm font-bold uppercase tracking-[0.22em] text-[var(--color-muted)]">
-              All tricks
-            </p>
-            <h2 id="toy-log-heading" class="mt-2 text-3xl font-black">
+            <h2 id="toy-log-heading" class="text-3xl font-black">
               Everything logged for {toy.name}
             </h2>
           </div>

@@ -30,9 +30,6 @@ const formattedDate = new Intl.DateTimeFormat("en", {
       <div>
         <div class="flex items-center gap-2">
           <DoodleImage src={toy.doodleIcon} alt={`${toy.name} hand-drawn icon`} label={toy.name.slice(0, 2)} variant="icon" animation="bob" />
-          <p class="text-xs font-black uppercase tracking-[0.18em] text-[var(--color-accent)]">
-            {toy.name}
-          </p>
         </div>
         <h3 class="mt-1 text-base font-black leading-tight">{combo.title}</h3>
       </div>

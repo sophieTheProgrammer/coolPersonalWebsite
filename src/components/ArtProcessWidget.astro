@@ -8,10 +8,7 @@ import { currentArtwork, processStages } from "../data/artworks";
 >
   <div class="grid gap-0 md:grid-cols-[1fr_18rem]">
     <div class="p-5">
-      <p class="text-xs font-black uppercase tracking-[0.2em] text-[var(--color-muted)]">
-        Process slider
-      </p>
-      <h2 class="mt-3 text-3xl font-black leading-none">{currentArtwork.title}</h2>
+      <h2 class="text-3xl font-black leading-none">{currentArtwork.title}</h2>
       <p class="mt-4 max-w-xl leading-7 text-[var(--color-muted)]">{currentArtwork.note}</p>
 
       <div class="mt-6">
@@ -42,17 +39,11 @@ import { currentArtwork, processStages } from "../data/artworks";
     </div>
 
     <div class="border-t border-[var(--color-line)] bg-[rgba(30,27,46,0.025)] p-5 md:border-l md:border-t-0">
-      <p class="text-xs font-black uppercase tracking-[0.2em] text-[var(--color-muted)]">
-        Currently working on
-      </p>
-      <p class="mt-3 text-xl font-black">{currentArtwork.status}</p>
+      <p class="text-xl font-black">{currentArtwork.status}</p>
       <p class="mt-4 leading-7 text-[var(--color-muted)]">{currentArtwork.nextStep}</p>
 
       <div class="mt-8 rounded-lg border border-[var(--color-line)] bg-white/60 p-4">
-        <p class="text-xs font-black uppercase tracking-[0.18em] text-[var(--color-muted)]">
-          Stage note
-        </p>
-        <h3 class="mt-3 text-2xl font-black" data-process-title>{processStages[0].title}</h3>
+        <h3 class="text-2xl font-black" data-process-title>{processStages[0].title}</h3>
         <p class="mt-3 leading-7 text-[var(--color-muted)]" data-process-description>
           {processStages[0].description}
         </p>

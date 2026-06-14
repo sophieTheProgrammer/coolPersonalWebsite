@@ -14,6 +14,12 @@ clean desk with hand-drawn labels, trick clips, tiny tools, and art scans.
 
 Preview the options at `/style/`.
 
+## Copy Rules
+
+- Do not use eyebrow labels above headings.
+- Avoid generic intro blurbs under page heroes.
+- Let page headings, cards, and controls carry the structure.
+
 ## Restricted Palette
 
 - Ink: `#24202c`

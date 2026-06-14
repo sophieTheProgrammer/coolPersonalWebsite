@@ -1,15 +1,12 @@
 export const siteInfo = {
   name: "Personal Studio",
-  description:
-    "A tiny workshop for skill toys, coding projects, art studies, and experiments.",
+  description: "",
   status: "MVP complete",
   repo: "https://github.com/sophieTheProgrammer/coolPersonalWebsite",
 };
 
 export const homeContent = {
-  eyebrow: "Personal studio",
   headline: "Hi! I'm Sophie, I keep cool stuff here",
-  intro: "Personal site for my skill toy clips, coding projects, and art.",
   studioAvatarDoodle: "studio-avatar.png",
   socialLinks: [
     {
@@ -27,7 +24,6 @@ export const homeContent = {
   ],
   sections: [
     {
-      label: "Start here",
       title: "Skill Toys",
       description: "Kendama, Juggling, and more!",
       href: "skill-toys/",

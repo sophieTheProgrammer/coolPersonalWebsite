@@ -29,17 +29,10 @@ const moods = [...new Set(artworks.map((artwork) => artwork.mood))];
     <section class="relative z-10 mx-auto max-w-6xl">
       <div class="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
         <div>
-          <p class="text-sm font-semibold uppercase tracking-[0.28em] text-[var(--color-muted)]">
-            Art gallery
-          </p>
-          <h1 class="mt-4 text-4xl font-black leading-none sm:text-6xl">
+          <h1 class="text-4xl font-black leading-none sm:text-6xl">
             Drawing volumes, sketch packs, and visual notes.
           </h1>
         </div>
-        <p class="max-w-2xl text-lg leading-8 text-[var(--color-muted)]">
-          See my art! Collections of illustrations, studies, sketches,
-          and doodles that grow over time.
-        </p>
       </div>
 
       <section class="mt-10 rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] p-4 shadow-sm">
@@ -79,9 +72,6 @@ const moods = [...new Set(artworks.map((artwork) => artwork.mood))];
 
       <div class="art-gallery-stage mt-8 rounded-xl border border-[var(--color-line)] bg-[rgba(255,255,255,0.76)] p-3 shadow-sm backdrop-blur">
         <div class="mb-3 flex flex-wrap items-center justify-between gap-3 px-1">
-          <p class="text-xs font-black uppercase tracking-[0.2em] text-[var(--color-muted)]">
-            Volumes
-          </p>
           <p class="text-sm font-semibold text-[var(--color-muted)]">
             click a pack to open the drawings inside
           </p>
