@@ -237,6 +237,42 @@ pre,
     padding: 1.1rem;
   }
 
+  .admin-workbench {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .admin-panel__header {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .admin-panel__header p {
+    color: var(--color-muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .admin-field-grid {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .admin-field-grid__wide {
+    grid-column: 1 / -1;
+  }
+
+  @media (min-width: 860px) {
+    .admin-workbench {
+      grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
+      align-items: start;
+    }
+
+    .admin-field-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
   .admin-output {
     min-height: 8rem;
     overflow-x: auto;
@@ -268,15 +304,14 @@ pre,
 
   .admin-pdf-pages {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
-    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 0.9rem;
   }
 
   .admin-pdf-page {
     display: grid;
     gap: 0.7rem;
-    border: 1px solid var(--color-line);
-    border-radius: 0.5rem;
+    border-radius: 0.8rem;
     background: rgb(255 255 255 / 0.72);
     color: var(--color-muted);
     font-size: 0.75rem;
@@ -293,8 +328,21 @@ pre,
   .admin-pdf-page img {
     width: 100%;
     max-height: 18rem;
+    border-radius: 0.45rem;
     object-fit: contain;
     background: white;
+  }
+
+  .admin-pdf-page__meta {
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    margin: -0.2rem 0 0;
+  }
+
+  .admin-pdf-page__controls {
+    display: grid;
+    gap: 0.65rem;
   }
 
   .orbit-node {

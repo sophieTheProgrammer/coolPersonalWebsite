@@ -8,8 +8,8 @@ import { skillToys } from "../data/skillToys";
   title="Admin Helper | Cool Personal Website"
   description="A local helper page for writing art uploads and generating skill toy data snippets."
 >
-  <main class="min-h-screen px-6 py-12 sm:px-10">
-    <section class="mx-auto max-w-5xl">
+  <main class="admin-page page-shell">
+    <section class="content-frame">
       <h1 class="text-4xl font-black leading-none sm:text-6xl">
         Add stuff locally
       </h1>
@@ -18,37 +18,42 @@ import { skillToys } from "../data/skillToys";
         art files into <code>public/art/</code> and attach image uploads to packets.
       </p>
 
-      <div class="mt-10 grid gap-5 lg:grid-cols-2">
-        <form class="admin-card admin-panel site-card" data-art-upload-form>
-          <div>
+      <div class="admin-workbench section-rhythm--tight">
+        <form class="admin-card admin-panel site-card admin-panel--art" data-art-upload-form>
+          <div class="admin-panel__header">
             <h2 class="text-3xl leading-none">Upload art</h2>
+            <p>PDF pages can be renamed, paired, and saved into a new or existing packet.</p>
           </div>
-          <label class="field-stack">
-            <span>Image or PDF</span>
-            <input class="form-field" name="file" type="file" accept="image/*,.pdf" required />
-          </label>
-          <label class="field-stack">
-            <span>Packet</span>
-            <select class="form-field" name="packetSlug">
-              {artVolumes.map((volume) => <option value={volume.slug}>{volume.title}</option>)}
-            </select>
-          </label>
-          <label class="field-stack">
-            <span>New packet title for PDF</span>
-            <input class="form-field" name="newPacketTitle" placeholder="Leave blank to use selected packet" />
-          </label>
-          <label class="field-stack">
-            <span>Drawing title</span>
-            <input class="form-field" name="title" placeholder="Sketchbook scan" required />
-          </label>
-          <label class="field-stack">
-            <span>Note</span>
-            <textarea class="form-field form-field--textarea" name="note" placeholder="Optional tiny note"></textarea>
-          </label>
-          <label class="field-stack">
-            <span>Process/sketch image path</span>
-            <input class="form-field" name="processSrc" placeholder="/art/sketch-upload.png" />
-          </label>
+
+          <div class="admin-field-grid">
+            <label class="field-stack">
+              <span>Image or PDF</span>
+              <input class="form-field" name="file" type="file" accept="image/*,.pdf" required />
+            </label>
+            <label class="field-stack">
+              <span>Packet</span>
+              <select class="form-field" name="packetSlug">
+                {artVolumes.map((volume) => <option value={volume.slug}>{volume.title}</option>)}
+              </select>
+            </label>
+            <label class="field-stack">
+              <span>New packet title for PDF</span>
+              <input class="form-field" name="newPacketTitle" placeholder="Leave blank to use selected packet" />
+            </label>
+            <label class="field-stack">
+              <span>Drawing title</span>
+              <input class="form-field" name="title" placeholder="Sketchbook scan" required />
+            </label>
+            <label class="field-stack admin-field-grid__wide">
+              <span>Note</span>
+              <textarea class="form-field form-field--textarea" name="note" placeholder="Optional tiny note"></textarea>
+            </label>
+            <label class="field-stack admin-field-grid__wide">
+              <span>Process/sketch image path</span>
+              <input class="form-field" name="processSrc" placeholder="/art/sketch-upload.png" />
+            </label>
+          </div>
+
           <div class="media-frame admin-upload-preview" data-upload-preview>
             <span>Select an image or PDF</span>
           </div>
@@ -65,7 +70,7 @@ import { skillToys } from "../data/skillToys";
         </form>
 
         <form class="admin-card admin-panel site-card" data-trick-form>
-          <div>
+          <div class="admin-panel__header">
             <h2 class="text-3xl leading-none">YouTube clip</h2>
           </div>
           <label class="field-stack">
@@ -129,6 +134,8 @@ import { skillToys } from "../data/skillToys";
   const saveArtworkButton = document.querySelector("[data-save-artwork]");
   const preview = document.querySelector("[data-upload-preview]");
   const pdfPagesPreview = document.querySelector("[data-pdf-pages]");
+  const packetSelect = document.querySelector<HTMLSelectElement>('[name="packetSlug"]');
+  const newPacketInput = document.querySelector<HTMLInputElement>('[name="newPacketTitle"]');
   let uploadedFile: { src: string; kind: "image" | "pdf" } | null = null;
   type RenderedPdfPage = {
     pageNumber: number;
@@ -196,13 +203,20 @@ import { skillToys } from "../data/skillToys";
       checkbox.dataset.pdfInclude = String(pageNumber);
 
       const includeText = document.createElement("span");
-      includeText.textContent = `Page ${pageNumber} / ${canvas.width}x${canvas.height}`;
+      includeText.textContent = `Include page ${pageNumber}`;
 
       includeLabel.append(checkbox, includeText);
 
       const image = document.createElement("img");
       image.src = dataUrl;
       image.alt = `PDF page ${pageNumber}`;
+
+      const meta = document.createElement("p");
+      meta.className = "admin-pdf-page__meta";
+      meta.textContent = `${canvas.width}x${canvas.height}`;
+
+      const controls = document.createElement("div");
+      controls.className = "admin-pdf-page__controls";
 
       const titleLabel = document.createElement("label");
       titleLabel.className = "field-stack";
@@ -230,13 +244,14 @@ import { skillToys } from "../data/skillToys";
       const processLabel = document.createElement("label");
       processLabel.className = "field-stack";
       const processText = document.createElement("span");
-      processText.textContent = "Show on hover";
+      processText.textContent = "Hover image";
       const processSelect = document.createElement("select");
       processSelect.className = "form-field";
       processSelect.dataset.pdfProcessFor = String(pageNumber);
       processLabel.append(processText, processSelect);
 
-      pageCard.append(includeLabel, image, titleLabel, roleLabel, processLabel);
+      controls.append(titleLabel, roleLabel, processLabel);
+      pageCard.append(includeLabel, image, meta, controls);
       pdfPagesPreview.append(pageCard);
     }
 
@@ -263,9 +278,10 @@ import { skillToys } from "../data/skillToys";
       processOptions
         .filter((page) => page.pageNumber !== pageNumber)
         .forEach((page) => {
+          const title = pdfPagesPreview.querySelector<HTMLInputElement>(`[data-pdf-title="${page.pageNumber}"]`)?.value.trim();
           const option = document.createElement("option");
           option.value = String(page.pageNumber);
-          option.textContent = `Page ${page.pageNumber}`;
+          option.textContent = title ? `Page ${page.pageNumber}: ${title}` : `Page ${page.pageNumber}`;
           select.append(option);
         });
 
@@ -274,7 +290,22 @@ import { skillToys } from "../data/skillToys";
     });
   };
 
-  pdfPagesPreview?.addEventListener("change", (event) => {
+  const selectPacket = (slug: string, title?: string) => {
+    if (!packetSelect || !slug) return;
+
+    let option = Array.from(packetSelect.options).find((item) => item.value === slug);
+
+    if (!option) {
+      option = new Option(title || slug, slug);
+      packetSelect.append(option);
+    } else if (title) {
+      option.textContent = title;
+    }
+
+    packetSelect.value = slug;
+  };
+
+  const handlePdfPageControlUpdate = (event: Event) => {
     const target = event.target;
 
     if (
@@ -283,7 +314,10 @@ import { skillToys } from "../data/skillToys";
     ) {
       syncPdfProcessSelectors();
     }
-  });
+  };
+
+  pdfPagesPreview?.addEventListener("change", handlePdfPageControlUpdate);
+  pdfPagesPreview?.addEventListener("input", handlePdfPageControlUpdate);
 
   const renderPreview = async (file: File) => {
     if (!(preview instanceof HTMLElement)) return;
@@ -397,7 +431,12 @@ import { skillToys } from "../data/skillToys";
         const result = await response.json();
         if (!result.ok) throw new Error(result.error);
 
-        writeOutput(`Saved PDF pages to ${result.artwork.packetSlug}: ${result.artwork.slugs.join(", ")}\nRefresh dev server to see them.`);
+        selectPacket(result.artwork.packetSlug, result.artwork.packetTitle);
+        if (result.artwork.createdPacket && newPacketInput) {
+          newPacketInput.value = "";
+        }
+
+        writeOutput(`Saved PDF pages to ${result.artwork.packetTitle || result.artwork.packetSlug}: ${result.artwork.slugs.join(", ")}\nThe packet selector now points at that packet.`);
         return;
       }
 

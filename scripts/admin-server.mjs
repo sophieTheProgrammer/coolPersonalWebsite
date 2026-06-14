@@ -187,7 +187,7 @@ const createArtVolume = async ({ title, subtitle, note }) => {
   }
 
   await writeFile(artDataFile, next);
-  return { slug };
+  return { slug, title: packetTitle };
 };
 
 const createArtwork = async (entry) => {
@@ -222,13 +222,14 @@ const savePdfPages = async (entry) => {
     throw new Error("Packet or new packet title, drawing title, and selected PDF pages are required.");
   }
 
-  const targetPacketSlug = newPacketTitle
-    ? (await createArtVolume({
+  const createdPacket = newPacketTitle
+    ? await createArtVolume({
         title: newPacketTitle,
         subtitle: `${title} pages`,
         note: note || "Created from a PDF upload.",
-      })).slug
-    : packetSlug;
+      })
+    : null;
+  const targetPacketSlug = createdPacket?.slug ?? packetSlug;
 
   await mkdir(artDir, { recursive: true });
 
@@ -277,7 +278,12 @@ const savePdfPages = async (entry) => {
   });
 
   const result = await writeArtworkEntries(targetPacketSlug, artworkEntries);
-  return { ...result, packetSlug: targetPacketSlug };
+  return {
+    ...result,
+    packetSlug: targetPacketSlug,
+    packetTitle: createdPacket?.title,
+    createdPacket,
+  };
 };
 
 createServer(async (request, response) => {
