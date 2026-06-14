@@ -35,6 +35,83 @@ const slugify = (value) =>
     .replace(/^-|-$/g, "")
     .slice(0, 64);
 
+const getYouTubeId = (value) => {
+  try {
+    const parsed = new URL(value);
+    if (parsed.hostname.includes("youtu.be")) {
+      return parsed.pathname.split("/").filter(Boolean)[0] ?? "";
+    }
+    if (parsed.pathname.startsWith("/shorts/")) {
+      return parsed.pathname.split("/").filter(Boolean)[1] ?? "";
+    }
+    if (parsed.pathname.startsWith("/embed/")) {
+      return parsed.pathname.split("/").filter(Boolean)[1] ?? "";
+    }
+    return parsed.searchParams.get("v") ?? "";
+  } catch {
+    return value.trim();
+  }
+};
+
+const decodeHtml = (value) =>
+  value
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">");
+
+const getMetaContent = (html, pattern) => {
+  const match = html.match(pattern);
+  return match?.[1] ? decodeHtml(match[1].trim()) : "";
+};
+
+const getYouTubeMetadata = async (value) => {
+  const youtubeId = getYouTubeId(String(value ?? ""));
+
+  if (!youtubeId) {
+    throw new Error("YouTube URL or ID is required.");
+  }
+
+  const watchUrl = `https://www.youtube.com/watch?v=${youtubeId}`;
+  let title = "";
+  let description = "";
+
+  try {
+    const oembed = await fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(watchUrl)}&format=json`);
+    if (oembed.ok) {
+      const data = await oembed.json();
+      title = String(data.title ?? "");
+    }
+  } catch {
+    // Fall back to the watch page scrape below.
+  }
+
+  try {
+    const page = await fetch(watchUrl, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 local-admin-helper",
+      },
+    });
+    if (page.ok) {
+      const html = await page.text();
+      title ||= getMetaContent(html, /<meta\s+property="og:title"\s+content="([^"]*)"/i);
+      description =
+        getMetaContent(html, /<meta\s+name="description"\s+content="([^"]*)"/i) ||
+        getMetaContent(html, /<meta\s+property="og:description"\s+content="([^"]*)"/i);
+    }
+  } catch {
+    // Some networks block YouTube HTML. Returning the video ID is still useful.
+  }
+
+  return {
+    youtubeId,
+    title: title || "YouTube title",
+    description,
+    url: watchUrl,
+  };
+};
+
 const parseMultipart = (body, contentType) => {
   const boundary = contentType.match(/boundary=(?:"([^"]+)"|([^;]+))/)?.[1] ?? contentType.match(/boundary=(?:"([^"]+)"|([^;]+))/)?.[2];
   if (!boundary) throw new Error("Missing multipart boundary.");
@@ -297,6 +374,11 @@ createServer(async (request, response) => {
 
     if (request.method === "GET" && url.pathname === "/health") {
       send(response, 200, { ok: true, artDir: artDir.pathname });
+      return;
+    }
+
+    if (request.method === "GET" && url.pathname === "/api/youtube-metadata") {
+      send(response, 200, { ok: true, video: await getYouTubeMetadata(url.searchParams.get("url")) });
       return;
     }
 

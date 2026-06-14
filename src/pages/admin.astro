@@ -69,29 +69,61 @@ import { skillToys } from "../data/skillToys";
           <pre class="admin-output" data-art-output>Writer status will appear here.</pre>
         </form>
 
-        <form class="admin-card admin-panel site-card" data-trick-form>
+        <form class="admin-card admin-panel site-card admin-panel--tricks" data-trick-form>
           <div class="admin-panel__header">
             <h2 class="text-3xl leading-none">YouTube clip</h2>
+            <p>Paste a YouTube URL, fetch the title/description, then edit the generated trick id before copying.</p>
           </div>
-          <label class="field-stack">
-            <span>Toy</span>
-            <select class="form-field" name="toySlug">
-              {skillToys.map((toy) => <option value={toy.slug}>{toy.name}</option>)}
-            </select>
-          </label>
-          <label class="field-stack">
-            <span>YouTube URL or ID</span>
-            <input class="form-field" name="youtube" placeholder="https://youtu.be/..." required />
-          </label>
-          <label class="field-stack">
-            <span>Title</span>
-            <input class="form-field" name="title" placeholder="Leave as YouTube title later" />
-          </label>
-          <label class="field-stack">
-            <span>Notes</span>
-            <textarea class="form-field form-field--textarea" name="notes" placeholder="Leave as YouTube description later"></textarea>
-          </label>
-          <button class="site-button site-button--dark" type="submit">Generate trick snippet</button>
+
+          <div class="admin-field-grid">
+            <label class="field-stack">
+              <span>Toy</span>
+              <select class="form-field" name="toySlug" data-trick-toy>
+                {skillToys.map((toy) => <option value={toy.slug}>{toy.name}</option>)}
+              </select>
+            </label>
+            <label class="field-stack">
+              <span>Tag</span>
+              <select class="form-field" name="tag" data-trick-tag>
+                <option value="practice">practice</option>
+                <option value="trick">trick</option>
+                <option value="combo">combo</option>
+              </select>
+            </label>
+            <label class="field-stack admin-field-grid__wide">
+              <span>YouTube URL or ID</span>
+              <input class="form-field" name="youtube" placeholder="https://youtu.be/..." data-trick-youtube required />
+            </label>
+            <label class="field-stack">
+              <span>Title</span>
+              <input class="form-field" name="title" placeholder="Fetched from YouTube" data-trick-title />
+            </label>
+            <label class="field-stack">
+              <span>Date</span>
+              <input class="form-field" name="date" type="date" data-trick-date />
+            </label>
+            <label class="field-stack admin-field-grid__wide">
+              <span>Trick id</span>
+              <input class="form-field" name="id" placeholder="toy-title-01" data-trick-id />
+            </label>
+            <label class="field-stack admin-field-grid__wide">
+              <span>YouTube description</span>
+              <textarea class="form-field form-field--textarea" name="youtubeDescription" data-trick-description readonly></textarea>
+            </label>
+            <label class="field-stack admin-field-grid__wide">
+              <span>Notes</span>
+              <textarea class="form-field form-field--textarea" name="notes" placeholder="Optional. Defaults empty." data-trick-notes></textarea>
+            </label>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <button class="site-button px-4 py-3" type="button" data-fetch-youtube>
+              Fetch YouTube
+            </button>
+            <button class="site-button site-button--dark px-4 py-3" type="submit">
+              Generate snippet
+            </button>
+          </div>
           <pre class="admin-output" data-trick-output></pre>
         </form>
       </div>
@@ -461,7 +493,78 @@ import { skillToys } from "../data/skillToys";
     }
   });
 
-  document.querySelector("[data-trick-form]")?.addEventListener("submit", (event) => {
+  const trickForm = document.querySelector("[data-trick-form]");
+  const trickToy = document.querySelector<HTMLSelectElement>("[data-trick-toy]");
+  const trickYoutube = document.querySelector<HTMLInputElement>("[data-trick-youtube]");
+  const trickTitle = document.querySelector<HTMLInputElement>("[data-trick-title]");
+  const trickDate = document.querySelector<HTMLInputElement>("[data-trick-date]");
+  const trickId = document.querySelector<HTMLInputElement>("[data-trick-id]");
+  const trickDescription = document.querySelector<HTMLTextAreaElement>("[data-trick-description]");
+  const trickNotes = document.querySelector<HTMLTextAreaElement>("[data-trick-notes]");
+  const fetchYouTubeButton = document.querySelector<HTMLButtonElement>("[data-fetch-youtube]");
+  let trickIdEdited = false;
+
+  const today = new Date().toISOString().slice(0, 10);
+
+  if (trickDate) {
+    trickDate.value = today;
+  }
+
+  const buildTrickId = () => {
+    const toySlug = trickToy?.value ?? "toy";
+    const titleSlug = slugify(trickTitle?.value ?? "") || "youtube-clip";
+    const dateSlug = trickDate?.value || today;
+    return `${toySlug}-${titleSlug}-${dateSlug}`;
+  };
+
+  const syncTrickId = () => {
+    if (!trickId || trickIdEdited) return;
+    trickId.value = buildTrickId();
+  };
+
+  trickId?.addEventListener("input", () => {
+    trickIdEdited = true;
+  });
+
+  [trickToy, trickTitle, trickDate].forEach((input) => {
+    input?.addEventListener("input", syncTrickId);
+    input?.addEventListener("change", syncTrickId);
+  });
+
+  fetchYouTubeButton?.addEventListener("click", async () => {
+    if (!trickYoutube) return;
+    const value = trickYoutube.value.trim();
+    if (!value) return;
+
+    const output = document.querySelector("[data-trick-output]");
+    if (output instanceof HTMLElement) {
+      output.textContent = "Fetching YouTube metadata...";
+    }
+
+    try {
+      const response = await fetch(`${writerUrl}/api/youtube-metadata?url=${encodeURIComponent(value)}`);
+      const result = await response.json();
+      if (!result.ok) throw new Error(result.error);
+
+      if (trickYoutube) trickYoutube.value = result.video.youtubeId;
+      if (trickTitle) trickTitle.value = result.video.title || "";
+      if (trickDescription) trickDescription.value = result.video.description || "";
+      if (trickNotes && !trickNotes.value) trickNotes.value = "";
+      syncTrickId();
+
+      if (output instanceof HTMLElement) {
+        output.textContent = `Fetched ${result.video.youtubeId}. Edit the id/title if needed, then generate.`;
+      }
+    } catch (error) {
+      if (output instanceof HTMLElement) {
+        output.textContent = `Could not fetch YouTube metadata.\n${error}`;
+      }
+    }
+  });
+
+  syncTrickId();
+
+  trickForm?.addEventListener("submit", (event) => {
     event.preventDefault();
     const form = event.currentTarget;
     if (!(form instanceof HTMLFormElement)) return;
@@ -470,17 +573,19 @@ import { skillToys } from "../data/skillToys";
     const toySlug = String(data.get("toySlug") ?? "");
     const youtubeId = getYouTubeId(String(data.get("youtube") ?? "").trim());
     const title = String(data.get("title") ?? "").trim() || "YouTube title";
-    const notes = String(data.get("notes") ?? "").trim() || "YouTube description";
-    const today = new Date().toISOString().slice(0, 10);
+    const notes = String(data.get("notes") ?? "").trim();
+    const date = String(data.get("date") ?? "").trim() || today;
+    const tag = String(data.get("tag") ?? "practice");
+    const id = String(data.get("id") ?? "").trim() || buildTrickId();
     const output = form.querySelector("[data-trick-output]");
     if (!youtubeId || !(output instanceof HTMLElement)) return;
 
     output.textContent = `{
-  id: ${JSON.stringify(`${toySlug}-${slugify(title)}-${today}`)},
+  id: ${JSON.stringify(id)},
   toySlug: ${JSON.stringify(toySlug)},
   title: ${JSON.stringify(title)},
-  date: ${JSON.stringify(today)},
-  tag: "practice",
+  date: ${JSON.stringify(date)},
+  tag: ${JSON.stringify(tag)},
   youtubeId: ${JSON.stringify(youtubeId)},
   notes: ${JSON.stringify(notes)},
 },`;

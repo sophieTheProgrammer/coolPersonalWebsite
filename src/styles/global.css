@@ -972,8 +972,13 @@ pre,
   column-gap: 1rem;
 }
 
+.art-wide-frame {
+  width: min(100%, 86rem);
+  margin-inline: auto;
+}
+
 .packet-drawing-grid {
-  column-count: 3;
+  column-count: 4;
   column-gap: 1rem;
 }
 
