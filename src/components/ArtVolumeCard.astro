@@ -1,5 +1,4 @@
 ---
-import DoodleImage from "./DoodleImage.astro";
 import type { ArtVolume } from "../data/artworks";
 import { getArtworksForVolume } from "../data/artworks";
 
@@ -10,7 +9,6 @@ type Props = {
 
 const { volume, index } = Astro.props;
 const drawings = getArtworksForVolume(volume.slug);
-const [first, second, third] = volume.coverPalette;
 const base = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
@@ -23,44 +21,25 @@ const base = import.meta.env.BASE_URL.endsWith("/")
   ]}
 >
   <a class="block h-full" href={`${base}art/collections/${volume.slug}/`}>
-    <div
-      class:list={[
-        "relative overflow-hidden",
-        index === 0 ? "min-h-80" : "min-h-64",
-      ]}
-      style={`background: linear-gradient(135deg, ${first}, ${second} 58%, ${third});`}
-    >
-      <div class="absolute inset-0 opacity-25 mix-blend-screen art-tile-pattern"></div>
-      <div class="absolute left-5 top-5 rounded-md bg-white/75 px-3 py-2 text-xs font-black backdrop-blur">
-        {volume.year}
+    <div class:list={["grid gap-5", index === 0 ? "p-6" : "p-4"]}>
+      <div>
+        <p class="font-mono text-xs font-bold text-[var(--color-muted)]">
+          {volume.year} / {drawings.length} drawings
+        </p>
+        <h2 class:list={["mt-4 font-black", index === 0 ? "text-4xl leading-none" : "text-2xl"]}>{volume.title}</h2>
+        <p class="mt-3 leading-7 text-[var(--color-muted)]">{volume.subtitle}</p>
       </div>
-      <div class="absolute inset-x-6 top-16 z-10">
-        <DoodleImage
-          src={volume.coverDoodle}
-          alt={`Hand-drawn cover for ${volume.title}`}
-          label="cover"
-          variant="cover"
-          animation="float"
-        />
-      </div>
-      <div class="absolute bottom-5 left-5 right-5 grid grid-cols-3 gap-2">
+
+      <div class="grid gap-2">
         {
-          drawings.slice(0, 3).map((drawing) => (
-            <div
-              class="aspect-[3/4] rounded-md transition group-hover:-translate-y-1"
-              style={`background: linear-gradient(135deg, ${drawing.palette[0]}, ${drawing.palette[1]} 58%, ${drawing.palette[2]});`}
-            >
-            </div>
+          drawings.slice(0, 4).map((drawing) => (
+            <p class="truncate rounded-md bg-white/45 px-3 py-2 text-sm font-bold text-[var(--color-muted)] transition group-hover:bg-white/70">
+              {drawing.title}
+            </p>
           ))
         }
       </div>
-    </div>
 
-    <div class:list={["space-y-4", index === 0 ? "p-6" : "p-4"]}>
-      <div>
-        <h2 class:list={["font-black", index === 0 ? "text-4xl leading-none" : "text-2xl"]}>{volume.title}</h2>
-        <p class="mt-2 leading-7 text-[var(--color-muted)]">{volume.subtitle}</p>
-      </div>
       <p class="leading-7 text-[var(--color-muted)]">{volume.note}</p>
     </div>
   </a>

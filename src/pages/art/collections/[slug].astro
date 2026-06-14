@@ -24,15 +24,14 @@ if (!volume) {
 }
 
 const drawings = getArtworksForVolume(volume.slug);
-const [first, second, third] = volume.coverPalette;
 ---
 
 <BaseLayout
   title={`${volume.title} | Art | Cool Personal Website`}
   description={volume.note}
 >
-  <main class="min-h-screen px-6 py-12 sm:px-10">
-    <section class="mx-auto max-w-6xl">
+  <main class="page-shell">
+    <section class="content-frame">
       <a
         class="inline-flex rounded bg-white/50 px-3 py-2 text-sm font-bold text-[var(--color-muted)] transition hover:bg-white/80 hover:text-[var(--color-ink)]"
         href={`${base}art/`}
@@ -40,24 +39,15 @@ const [first, second, third] = volume.coverPalette;
         Back to volumes
       </a>
 
-      <div class="mt-8 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+      <div class="section-rhythm--tight">
         <div data-packet-open>
           <h1 class="text-5xl font-black leading-none">{volume.title}</h1>
           <p class="mt-4 text-xl font-bold text-[var(--color-muted)]">{volume.subtitle}</p>
-        </div>
-        <div
-          data-packet-cover
-          class="relative min-h-64 overflow-hidden rounded-xl"
-          style={`background: linear-gradient(135deg, ${first}, ${second} 58%, ${third});`}
-        >
-          <div class="absolute inset-0 opacity-25 mix-blend-screen art-tile-pattern"></div>
-          <div class="absolute bottom-5 left-5 right-5 rounded-lg bg-white/70 p-4 backdrop-blur">
-            <p class="leading-7 text-[var(--color-muted)]">{volume.note}</p>
-          </div>
+          <p class="mt-5 max-w-3xl leading-7 text-[var(--color-muted)]">{volume.note}</p>
         </div>
       </div>
 
-      <section class="mt-10" aria-labelledby="drawing-pack-heading">
+      <section class="section-rhythm--tight" aria-labelledby="drawing-pack-heading">
         <div class="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h2 id="drawing-pack-heading" class="text-3xl font-black">
@@ -69,7 +59,7 @@ const [first, second, third] = volume.coverPalette;
           </p>
         </div>
 
-        <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-packet-grid>
+        <div class="packet-drawing-grid mt-5" data-packet-grid>
           {
             drawings.map((artwork, index) => (
               <div data-packet-drawing>
@@ -90,7 +80,6 @@ const [first, second, third] = volume.coverPalette;
 
   if (!reduceMotion) {
     const intro = document.querySelector("[data-packet-open]");
-    const cover = document.querySelector("[data-packet-cover]");
     const drawings = document.querySelectorAll("[data-packet-drawing]");
 
     if (intro) {
@@ -98,20 +87,6 @@ const [first, second, third] = volume.coverPalette;
         intro,
         { opacity: [0, 1], transform: ["translateY(14px)", "translateY(0)"] },
         { duration: 0.45, easing: "ease-out" },
-      );
-    }
-
-    if (cover) {
-      animate(
-        cover,
-        {
-          opacity: [0, 1],
-          transform: [
-            "translateY(20px) rotateX(8deg) scale(0.98)",
-            "translateY(0) rotateX(0deg) scale(1)",
-          ],
-        },
-        { duration: 0.65, delay: 0.08, easing: "ease-out" },
       );
     }
 

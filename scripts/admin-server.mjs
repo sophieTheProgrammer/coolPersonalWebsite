@@ -149,6 +149,47 @@ const writeArtworkEntries = async (packetSlug, entries) => {
   return { slugs };
 };
 
+const createArtVolume = async ({ title, subtitle, note }) => {
+  const packetTitle = String(title ?? "").trim();
+
+  if (!packetTitle) {
+    throw new Error("New packet title is required.");
+  }
+
+  const source = await readFile(artDataFile, "utf8");
+  const usedSlugs = new Set([...source.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => match[1]));
+  const baseSlug = slugify(packetTitle) || "drawing-packet";
+  let slug = baseSlug;
+  let counter = 2;
+
+  while (usedSlugs.has(slug)) {
+    slug = `${baseSlug}-${counter}`;
+    counter += 1;
+  }
+
+  const packet = `  {
+    title: ${JSON.stringify(packetTitle)},
+    slug: ${JSON.stringify(slug)},
+    subtitle: ${JSON.stringify(String(subtitle ?? "Uploaded PDF packet").trim() || "Uploaded PDF packet")},
+    year: ${JSON.stringify(String(new Date().getFullYear()))},
+    note: ${JSON.stringify(String(note ?? "Created from a PDF upload.").trim() || "Created from a PDF upload.")},
+    drawingSlugs: [],
+  },
+`;
+
+  const next = source.replace(
+    /\n\];\n\nexport const currentArtwork/,
+    `\n${packet}];\n\nexport const currentArtwork`,
+  );
+
+  if (next === source) {
+    throw new Error("Could not find art volume list.");
+  }
+
+  await writeFile(artDataFile, next);
+  return { slug };
+};
+
 const createArtwork = async (entry) => {
   const packetSlug = String(entry.packetSlug ?? "").trim();
   const kind = String(entry.kind ?? "").trim();
@@ -172,13 +213,22 @@ const createArtwork = async (entry) => {
 
 const savePdfPages = async (entry) => {
   const packetSlug = String(entry.packetSlug ?? "").trim();
+  const newPacketTitle = String(entry.newPacketTitle ?? "").trim();
   const title = String(entry.title ?? "").trim();
   const note = String(entry.note ?? "").trim();
   const pages = Array.isArray(entry.pages) ? entry.pages : [];
 
-  if (!packetSlug || !title || pages.length === 0) {
-    throw new Error("Packet, title, and selected PDF pages are required.");
+  if ((!packetSlug && !newPacketTitle) || !title || pages.length === 0) {
+    throw new Error("Packet or new packet title, drawing title, and selected PDF pages are required.");
   }
+
+  const targetPacketSlug = newPacketTitle
+    ? (await createArtVolume({
+        title: newPacketTitle,
+        subtitle: `${title} pages`,
+        note: note || "Created from a PDF upload.",
+      })).slug
+    : packetSlug;
 
   await mkdir(artDir, { recursive: true });
 
@@ -204,7 +254,8 @@ const savePdfPages = async (entry) => {
     }),
   );
 
-  return writeArtworkEntries(packetSlug, artworkEntries);
+  const result = await writeArtworkEntries(targetPacketSlug, artworkEntries);
+  return { ...result, packetSlug: targetPacketSlug };
 };
 
 createServer(async (request, response) => {

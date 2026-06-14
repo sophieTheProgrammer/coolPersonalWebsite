@@ -31,7 +31,7 @@ Preview the options at `/style/`.
 
 - Give each page one primary focal point before secondary tools or feeds.
 - Use larger type and more space for primary content; use softer fills and lower opacity for support sections.
-- Feature real content first: practice videos, packet covers, project rows, and the home navigation board.
+- Feature real content first: practice videos, packet lists, project rows, and the home navigation board.
 
 ## Restricted Palette
 

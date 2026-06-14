@@ -21,15 +21,15 @@ const processSrc = artwork.processSrc?.startsWith("/")
 const isPdf = mediaSrc?.toLowerCase().endsWith(".pdf");
 ---
 
-<article class="group overflow-hidden rounded-lg bg-[var(--color-card)] transition hover:-translate-y-1 hover:shadow-lg">
+<article class="art-packet-tile group bg-[var(--color-card)] transition hover:-translate-y-1 hover:shadow-lg">
   <div
-    class="relative aspect-[3/4] overflow-hidden"
+    class="relative overflow-hidden rounded-t-[inherit]"
     style={hasImage ? undefined : `background: linear-gradient(135deg, ${first}, ${second} 58%, ${third});`}
   >
     {
       mediaSrc && isPdf ? (
         <iframe
-          class="h-full w-full bg-white"
+          class="block aspect-[3/4] min-h-80 w-full bg-white"
           src={mediaSrc}
           title={artwork.title}
           loading="lazy"
@@ -38,7 +38,7 @@ const isPdf = mediaSrc?.toLowerCase().endsWith(".pdf");
         <>
           <img
             class:list={[
-              "h-full w-full object-cover transition duration-300",
+              "block h-auto w-full transition duration-300",
               processSrc ? "group-hover:opacity-0 group-focus-within:opacity-0" : "",
             ]}
             src={mediaSrc}
@@ -48,7 +48,7 @@ const isPdf = mediaSrc?.toLowerCase().endsWith(".pdf");
           {
             processSrc && (
               <img
-                class="absolute inset-0 h-full w-full object-cover opacity-0 transition duration-300 group-hover:opacity-100 group-focus-within:opacity-100"
+                class="absolute inset-0 h-full w-full object-contain opacity-0 transition duration-300 group-hover:opacity-100 group-focus-within:opacity-100"
                 src={processSrc}
                 alt={`${artwork.title} process sketch`}
                 loading="lazy"
@@ -58,10 +58,12 @@ const isPdf = mediaSrc?.toLowerCase().endsWith(".pdf");
         </>
       ) : (
         <>
-      <div class="absolute inset-0 opacity-25 mix-blend-screen art-tile-pattern"></div>
-      <div class="absolute right-3 top-3 rounded bg-white/70 px-2 py-1 text-xs font-black backdrop-blur">
-        {String(index + 1).padStart(2, "0")}
-      </div>
+          <div class="min-h-64">
+            <div class="absolute inset-0 opacity-25 mix-blend-screen art-tile-pattern"></div>
+            <div class="absolute right-3 top-3 rounded bg-white/70 px-2 py-1 text-xs font-black backdrop-blur">
+              {String(index + 1).padStart(2, "0")}
+            </div>
+          </div>
         </>
       )
     }
