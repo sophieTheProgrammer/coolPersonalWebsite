@@ -72,7 +72,7 @@ import { skillToys } from "../data/skillToys";
         <form class="admin-card admin-panel site-card admin-panel--tricks" data-trick-form>
           <div class="admin-panel__header">
             <h2 class="text-3xl leading-none">YouTube clip</h2>
-            <p>Paste a YouTube URL, fetch the title/description, then edit the generated trick id before copying.</p>
+            <p>Paste a YouTube URL and the title/description will fill in automatically. Edit the trick id before copying.</p>
           </div>
 
           <div class="admin-field-grid">
@@ -118,7 +118,7 @@ import { skillToys } from "../data/skillToys";
 
           <div class="flex flex-wrap gap-2">
             <button class="site-button px-4 py-3" type="button" data-fetch-youtube>
-              Fetch YouTube
+              Refetch YouTube
             </button>
             <button class="site-button site-button--dark px-4 py-3" type="submit">
               Generate snippet
@@ -503,6 +503,8 @@ import { skillToys } from "../data/skillToys";
   const trickNotes = document.querySelector<HTMLTextAreaElement>("[data-trick-notes]");
   const fetchYouTubeButton = document.querySelector<HTMLButtonElement>("[data-fetch-youtube]");
   let trickIdEdited = false;
+  let lastFetchedYouTube = "";
+  let pendingYouTubeFetch = 0;
 
   const today = new Date().toISOString().slice(0, 10);
 
@@ -531,10 +533,12 @@ import { skillToys } from "../data/skillToys";
     input?.addEventListener("change", syncTrickId);
   });
 
-  fetchYouTubeButton?.addEventListener("click", async () => {
+  const fetchYouTubeMetadata = async (force = false) => {
     if (!trickYoutube) return;
     const value = trickYoutube.value.trim();
     if (!value) return;
+    const youtubeId = getYouTubeId(value).trim();
+    if (!youtubeId || (!force && youtubeId === lastFetchedYouTube)) return;
 
     const output = document.querySelector("[data-trick-output]");
     if (output instanceof HTMLElement) {
@@ -550,6 +554,7 @@ import { skillToys } from "../data/skillToys";
       if (trickTitle) trickTitle.value = result.video.title || "";
       if (trickDescription) trickDescription.value = result.video.description || "";
       if (trickNotes && !trickNotes.value) trickNotes.value = "";
+      lastFetchedYouTube = result.video.youtubeId;
       syncTrickId();
 
       if (output instanceof HTMLElement) {
@@ -560,6 +565,23 @@ import { skillToys } from "../data/skillToys";
         output.textContent = `Could not fetch YouTube metadata.\n${error}`;
       }
     }
+  };
+
+  const queueYouTubeFetch = () => {
+    window.clearTimeout(pendingYouTubeFetch);
+    pendingYouTubeFetch = window.setTimeout(() => {
+      fetchYouTubeMetadata();
+    }, 650);
+  };
+
+  trickYoutube?.addEventListener("input", queueYouTubeFetch);
+  trickYoutube?.addEventListener("paste", queueYouTubeFetch);
+  trickYoutube?.addEventListener("blur", () => {
+    fetchYouTubeMetadata();
+  });
+
+  fetchYouTubeButton?.addEventListener("click", () => {
+    fetchYouTubeMetadata(true);
   });
 
   syncTrickId();
