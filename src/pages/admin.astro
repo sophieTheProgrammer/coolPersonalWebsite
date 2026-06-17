@@ -72,7 +72,7 @@ import { skillToys } from "../data/skillToys";
         <form class="admin-card admin-panel site-card admin-panel--tricks" data-trick-form>
           <div class="admin-panel__header">
             <h2 class="text-3xl leading-none">YouTube clip</h2>
-            <p>Paste a YouTube URL and the title/description will fill in automatically. Edit the trick id before copying.</p>
+            <p>Paste a YouTube URL and the title/notes will fill in automatically. Edit the trick id before copying.</p>
           </div>
 
           <div class="admin-field-grid">
@@ -112,7 +112,7 @@ import { skillToys } from "../data/skillToys";
             </label>
             <label class="field-stack admin-field-grid__wide">
               <span>Notes</span>
-              <textarea class="form-field form-field--textarea" name="notes" placeholder="Optional. Defaults empty." data-trick-notes></textarea>
+              <textarea class="form-field form-field--textarea" name="notes" placeholder="Fetched from YouTube description" data-trick-notes></textarea>
             </label>
           </div>
 
@@ -553,7 +553,7 @@ import { skillToys } from "../data/skillToys";
       if (trickYoutube) trickYoutube.value = result.video.youtubeId;
       if (trickTitle) trickTitle.value = result.video.title || "";
       if (trickDescription) trickDescription.value = result.video.description || "";
-      if (trickNotes && !trickNotes.value) trickNotes.value = "";
+      if (trickNotes && !trickNotes.value) trickNotes.value = result.video.description || "";
       lastFetchedYouTube = result.video.youtubeId;
       syncTrickId();
 
@@ -595,7 +595,9 @@ import { skillToys } from "../data/skillToys";
     const toySlug = String(data.get("toySlug") ?? "");
     const youtubeId = getYouTubeId(String(data.get("youtube") ?? "").trim());
     const title = String(data.get("title") ?? "").trim() || "YouTube title";
-    const notes = String(data.get("notes") ?? "").trim();
+    const notes =
+      String(data.get("notes") ?? "").trim() ||
+      String(data.get("youtubeDescription") ?? "").trim();
     const date = String(data.get("date") ?? "").trim() || today;
     const tag = String(data.get("tag") ?? "practice");
     const id = String(data.get("id") ?? "").trim() || buildTrickId();
