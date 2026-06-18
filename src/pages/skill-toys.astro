@@ -2,7 +2,6 @@
 import ActiveClipCard from "../components/ActiveClipCard.astro";
 import ComboLogCard from "../components/ComboLogCard.astro";
 import ToyProgressStrip from "../components/ToyProgressStrip.astro";
-import ToyProgressChart from "../components/ToyProgressChart.astro";
 import {
   comboLogs,
   getPracticeNowPool,
@@ -54,12 +53,6 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
               ) : null;
             })
           }
-        </div>
-      </section>
-
-      <section class="section-rhythm opacity-90" aria-labelledby="overview-heading">
-        <div class="support-panel grid gap-4">
-          <ToyProgressChart toys={skillToys} />
         </div>
       </section>
 

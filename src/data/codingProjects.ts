@@ -134,7 +134,7 @@ export const terminalCommands = [
   },
   {
     command: "stack",
-    output: "astro / typescript / tailwind / chart.js",
+    output: "astro / typescript / tailwind",
   },
   {
     command: "learning",

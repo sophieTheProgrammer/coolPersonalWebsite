@@ -23,19 +23,15 @@ const loopedToys = [...toys, ...toys];
           <a
             class="toy-orbit-rail__node orbit-node"
             href={`${base}skill-toys/${toy.slug}/`}
-            style={`--toy-progress: ${toy.progressScore}%; --toy-tilt: ${tilt};`}
+            style={`--toy-tilt: ${tilt};`}
             aria-hidden={index >= toys.length ? "true" : undefined}
             tabindex={index >= toys.length ? "-1" : undefined}
           >
-            <div class="toy-orbit-rail__meter">
-              <span></span>
-            </div>
             <div class="toy-orbit-rail__content">
               <DoodleImage src={toy.doodleIcon} alt={`${toy.name} hand-drawn icon`} label={toy.name.slice(0, 2)} variant="icon" animation="none" />
               <h3>{toy.name}</h3>
               <p>{toy.status} / {toy.clipCount} clips</p>
             </div>
-            <strong>{toy.progressScore}%</strong>
           </a>
         );
       })

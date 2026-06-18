@@ -924,28 +924,10 @@ pre,
   transform: translateY(-0.25rem) rotate(var(--toy-tilt));
 }
 
-.toy-orbit-rail__meter {
-  position: absolute;
-  inset: 0.5rem 0.5rem auto;
-  height: 0.35rem;
-  overflow: hidden;
-  border-radius: 999px;
-  background: rgb(var(--color-ink-rgb) / 0.08);
-}
-
-.toy-orbit-rail__meter span {
-  display: block;
-  width: var(--toy-progress);
-  height: 100%;
-  border-radius: inherit;
-  background: var(--color-accent-2);
-}
-
 .toy-orbit-rail__content {
   display: grid;
   justify-items: center;
   gap: 0.45rem;
-  margin-top: 1rem;
 }
 
 .toy-orbit-rail__content h3 {

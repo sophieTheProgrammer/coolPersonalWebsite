@@ -4,7 +4,6 @@ export type ComboLogTag = "practice" | "trick" | "combo";
 export type SkillToy = {
   name: string;
   slug: string;
-  progressScore: number;
   currentFocus: string;
   doodleIcon?: string;
   clipCount: number;
@@ -42,28 +41,24 @@ const skillToyEntries: SkillToyEntry[] = [
   {
     name: "Kendama",
     slug: "kendama",
-    progressScore: 64,
     currentFocus: "Cleaner catches and longer flow lines.",
     doodleIcon: "kendama-icon.png",
   },
   {
     name: "Begleri",
     slug: "begleri",
-    progressScore: 3,
     currentFocus: "Smoother transfers and longer unbroken sequences.",
     doodleIcon: "begleri-icon.png",
   },
   {
     name: "Yoyo",
     slug: "yoyo",
-    progressScore: 28,
     currentFocus: "Basic string control and cleaner binds.",
     doodleIcon: "yoyo-icon.png",
   },
   {
     name: "Pen Spinning",
     slug: "pen-spinning",
-    progressScore: 5,
     currentFocus:
       "not really learning anything rn. but i would want to get good enough for playing takons",
     doodleIcon: "pen-spinning-icon.png",
@@ -71,14 +66,12 @@ const skillToyEntries: SkillToyEntry[] = [
   {
     name: "Juggling",
     slug: "juggling",
-    progressScore: 35,
     currentFocus: "the box",
     doodleIcon: "juggling-icon.png",
   },
   {
     name: "Freestyle Football",
     slug: "freestyle-football",
-    progressScore: 2,
     currentFocus:
       "A fun way to get exercise at my pace. I'm learning the noob tricks like toe and knee kicks.",
     doodleIcon: "freestyle-football-icon.png",
