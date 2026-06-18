@@ -10,163 +10,21 @@ const { toys } = Astro.props;
 const base = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
-const loopedToys = [...toys, ...toys];
 ---
 
-<div class="toy-orbit-rail" aria-label="Open toy trick logs" data-toy-orbit-rail>
-  <div class="toy-orbit-rail__track" data-toy-orbit-track>
+<div class="toy-scroll" aria-label="Open toy trick logs">
+  <div class="toy-scroll__track">
     {
-      loopedToys.map((toy, index) => {
-        const tilt = `${(index - 2) * 0.35}deg`;
-
-        return (
-          <a
-            class="toy-orbit-rail__node orbit-node"
-            href={`${base}skill-toys/${toy.slug}/`}
-            style={`--toy-tilt: ${tilt};`}
-            aria-hidden={index >= toys.length ? "true" : undefined}
-            tabindex={index >= toys.length ? "-1" : undefined}
-          >
-            <div class="toy-orbit-rail__content">
-              <DoodleImage src={toy.doodleIcon} alt={`${toy.name} hand-drawn icon`} label={toy.name.slice(0, 2)} variant="icon" animation="none" />
-              <h3>{toy.name}</h3>
-              <p>{toy.status} / {toy.clipCount} clips</p>
-            </div>
-          </a>
-        );
-      })
+      toys.map((toy) => (
+        <a
+          class="toy-scroll__node"
+          href={`${base}skill-toys/${toy.slug}/`}
+        >
+          <DoodleImage src={toy.doodleIcon} alt={`${toy.name} hand-drawn icon`} label={toy.name.slice(0, 2)} variant="icon" animation="none" />
+          <h3>{toy.name}</h3>
+          <p>{toy.status} / {toy.clipCount} clips</p>
+        </a>
+      ))
     }
   </div>
 </div>
-
-<script>
-  const windowWithToyOrbit = window as Window & {
-    __toyOrbitInit?: () => void;
-  };
-
-  if (windowWithToyOrbit.__toyOrbitInit) {
-    document.removeEventListener("astro:page-load", windowWithToyOrbit.__toyOrbitInit);
-  }
-
-  windowWithToyOrbit.__toyOrbitInit = () => {
-    document.querySelectorAll<HTMLElement>("[data-toy-orbit-rail]").forEach((rail) => {
-      if (rail.dataset.orbitReady === "scroll-loop") {
-        return;
-      }
-
-      rail.dataset.orbitReady = "scroll-loop";
-      const track = rail.querySelector<HTMLElement>("[data-toy-orbit-track]");
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-      let pauseTimer: number | undefined;
-      let resumeTimer: number | undefined;
-      let previousTime = 0;
-      let ignoreScrollUntil = 0;
-      let isInteracting = false;
-      let isHovering = false;
-      let hasFocus = false;
-      let scrollCarry = 0;
-
-      if (!track || reduceMotion.matches) {
-        return;
-      }
-
-      const loopWidth = () => track.scrollWidth / 2;
-
-      const normalizeScroll = () => {
-        const width = loopWidth();
-
-        if (width <= rail.clientWidth) {
-          return;
-        }
-
-        if (rail.scrollLeft >= width) {
-          ignoreScrollUntil = performance.now() + 80;
-          rail.scrollTo({ left: rail.scrollLeft - width, behavior: "auto" });
-        } else if (rail.scrollLeft < 0) {
-          ignoreScrollUntil = performance.now() + 80;
-          rail.scrollTo({ left: rail.scrollLeft + width, behavior: "auto" });
-        }
-      };
-
-      const setPaused = (paused: boolean) => {
-        rail.classList.toggle("toy-orbit-rail--paused", paused);
-      };
-
-      const resumeSoon = (delay = 1200) => {
-        window.clearTimeout(resumeTimer);
-        resumeTimer = window.setTimeout(() => {
-          isInteracting = false;
-          normalizeScroll();
-          setPaused(false);
-          previousTime = performance.now();
-        }, delay);
-      };
-
-      const pauseForInteraction = () => {
-        isInteracting = true;
-        setPaused(true);
-        window.clearTimeout(pauseTimer);
-        pauseTimer = window.setTimeout(() => {
-          resumeSoon(0);
-        }, 1600);
-      };
-
-      const tick = () => {
-        const time = performance.now();
-        const elapsed = previousTime ? time - previousTime : 0;
-        previousTime = time;
-
-        if (!isInteracting && !isHovering && !hasFocus) {
-          scrollCarry += elapsed * 0.045;
-          const nextStep = Math.floor(scrollCarry);
-
-          if (nextStep > 0) {
-            scrollCarry -= nextStep;
-            ignoreScrollUntil = time + 80;
-            rail.scrollTo({ left: rail.scrollLeft + nextStep, behavior: "auto" });
-          }
-
-          normalizeScroll();
-        }
-
-        window.setTimeout(tick, 16);
-      };
-
-      rail.addEventListener("scroll", () => {
-        if (performance.now() > ignoreScrollUntil) {
-          pauseForInteraction();
-        }
-      }, { passive: true });
-
-      ["pointerdown", "touchstart", "wheel", "keydown"].forEach((eventName) => {
-        rail.addEventListener(eventName, pauseForInteraction, { passive: true });
-      });
-
-      ["pointerup", "touchend", "touchcancel"].forEach((eventName) => {
-        rail.addEventListener(eventName, () => resumeSoon(), { passive: true });
-      });
-
-      rail.addEventListener("mouseenter", () => {
-        isHovering = true;
-        setPaused(true);
-      }, { passive: true });
-      rail.addEventListener("mouseleave", () => {
-        isHovering = false;
-        resumeSoon(250);
-      }, { passive: true });
-      rail.addEventListener("focusin", () => {
-        hasFocus = true;
-        setPaused(true);
-      }, { passive: true });
-      rail.addEventListener("focusout", () => {
-        hasFocus = false;
-        resumeSoon(250);
-      }, { passive: true });
-
-      window.setTimeout(tick, 16);
-    });
-  };
-
-  document.addEventListener("astro:page-load", windowWithToyOrbit.__toyOrbitInit);
-  windowWithToyOrbit.__toyOrbitInit();
-</script>

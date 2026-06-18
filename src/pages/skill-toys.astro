@@ -56,6 +56,16 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
         </div>
       </section>
 
+      <section class="support-panel section-rhythm--tight" aria-labelledby="toy-strip-heading">
+        <div class="mb-3 flex flex-wrap items-end justify-between gap-3">
+          <h2 id="toy-strip-heading" class="text-2xl font-black">See full trick history of toy</h2>
+          <p class="text-sm font-semibold text-[var(--color-muted)]">
+            scroll to browse
+          </p>
+        </div>
+        <ToyProgressStrip toys={skillToys} />
+      </section>
+
       <section class="section-rhythm--tight" aria-labelledby="log-heading">
         <div class="grid gap-4 lg:grid-cols-[0.7fr_1fr] lg:items-end">
           <div>
@@ -73,17 +83,6 @@ const progressLog = getWeightedProgressLog(comboLogs.length);
         </div>
       </section>
 
-      <section class="support-panel section-rhythm" aria-labelledby="toy-strip-heading">
-        <div class="mb-3 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h2 id="toy-strip-heading" class="text-2xl font-black">See full trick history of toy</h2>
-          </div>
-          <p class="text-sm font-semibold text-[var(--color-muted)]">
-            click a node
-          </p>
-        </div>
-        <ToyProgressStrip toys={skillToys} />
-      </section>
     </section>
   </main>
 </BaseLayout>
