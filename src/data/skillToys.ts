@@ -5,7 +5,7 @@ export type SkillToy = {
   name: string;
   slug: string;
   currentFocus: string;
-  doodleIcon?: string;
+  doodleIcon: string;
   clipCount: number;
   status: SkillToyStatus;
   latestComboId: string;
@@ -23,7 +23,10 @@ export type ComboLog = {
   featured: boolean;
 };
 
-type SkillToyEntry = Omit<SkillToy, "clipCount" | "status" | "latestComboId">;
+type SkillToyEntry = Omit<
+  SkillToy,
+  "clipCount" | "status" | "latestComboId" | "doodleIcon"
+>;
 
 type ComboLogEntry = Omit<ComboLog, "embedUrl" | "featured"> & {
   embedUrl?: string;
@@ -42,39 +45,33 @@ const skillToyEntries: SkillToyEntry[] = [
     name: "Kendama",
     slug: "kendama",
     currentFocus: "Cleaner catches and longer flow lines.",
-    doodleIcon: "kendama-icon.png",
   },
   {
     name: "Begleri",
     slug: "begleri",
     currentFocus: "Smoother transfers and longer unbroken sequences.",
-    doodleIcon: "begleri-icon.png",
   },
   {
     name: "Yoyo",
     slug: "yoyo",
     currentFocus: "Basic string control and cleaner binds.",
-    doodleIcon: "yoyo-icon.png",
   },
   {
     name: "Pen Spinning",
     slug: "pen-spinning",
     currentFocus:
       "not really learning anything rn. but i would want to get good enough for playing takons",
-    doodleIcon: "pen-spinning-icon.png",
   },
   {
     name: "Juggling",
     slug: "juggling",
     currentFocus: "the box",
-    doodleIcon: "juggling-icon.png",
   },
   {
     name: "Freestyle Football",
     slug: "freestyle-football",
     currentFocus:
       "A fun way to get exercise at my pace. I'm learning the noob tricks like toe and knee kicks.",
-    doodleIcon: "freestyle-football-icon.png",
   },
 ];
 
@@ -251,6 +248,7 @@ export const skillToys: SkillToy[] = skillToyEntries.map((toy) => {
 
   return {
     ...toy,
+    doodleIcon: `${toy.slug}-icon.png`,
     clipCount: combos.length,
     status: getStatusFromLatestDate(latestCombo?.date),
     latestComboId: latestCombo?.id ?? "",

@@ -484,8 +484,8 @@ pre,
 }
 
 .doodle-image--icon {
-  width: 2.4rem;
-  height: 2.4rem;
+  width: 5rem;
+  height: 5rem;
 }
 
 .doodle-image--icon .doodle-image__fallback {
@@ -853,8 +853,13 @@ pre,
 }
 
 .active-clip-card .doodle-image--icon {
-  width: 3.1rem;
-  height: 3.1rem;
+  width: 6.5rem;
+  height: 6.5rem;
+}
+
+.toy-detail-icon .doodle-image--accent {
+  width: clamp(9rem, 20vw, 11rem);
+  height: clamp(9rem, 20vw, 11rem);
 }
 
 .home-social-card {
@@ -978,6 +983,11 @@ pre,
   display: grid;
   justify-items: center;
   gap: 0.45rem;
+}
+
+.toy-orbit-rail__content .doodle-image--icon {
+  width: 7rem;
+  height: 7rem;
 }
 
 .toy-orbit-rail__content h3 {

@@ -58,6 +58,10 @@ Toy status, clip count, and latest clip are automatic. For new clips, add:
 The site does not currently read YouTube title/description automatically.
 That needs a YouTube Data API sync script.
 
+Skill toy icons are automatic. Add a transparent PNG to `public/doodles/`
+using the toy slug followed by `-icon.png`, such as
+`freestyle-football-icon.png`. The placeholder is replaced on the next build.
+
 ## Coding
 
 Edit `src/data/codingProjects.ts`.
