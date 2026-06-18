@@ -386,7 +386,14 @@ createServer(async (request, response) => {
       const body = await readBody(request);
       const { files } = parseMultipart(body, request.headers["content-type"] ?? "");
       if (!files.file) throw new Error("Missing upload file.");
-      send(response, 200, { ok: true, file: await saveUpload(files.file) });
+      const file = await saveUpload(files.file);
+      const processFile = files.processFile ? await saveUpload(files.processFile) : null;
+
+      if (processFile?.kind === "pdf") {
+        throw new Error("Process uploads must be images.");
+      }
+
+      send(response, 200, { ok: true, file, processFile });
       return;
     }
 

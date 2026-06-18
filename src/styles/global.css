@@ -293,6 +293,12 @@ pre,
     color: rgb(255 255 255 / 0.72);
   }
 
+  .admin-upload-previews {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: 0.9rem;
+  }
+
   .admin-upload-preview img,
   .admin-upload-preview iframe {
     display: block;
@@ -960,15 +966,15 @@ pre,
 }
 
 .packet-drawing-grid {
-  column-count: 4;
-  column-gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  align-items: start;
+  gap: 1rem;
 }
 
 .packet-drawing-grid [data-packet-drawing] {
-  display: inline-block;
+  display: block;
   width: 100%;
-  margin: 0 0 1rem;
-  break-inside: avoid;
 }
 
 .art-lightbox-trigger {
@@ -1286,9 +1292,6 @@ pre,
     column-count: 1;
   }
 
-  .packet-drawing-grid {
-    column-count: 1;
-  }
 }
 
 @media (min-width: 641px) and (max-width: 1024px) {
@@ -1296,9 +1299,6 @@ pre,
     column-count: 2;
   }
 
-  .packet-drawing-grid {
-    column-count: 2;
-  }
 }
 
 .art-tile-pattern {

@@ -31,6 +31,10 @@ import { skillToys } from "../data/skillToys";
               <input class="form-field" name="file" type="file" accept="image/*,.pdf" required />
             </label>
             <label class="field-stack">
+              <span>Process/hover image</span>
+              <input class="form-field" name="processFile" type="file" accept="image/*" data-process-file />
+            </label>
+            <label class="field-stack">
               <span>Packet</span>
               <select class="form-field" name="packetSlug">
                 {artVolumes.map((volume) => <option value={volume.slug}>{volume.title}</option>)}
@@ -49,18 +53,23 @@ import { skillToys } from "../data/skillToys";
               <textarea class="form-field form-field--textarea" name="note" placeholder="Optional tiny note"></textarea>
             </label>
             <label class="field-stack admin-field-grid__wide">
-              <span>Process/sketch image path</span>
+              <span>Existing process image path</span>
               <input class="form-field" name="processSrc" placeholder="/art/sketch-upload.png" />
             </label>
           </div>
 
-          <div class="media-frame admin-upload-preview" data-upload-preview>
-            <span>Select an image or PDF</span>
+          <div class="admin-upload-previews">
+            <div class="media-frame admin-upload-preview" data-upload-preview>
+              <span>Select an image or PDF</span>
+            </div>
+            <div class="media-frame admin-upload-preview" data-process-preview>
+              <span>Optional process image</span>
+            </div>
           </div>
           <div class="admin-pdf-pages" data-pdf-pages hidden></div>
           <div class="flex flex-wrap gap-2">
             <button class="site-button site-button--dark px-4 py-3" type="submit">
-              Upload file
+              Upload files
             </button>
             <button class="site-button px-4 py-3" type="button" data-save-artwork disabled>
               Save to packet
@@ -165,10 +174,13 @@ import { skillToys } from "../data/skillToys";
   const artOutput = document.querySelector("[data-art-output]");
   const saveArtworkButton = document.querySelector("[data-save-artwork]");
   const preview = document.querySelector("[data-upload-preview]");
+  const processPreview = document.querySelector("[data-process-preview]");
+  const processFileInput = document.querySelector<HTMLInputElement>("[data-process-file]");
   const pdfPagesPreview = document.querySelector("[data-pdf-pages]");
   const packetSelect = document.querySelector<HTMLSelectElement>('[name="packetSlug"]');
   const newPacketInput = document.querySelector<HTMLInputElement>('[name="newPacketTitle"]');
   let uploadedFile: { src: string; kind: "image" | "pdf" } | null = null;
+  let uploadedProcessFile: { src: string; kind: "image" | "pdf" } | null = null;
   type RenderedPdfPage = {
     pageNumber: number;
     dataUrl: string;
@@ -375,15 +387,44 @@ import { skillToys } from "../data/skillToys";
     if (!(input instanceof HTMLInputElement)) return;
     const file = input.files?.[0];
     uploadedFile = null;
+    uploadedProcessFile = null;
 
     if (saveArtworkButton instanceof HTMLButtonElement) {
       saveArtworkButton.disabled = true;
     }
 
     if (file) {
+      const isPdf = file.type === "application/pdf";
+
+      if (processFileInput) {
+        processFileInput.disabled = isPdf;
+        if (isPdf) processFileInput.value = "";
+      }
+      if (processPreview instanceof HTMLElement) {
+        processPreview.innerHTML = isPdf
+          ? "<span>Pair PDF process pages below</span>"
+          : "<span>Optional process image</span>";
+      }
+
       await renderPreview(file);
       writeOutput(`Ready to upload: ${file.name}`);
     }
+  });
+
+  processFileInput?.addEventListener("change", () => {
+    const file = processFileInput.files?.[0];
+    uploadedProcessFile = null;
+
+    if (!(processPreview instanceof HTMLElement)) return;
+
+    if (!file) {
+      processPreview.innerHTML = "<span>Optional process image</span>";
+      return;
+    }
+
+    const url = URL.createObjectURL(file);
+    processPreview.innerHTML = `<img src="${url}" alt="Process image preview" />`;
+    writeOutput(`Ready to upload process image: ${file.name}`);
   });
 
   artForm?.addEventListener("submit", async (event) => {
@@ -403,6 +444,7 @@ import { skillToys } from "../data/skillToys";
       if (!result.ok) throw new Error(result.error);
 
       uploadedFile = result.file;
+      uploadedProcessFile = result.processFile ?? null;
       if (saveArtworkButton instanceof HTMLButtonElement) {
         saveArtworkButton.disabled = false;
       }
@@ -410,7 +452,7 @@ import { skillToys } from "../data/skillToys";
       writeOutput(
         uploadedFile?.kind === "pdf"
           ? `Uploaded ${result.file.src}\nReady to save this PDF into the selected packet.`
-          : `Uploaded ${result.file.src}\nReady to save this image into the selected packet.`,
+          : `Uploaded ${result.file.src}${uploadedProcessFile ? `\nUploaded process image ${uploadedProcessFile.src}` : ""}\nReady to save this image into the selected packet.`,
       );
     } catch (error) {
       writeOutput(`Writer unavailable or failed.\nRun: npm run admin:server\n\n${error}`);
@@ -480,7 +522,7 @@ import { skillToys } from "../data/skillToys";
           title: data.get("title"),
           note: data.get("note"),
           imageSrc: uploadedFile.src,
-          processSrc: data.get("processSrc"),
+          processSrc: uploadedProcessFile?.src || data.get("processSrc"),
           kind: uploadedFile.kind,
         }),
       });
