@@ -14,15 +14,14 @@ const stages = imageStages.map((stage) => ({
 ---
 
 <article
-  class="art-process-widget overflow-hidden rounded-lg bg-[var(--color-card)] text-[var(--color-ink)] sm:col-span-2 xl:col-span-2"
+  class="art-process-widget overflow-hidden rounded-lg bg-[var(--color-card)] text-[var(--color-ink)]"
   data-stages={JSON.stringify(stages)}
 >
-  <div class="grid gap-0 md:grid-cols-[1fr_18rem]">
-    <div class="p-5">
+  <div class="art-process-widget__layout">
+    <div class="art-process-widget__main">
       <h2 class="text-3xl font-black leading-none">{currentArtwork.title}</h2>
-      <p class="mt-4 max-w-xl leading-7 text-[var(--color-muted)]">{currentArtwork.note}</p>
 
-      <div class="mt-6">
+      <div class="mt-4">
         <div
           class="process-preview relative aspect-[16/9] overflow-hidden rounded-lg"
           data-process-preview
@@ -36,7 +35,7 @@ const stages = imageStages.map((stage) => ({
           />
           <div class:list={["absolute inset-0 opacity-25 art-tile-pattern", stages[0].imageSrc ? "hidden" : ""]} data-process-fallback></div>
           <div class="absolute bottom-4 left-4 rounded-md bg-white/70 px-3 py-2 text-sm font-black text-[var(--color-ink)] backdrop-blur" data-process-label>
-            {processStages[0].label} / {processStages[0].title}
+            {stages[0].label} / {stages[0].title}
           </div>
         </div>
 
@@ -53,11 +52,8 @@ const stages = imageStages.map((stage) => ({
       </div>
     </div>
 
-    <div class="bg-[rgba(30,27,46,0.025)] p-5">
-      <p class="text-xl font-black">{currentArtwork.status}</p>
-      <p class="mt-4 leading-7 text-[var(--color-muted)]">{currentArtwork.nextStep}</p>
-
-      <div class="mt-8 rounded-lg bg-white/60 p-4">
+    <div class="art-process-widget__details">
+      <div class="rounded-lg bg-white/60 p-4">
         <h3 class="text-2xl font-black" data-process-title>{stages[0].title}</h3>
         <p class="mt-3 leading-7 text-[var(--color-muted)]" data-process-description>
           {stages[0].description}

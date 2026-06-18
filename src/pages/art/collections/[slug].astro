@@ -1,5 +1,6 @@
 ---
 import VolumeDrawingCard from "../../../components/VolumeDrawingCard.astro";
+import ArtFlowGrid from "../../../components/ArtFlowGrid.astro";
 import {
   artVolumes,
   getArtVolumeBySlug,
@@ -57,15 +58,15 @@ const drawings = getArtworksForVolume(volume.slug);
           </p>
         </div>
 
-        <div class="packet-drawing-grid mt-5" data-packet-grid>
+        <ArtFlowGrid className="packet-drawing-grid mt-5">
           {
             drawings.map((artwork, index) => (
-              <div data-packet-drawing>
+              <div data-art-flow-item data-packet-drawing>
                 <VolumeDrawingCard artwork={artwork} index={index} />
               </div>
             ))
           }
-        </div>
+        </ArtFlowGrid>
       </section>
 
       <dialog class="art-lightbox" data-art-lightbox>

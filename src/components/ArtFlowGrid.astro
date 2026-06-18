@@ -1,0 +1,82 @@
+---
+type Props = {
+  className?: string;
+  minColumn?: string;
+};
+
+const { className = "", minColumn = "16rem" } = Astro.props;
+---
+
+<div
+  class:list={["art-flow-grid", className]}
+  style={`--art-flow-min: ${minColumn};`}
+  data-art-flow-grid
+>
+  <slot />
+</div>
+
+<script>
+  const runtime = window as Window & {
+    __artFlowInit?: () => void;
+    __artFlowCleanup?: () => void;
+  };
+
+  runtime.__artFlowCleanup?.();
+
+  const observers: ResizeObserver[] = [];
+  let animationFrame = 0;
+
+  const measureGrid = (grid: HTMLElement) => {
+    const styles = getComputedStyle(grid);
+    const rowHeight = Number.parseFloat(styles.gridAutoRows);
+    const rowGap = Number.parseFloat(styles.rowGap);
+
+    if (!rowHeight || Number.isNaN(rowGap)) return;
+
+    grid.querySelectorAll<HTMLElement>(":scope > [data-art-flow-item]").forEach((item) => {
+      const height = item.getBoundingClientRect().height;
+      const span = Math.max(1, Math.ceil((height + rowGap) / (rowHeight + rowGap)));
+      const nextValue = `span ${span}`;
+
+      if (item.style.gridRowEnd !== nextValue) {
+        item.style.gridRowEnd = nextValue;
+      }
+    });
+  };
+
+  const queueMeasure = (grid: HTMLElement) => {
+    window.cancelAnimationFrame(animationFrame);
+    animationFrame = window.requestAnimationFrame(() => measureGrid(grid));
+  };
+
+  runtime.__artFlowInit = () => {
+    document.querySelectorAll<HTMLElement>("[data-art-flow-grid]").forEach((grid) => {
+      if (grid.dataset.artFlowReady === "true") return;
+      grid.dataset.artFlowReady = "true";
+
+      const observer = new ResizeObserver(() => queueMeasure(grid));
+      observers.push(observer);
+      observer.observe(grid);
+
+      grid.querySelectorAll<HTMLElement>(":scope > [data-art-flow-item]").forEach((item) => {
+        observer.observe(item);
+      });
+
+      grid.querySelectorAll<HTMLImageElement>("img").forEach((image) => {
+        if (!image.complete) image.addEventListener("load", () => queueMeasure(grid), { once: true });
+      });
+
+      document.fonts?.ready.then(() => queueMeasure(grid));
+      queueMeasure(grid);
+    });
+  };
+
+  runtime.__artFlowCleanup = () => {
+    window.cancelAnimationFrame(animationFrame);
+    observers.forEach((observer) => observer.disconnect());
+    document.removeEventListener("astro:page-load", runtime.__artFlowInit!);
+  };
+
+  document.addEventListener("astro:page-load", runtime.__artFlowInit);
+  runtime.__artFlowInit();
+</script>

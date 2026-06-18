@@ -1,11 +1,14 @@
 ---
 import ArtProcessWidget from "../components/ArtProcessWidget.astro";
 import ArtVolumeCard from "../components/ArtVolumeCard.astro";
+import ArtFlowGrid from "../components/ArtFlowGrid.astro";
 import { artVolumes, artworks } from "../data/artworks";
 import SketchbookWidget from "../components/SketchbookWidget.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 const moods = [...new Set(artworks.map((artwork) => artwork.mood))];
+const leadingVolumes = artVolumes.slice(0, 4);
+const trailingVolumes = artVolumes.slice(4);
 ---
 
 <BaseLayout
@@ -63,11 +66,12 @@ const moods = [...new Set(artworks.map((artwork) => artwork.mood))];
             click a pack to open the drawings inside
           </p>
         </div>
-        <div class="art-gallery-grid grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {artVolumes.map((volume, index) => <ArtVolumeCard volume={volume} index={index} />)}
-          <ArtProcessWidget />
-          <SketchbookWidget />
-        </div>
+        <ArtFlowGrid className="art-gallery-grid">
+          {leadingVolumes.map((volume) => <div data-art-flow-item><ArtVolumeCard volume={volume} /></div>)}
+          <div data-art-flow-item data-art-flow-wide><ArtProcessWidget /></div>
+          {trailingVolumes.map((volume) => <div data-art-flow-item><ArtVolumeCard volume={volume} /></div>)}
+          <div data-art-flow-item><SketchbookWidget /></div>
+        </ArtFlowGrid>
       </div>
 
       <section class="art-roadmap section-rhythm--tight grid gap-3 md:grid-cols-3">

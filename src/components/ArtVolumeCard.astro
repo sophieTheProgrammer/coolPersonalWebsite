@@ -4,10 +4,9 @@ import { getArtworksForVolume } from "../data/artworks";
 
 type Props = {
   volume: ArtVolume;
-  index: number;
 };
 
-const { volume, index } = Astro.props;
+const { volume } = Astro.props;
 const drawings = getArtworksForVolume(volume.slug);
 const base = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
@@ -15,18 +14,15 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 ---
 
 <article
-  class:list={[
-    "art-volume-card group overflow-hidden rounded-xl bg-[rgba(255,253,248,0.92)] transition hover:-translate-y-1 hover:shadow-lg",
-    index === 0 ? "xl:col-span-2" : "",
-  ]}
+  class="art-volume-card group overflow-hidden rounded-xl bg-[rgba(255,253,248,0.92)] transition hover:-translate-y-1 hover:shadow-lg"
 >
   <a class="block h-full" href={`${base}art/collections/${volume.slug}/`}>
-    <div class:list={["grid gap-5", index === 0 ? "p-6" : "p-4"]}>
+    <div class="grid gap-5 p-4">
       <div>
         <p class="font-mono text-xs font-bold text-[var(--color-muted)]">
           {volume.year} / {drawings.length} drawings
         </p>
-        <h2 class:list={["mt-4 font-black", index === 0 ? "text-4xl leading-none" : "text-2xl"]}>{volume.title}</h2>
+        <h2 class="mt-4 text-2xl font-black leading-tight">{volume.title}</h2>
       </div>
 
       <div class="grid gap-2">

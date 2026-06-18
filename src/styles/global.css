@@ -411,9 +411,8 @@ pre,
   }
 
   .art-packet-tile {
-    display: inline-block;
+    display: block;
     width: 100%;
-    break-inside: avoid;
     overflow: hidden;
     border-radius: 0.85rem;
   }
@@ -1010,16 +1009,48 @@ pre,
   margin-inline: auto;
 }
 
-.packet-drawing-grid {
+.art-flow-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--art-flow-min, 16rem)), 1fr));
+  grid-auto-rows: 8px;
   align-items: start;
   gap: 1rem;
 }
 
-.packet-drawing-grid [data-packet-drawing] {
-  display: block;
-  width: 100%;
+.art-flow-grid > [data-art-flow-item] {
+  min-width: 0;
+  align-self: start;
+}
+
+.art-process-widget {
+  container-type: inline-size;
+}
+
+.art-process-widget__layout {
+  display: grid;
+}
+
+.art-process-widget__main,
+.art-process-widget__details {
+  min-width: 0;
+  padding: 1.25rem;
+}
+
+.art-process-widget__details {
+  background: rgb(var(--color-ink-rgb) / 0.025);
+}
+
+@container (min-width: 32rem) {
+  .art-process-widget__layout {
+    grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.72fr);
+    align-items: stretch;
+  }
+}
+
+@media (min-width: 640px) {
+  .art-flow-grid > [data-art-flow-wide] {
+    grid-column: span 2;
+  }
 }
 
 .art-lightbox-trigger {
@@ -1450,13 +1481,6 @@ pre,
     grid-template-columns: minmax(0, 1fr) 18rem;
   }
 
-}
-
-@media (min-width: 1280px) {
-  .art-gallery-grid > article:nth-child(1),
-  .art-gallery-grid > article:nth-child(4) {
-    grid-column: span 2;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
