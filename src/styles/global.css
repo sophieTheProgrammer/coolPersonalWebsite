@@ -11,12 +11,12 @@
   --color-ink-rgb: 36 32 44;
   --color-paper: #fff8ed;
   --color-paper-rgb: 255 248 237;
-  --color-muted: #706779;
   --color-accent: #d94f68;
   --color-accent-rgb: 217 79 104;
   --color-accent-2: #247d70;
   --color-accent-2-rgb: 36 125 112;
-  --color-card: #fffdf8;
+  --color-muted: color-mix(in srgb, var(--color-ink) 68%, var(--color-paper));
+  --color-card: color-mix(in srgb, var(--color-paper) 96%, var(--color-ink));
   --color-line: rgb(var(--color-ink-rgb) / 0.14);
 }
 
@@ -525,11 +525,11 @@ pre,
 }
 
 .coding-project-card--gold {
-  --project-accent: #e4b84f;
+  --project-accent: var(--color-accent);
 }
 
 .coding-project-card--violet {
-  --project-accent: #7c6cff;
+  --project-accent: var(--color-accent-2);
 }
 
 .coding-project-card__spotlight-label {
@@ -627,7 +627,7 @@ pre,
   width: min(100%, 19rem);
   overflow: hidden;
   border-radius: 0.75rem;
-  background: linear-gradient(135deg, rgba(228, 87, 122, 0.08), rgba(45, 156, 140, 0.08));
+  background: linear-gradient(135deg, rgb(var(--color-accent-rgb) / 0.08), rgb(var(--color-accent-2-rgb) / 0.08));
   transition:
     transform 220ms ease,
     box-shadow 220ms ease;
@@ -668,7 +668,7 @@ pre,
   height: 3.6rem;
   border: 1px solid var(--color-line);
   border-radius: 999px;
-  background: #fbfaf7;
+  background: var(--color-paper);
 }
 
 .home-person__body {
@@ -697,7 +697,7 @@ pre,
   height: 1rem;
   border: 1px solid var(--color-line);
   border-radius: 999px;
-  background: #fbfaf7;
+  background: var(--color-paper);
 }
 
 .home-person__arm--left {
@@ -734,12 +734,12 @@ pre,
 
 .home-person__desk span:nth-child(2) {
   height: 1.1rem;
-  background: rgba(45, 156, 140, 0.25);
+  background: rgb(var(--color-accent-2-rgb) / 0.25);
 }
 
 .home-person__desk span:nth-child(3) {
   height: 0.9rem;
-  background: rgba(228, 87, 122, 0.22);
+  background: rgb(var(--color-accent-rgb) / 0.22);
 }
 
 @keyframes person-wave {
@@ -778,7 +778,7 @@ pre,
   background: linear-gradient(
     180deg,
     transparent,
-    rgba(45, 156, 140, 0.12),
+    rgb(var(--color-accent-2-rgb) / 0.12),
     transparent
   );
   transform: translateY(-100%);
@@ -792,7 +792,7 @@ pre,
 .terminal-cursor {
   display: inline-block;
   margin-left: 0.2rem;
-  color: #f4d35e;
+  color: var(--color-paper);
   animation: terminal-blink 1s steps(2, start) infinite;
 }
 
@@ -1328,14 +1328,14 @@ pre,
 
 .art-page-shell {
   position: relative;
-  background: linear-gradient(180deg, rgba(251, 250, 247, 0.96), rgba(251, 250, 247, 0.84));
+  background: linear-gradient(180deg, rgb(var(--color-paper-rgb) / 0.96), rgb(var(--color-paper-rgb) / 0.84));
 }
 
 .sketchbook-page {
   position: relative;
   min-height: 12rem;
   border-radius: 0.75rem;
-  background: linear-gradient(135deg, rgba(244, 211, 94, 0.24), rgba(228, 87, 122, 0.12));
+  background: linear-gradient(135deg, rgb(var(--color-accent-2-rgb) / 0.18), rgb(var(--color-accent-rgb) / 0.12));
   padding: 1rem 1rem 1rem 2rem;
 }
 
@@ -1404,7 +1404,7 @@ pre,
   height: 2rem;
   border: 1px solid var(--color-line);
   border-radius: 999px;
-  background: rgba(244, 211, 94, 0.7);
+  background: rgb(var(--color-accent-2-rgb) / 0.48);
 }
 
 .sketch-dot--one {
@@ -1415,7 +1415,7 @@ pre,
 .sketch-dot--two {
   right: 3rem;
   bottom: 2.8rem;
-  background: rgba(228, 87, 122, 0.4);
+  background: rgb(var(--color-accent-rgb) / 0.4);
 }
 
 @media (min-width: 1024px) {

@@ -39,10 +39,8 @@ const fontPreviews = [
 const palette = [
   { name: "Ink", value: "#24202c", token: "--color-ink" },
   { name: "Paper", value: "#fff8ed", token: "--color-paper" },
-  { name: "Card", value: "#fffdf8", token: "--color-card" },
   { name: "Rose", value: "#d94f68", token: "--color-accent" },
   { name: "Leaf", value: "#247d70", token: "--color-accent-2" },
-  { name: "Muted", value: "#706779", token: "--color-muted" },
 ];
 ---
 
@@ -99,11 +97,11 @@ const palette = [
             <h2 class="mt-2 text-4xl leading-none">Small set, more personality</h2>
           </div>
           <p class="max-w-md text-sm font-semibold leading-6 text-[var(--color-muted)]">
-            The site should mostly stay inside these colors, then your drawings
-            can add texture without making every page feel different.
+            Use only these four base colors. Muted text, cards, and borders are
+            derived from Ink and Paper instead of adding more palette colors.
           </p>
         </div>
-        <div class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {
             palette.map((color) => (
               <div class="rounded-md border border-[var(--color-line)] bg-white/60 p-3">
