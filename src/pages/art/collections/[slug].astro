@@ -28,7 +28,7 @@ const drawings = getArtworksForVolume(volume.slug);
 
 <BaseLayout
   title={`${volume.title} | Art | Cool Personal Website`}
-  description={volume.note}
+  description={`${volume.title} drawing packet.`}
 >
   <main class="page-shell">
     <section class="art-wide-frame">
@@ -42,8 +42,6 @@ const drawings = getArtworksForVolume(volume.slug);
       <div class="section-rhythm--tight">
         <div data-packet-open>
           <h1 class="text-5xl font-black leading-none">{volume.title}</h1>
-          <p class="mt-4 text-xl font-bold text-[var(--color-muted)]">{volume.subtitle}</p>
-          <p class="mt-5 max-w-3xl leading-7 text-[var(--color-muted)]">{volume.note}</p>
         </div>
       </div>
 
