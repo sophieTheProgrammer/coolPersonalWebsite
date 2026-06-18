@@ -19,9 +19,9 @@ Use this as the checklist for replacing placeholders with your own transparent P
 
 - [ ] `kendama-icon.png`
 - [ ] `begleri-icon.png`
-- [ ] `yoyo-icon.png`
-- [ ] `pen-spinning-icon.png`
-- [ ] `juggling-icon.png`
+- [x] `yoyo-icon.png`
+- [x] `pen-spinning-icon.png`
+- [x] `juggling-icon.png`
 - [ ] `freestyle-football-icon.png`
 
 ## Optional Fun Drawings

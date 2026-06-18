@@ -350,7 +350,7 @@ export const artVolumes: ArtVolume[] = [
 ];
 
 export const currentArtwork: CurrentArtwork = {
-  title: "Sunset",
+  title: "Drawing process for this sunset",
   status: "Blocking in",
   note: "Building a visual language with loose symbols, UI fragments, and toy-like motion shapes.",
   nextStep:
@@ -362,49 +362,55 @@ export const processStages: ProcessStage[] = [
     label: "01",
     title: "Sketch",
     description: "Just trying to get my idea down.",
-    palette: ["#fbfaf7","#1e1b2e","#d8d3c8"],
+    palette: ["#fbfaf7", "#1e1b2e", "#d8d3c8"],
     ...{ imageSrc: "/art/img-4453-a8a356bd.jpg" },
   },
   {
     label: "02",
     title: "Lineart",
-    description: "Putting it really messy lineart. I tried to clean it up but then it lost all the charm, so I kept this one. I used some structure undersketches to check my anatomy since I didn't use a reference. I also set the background grey to keep my eyes from dying.",
-    palette: ["#e4577a","#fbfaf7","#2d9c8c"],
+    description:
+      "Putting it really messy lineart. I tried to clean it up but then it lost all the charm, so I kept this one. I used some structure undersketches to check my anatomy since I didn't use a reference. I also set the background grey to keep my eyes from dying.",
+    palette: ["#e4577a", "#fbfaf7", "#2d9c8c"],
     ...{ imageSrc: "/art/img-4455-368b249d.jpg" },
   },
   {
     label: "03",
     title: "Color",
-    description: "Put in base colors, shadows and highlights.\nUsing Add blend mode made it look REALLY COOL.",
-    palette: ["#f4d35e","#e4577a","#7c6cff"],
+    description:
+      "Put in base colors, shadows and highlights.\nUsing Add blend mode made it look REALLY COOL.",
+    palette: ["#f4d35e", "#e4577a", "#7c6cff"],
     ...{ imageSrc: "/art/img-4458-424ed1c8.jpg" },
   },
   {
     label: "04",
     title: "Cleanup",
-    description: "I merged all my layers and cleaned up, though I feel like it looks worse than the other phase, because my values weren't really working with this new background I think.",
-    palette: ["#1e1b2e","#2d9c8c","#fbfaf7"],
+    description:
+      "I merged all my layers and cleaned up, though I feel like it looks worse than the other phase, because my values weren't really working with this new background I think.",
+    palette: ["#1e1b2e", "#2d9c8c", "#fbfaf7"],
     ...{ imageSrc: "/art/img-4459-d3bd589f.jpg" },
   },
   {
     label: "05",
     title: "Moar cleanup",
-    description: "Used curves to make it look more vibrant and checked it in greyscale so they pop better against background. I also did EVEN MORE cleanup, and caught more mistakes in the lighting. It looks nicer now",
-    palette: ["#fff8ed","#d94f68","#247d70"],
+    description:
+      "Used curves to make it look more vibrant and checked it in greyscale so they pop better against background. I also did EVEN MORE cleanup, and caught more mistakes in the lighting. It looks nicer now",
+    palette: ["#fff8ed", "#d94f68", "#247d70"],
     ...{ imageSrc: "/art/img-4460-2333f54c.jpg" },
   },
   {
     label: "06",
     title: "Add Background",
-    description: "I was fumbling with the background until I looked at some backgrounds, looked around at the colors and now wowza it's amazing. The background turned out way better than I thought.",
-    palette: ["#fff8ed","#d94f68","#247d70"],
+    description:
+      "I was fumbling with the background until I looked at some backgrounds, looked around at the colors and now wowza it's amazing. The background turned out way better than I thought.",
+    palette: ["#fff8ed", "#d94f68", "#247d70"],
     ...{ imageSrc: "/art/img-4461-41be3c23.jpg" },
   },
   {
     label: "07",
     title: "Final touches",
-    description: "Added more bounce light (HOW DID I FORGET ABOUT THAT.) some overlay layers and stuff around characters to make it pop. and these bokeh lights to fill up that side of the drawing. and just final touches I was procrastinating on. DRAWING DONE!",
-    palette: ["#fff8ed","#d94f68","#247d70"],
+    description:
+      "Added more bounce light (HOW DID I FORGET ABOUT THAT.) some overlay layers and stuff around characters to make it pop. and these bokeh lights to fill up that side of the drawing. and just final touches I was procrastinating on. DRAWING DONE!",
+    palette: ["#fff8ed", "#d94f68", "#247d70"],
     ...{ imageSrc: "/art/img-4462-3a4d4f31.jpg" },
   },
 ];

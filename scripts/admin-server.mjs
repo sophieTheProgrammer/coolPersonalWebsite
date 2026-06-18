@@ -6,6 +6,7 @@ import { randomUUID } from "node:crypto";
 const root = new URL("../", import.meta.url);
 const artDir = new URL("public/art/", root);
 const artDataFile = new URL("src/data/artworks.ts", root);
+const skillToyDataFile = new URL("src/data/skillToys.ts", root);
 const port = Number(process.env.ADMIN_PORT ?? 8787);
 const host = process.env.ADMIN_HOST ?? "127.0.0.1";
 
@@ -418,6 +419,51 @@ const saveProcessSlider = async (fields, files) => {
   return { title: sliderTitle, stages: savedStages };
 };
 
+const saveSkillToyClip = async (entry) => {
+  const id = String(entry.id ?? "").trim();
+  const toySlug = String(entry.toySlug ?? "").trim();
+  const title = String(entry.title ?? "").trim();
+  const date = String(entry.date ?? "").trim();
+  const tag = String(entry.tag ?? "practice").trim();
+  const youtubeId = getYouTubeId(String(entry.youtubeId ?? "").trim());
+  const notes = String(entry.notes ?? "").trim();
+
+  if (!id || !toySlug || !title || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !youtubeId) {
+    throw new Error("Toy, title, date, trick id, and YouTube URL or ID are required.");
+  }
+  if (!["practice", "trick", "combo"].includes(tag)) {
+    throw new Error("Invalid clip tag.");
+  }
+
+  const source = await readFile(skillToyDataFile, "utf8");
+  const entryList = source.match(/const skillToyEntries: SkillToyEntry\[] = \[([\s\S]*?)\n\];/)?.[1] ?? "";
+  const toySlugs = new Set([...entryList.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => match[1]));
+  const comboIds = new Set([...source.matchAll(/\bid:\s*"([^"]+)"/g)].map((match) => match[1]));
+  const youtubeIds = new Set([...source.matchAll(/\byoutubeId:\s*"([^"]+)"/g)].map((match) => match[1]));
+
+  if (!toySlugs.has(toySlug)) throw new Error(`Unknown skill toy: ${toySlug}`);
+  if (comboIds.has(id)) throw new Error(`A clip with id ${id} already exists.`);
+  if (youtubeIds.has(youtubeId)) throw new Error("That YouTube clip is already in the log.");
+
+  const clip = `  {
+    id: ${JSON.stringify(id)},
+    toySlug: ${JSON.stringify(toySlug)},
+    title: ${JSON.stringify(title)},
+    date: ${JSON.stringify(date)},
+    tag: ${JSON.stringify(tag)},
+    youtubeId: ${JSON.stringify(youtubeId)},
+    notes: ${JSON.stringify(notes)},
+  },\n`;
+  const marker = /\n\];\n\nconst getYouTubeId/;
+
+  if (!marker.test(source)) {
+    throw new Error("Could not find the skill toy clip list.");
+  }
+
+  await writeFile(skillToyDataFile, source.replace(marker, `\n${clip}];\n\nconst getYouTubeId`));
+  return { id, toySlug, title, youtubeId };
+};
+
 createServer(async (request, response) => {
   try {
     if (request.method === "OPTIONS") {
@@ -470,6 +516,13 @@ createServer(async (request, response) => {
       const body = await readBody(request);
       const { fields, files } = parseMultipart(body, request.headers["content-type"] ?? "");
       send(response, 200, { ok: true, ...await saveProcessSlider(fields, files) });
+      return;
+    }
+
+    if (request.method === "POST" && url.pathname === "/api/skilltoy-clip") {
+      const body = await readBody(request);
+      const entry = JSON.parse(body.toString("utf8"));
+      send(response, 200, { ok: true, clip: await saveSkillToyClip(entry) });
       return;
     }
 

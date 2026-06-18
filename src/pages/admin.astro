@@ -140,7 +140,7 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
         <form class="admin-card admin-panel site-card admin-panel--tricks" data-trick-form>
           <div class="admin-panel__header">
             <h2 class="text-3xl leading-none">YouTube clip</h2>
-            <p>Paste a YouTube URL and the title/notes will fill in automatically. Edit the trick id before copying.</p>
+            <p>Paste a YouTube URL, check the fetched details, and save it straight to the skill toy log.</p>
           </div>
 
           <div class="admin-field-grid">
@@ -189,7 +189,7 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
               Refetch YouTube
             </button>
             <button class="site-button site-button--dark px-4 py-3" type="submit">
-              Generate snippet
+              Save clip
             </button>
           </div>
           <pre class="admin-output" data-trick-output></pre>
@@ -781,7 +781,7 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
       syncTrickId();
 
       if (output instanceof HTMLElement) {
-        output.textContent = `Fetched ${result.video.youtubeId}. Edit the id/title if needed, then generate.`;
+        output.textContent = `Fetched ${result.video.youtubeId}. Edit the details if needed, then save.`;
       }
     } catch (error) {
       if (output instanceof HTMLElement) {
@@ -809,7 +809,7 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
 
   syncTrickId();
 
-  trickForm?.addEventListener("submit", (event) => {
+  trickForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
     if (!(form instanceof HTMLFormElement)) return;
@@ -827,14 +827,25 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
     const output = form.querySelector("[data-trick-output]");
     if (!youtubeId || !(output instanceof HTMLElement)) return;
 
-    output.textContent = `{
-  id: ${JSON.stringify(id)},
-  toySlug: ${JSON.stringify(toySlug)},
-  title: ${JSON.stringify(title)},
-  date: ${JSON.stringify(date)},
-  tag: ${JSON.stringify(tag)},
-  youtubeId: ${JSON.stringify(youtubeId)},
-  notes: ${JSON.stringify(notes)},
-},`;
+    output.textContent = "Saving clip to the skill toy log...";
+
+    try {
+      const response = await fetch(`${writerUrl}/api/skilltoy-clip`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, toySlug, title, date, tag, youtubeId, notes }),
+      });
+      const result = await response.json();
+      if (!result.ok) throw new Error(result.error);
+
+      output.textContent = `Saved ${result.clip.title} to ${result.clip.toySlug}. Refresh the skill toys page to see it.`;
+      form.reset();
+      if (trickDate) trickDate.value = today;
+      trickIdEdited = false;
+      lastFetchedYouTube = "";
+      syncTrickId();
+    } catch (error) {
+      output.textContent = `Could not save clip.\n${error}`;
+    }
   });
 </script>
