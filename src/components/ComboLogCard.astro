@@ -28,9 +28,7 @@ const formattedDate = new Intl.DateTimeFormat("en", {
   <summary class="cursor-pointer list-none space-y-3 p-3 marker:hidden">
     <div class="flex items-start justify-between gap-3">
       <div>
-        <div class="flex items-center gap-2">
-          <DoodleImage src={toy.doodleIcon} alt={`${toy.name} hand-drawn icon`} label={toy.name.slice(0, 2)} variant="icon" animation="bob" />
-        </div>
+        <p class="text-xs font-black uppercase tracking-[0.1em] text-[var(--color-muted)]">{toy.name}</p>
         <h3 class="mt-1 text-base font-black leading-tight">{combo.title}</h3>
       </div>
       <div class="flex shrink-0 flex-col items-end gap-1">

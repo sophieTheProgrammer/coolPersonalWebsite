@@ -1,6 +1,5 @@
 ---
 import ComboLogCard from "../../components/ComboLogCard.astro";
-import DoodleImage from "../../components/DoodleImage.astro";
 import {
   getCombosForToy,
   getToyBySlug,
@@ -40,18 +39,13 @@ const combos = getCombosForToy(toy.slug);
         Back to skill toys
       </a>
 
-      <div class="toy-detail-hero mt-8">
-        <div class="toy-detail-copy">
-          <h1 class="text-4xl font-black leading-none sm:text-6xl">
-            {toy.name} trick log
-          </h1>
-          <div class="site-card mt-6 max-w-2xl rounded-lg p-5">
-            <p class="text-sm font-bold text-[var(--color-ink)]">Current focus</p>
-            <p class="mt-2 leading-7 text-[var(--color-muted)]">{toy.currentFocus}</p>
-          </div>
-        </div>
-        <div class="toy-detail-icon">
-          <DoodleImage src={toy.doodleIcon} alt={`${toy.name} hand-drawn icon`} label={toy.name.slice(0, 2)} variant="accent" animation="bob" />
+      <div class="mt-8 max-w-4xl">
+        <h1 class="text-4xl font-black leading-none sm:text-6xl">
+          {toy.name} trick log
+        </h1>
+        <div class="site-card mt-6 max-w-2xl rounded-lg p-5">
+          <p class="text-sm font-bold text-[var(--color-ink)]">Current focus</p>
+          <p class="mt-2 leading-7 text-[var(--color-muted)]">{toy.currentFocus}</p>
         </div>
       </div>
 
