@@ -364,6 +364,7 @@ const savePdfPages = async (entry) => {
 };
 
 const saveProcessSlider = async (fields, files) => {
+  const sliderTitle = String(fields.title ?? "").trim() || "Sunset";
   const stages = JSON.parse(String(fields.stages ?? "[]"));
 
   if (!Array.isArray(stages) || stages.length === 0 || stages.length > 12) {
@@ -401,17 +402,20 @@ const saveProcessSlider = async (fields, files) => {
     palette: ${JSON.stringify(stage.palette)},${stage.imageSrc ? `\n    ...{ imageSrc: ${JSON.stringify(stage.imageSrc)} },` : ""}
   },`);
   const pattern = /export const processStages: ProcessStage\[] = \[[\s\S]*?\n\];/;
-  const next = source.replace(
-    pattern,
-    `export const processStages: ProcessStage[] = [\n${objects.join("\n")}\n];`,
-  );
+  const titlePattern = /(export const currentArtwork: CurrentArtwork = \{\n\s*title:\s*)"[^"]*"/;
 
-  if (next === source) {
+  if (!pattern.test(source) || !titlePattern.test(source)) {
     throw new Error("Could not find process slider data.");
   }
 
+  let next = source.replace(
+    pattern,
+    `export const processStages: ProcessStage[] = [\n${objects.join("\n")}\n];`,
+  );
+  next = next.replace(titlePattern, `$1${JSON.stringify(sliderTitle)}`);
+
   await writeFile(artDataFile, next);
-  return savedStages;
+  return { title: sliderTitle, stages: savedStages };
 };
 
 createServer(async (request, response) => {
@@ -465,7 +469,7 @@ createServer(async (request, response) => {
     if (request.method === "POST" && url.pathname === "/api/process-slider") {
       const body = await readBody(request);
       const { fields, files } = parseMultipart(body, request.headers["content-type"] ?? "");
-      send(response, 200, { ok: true, stages: await saveProcessSlider(fields, files) });
+      send(response, 200, { ok: true, ...await saveProcessSlider(fields, files) });
       return;
     }
 

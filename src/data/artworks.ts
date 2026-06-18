@@ -350,7 +350,7 @@ export const artVolumes: ArtVolume[] = [
 ];
 
 export const currentArtwork: CurrentArtwork = {
-  title: "Signal Garden",
+  title: "Sunset",
   status: "Blocking in",
   note: "Building a visual language with loose symbols, UI fragments, and toy-like motion shapes.",
   nextStep:

@@ -23,7 +23,7 @@ const stages = imageStages.map((stage) => ({
 
       <div class="mt-4">
         <div
-          class="process-preview relative aspect-[16/9] overflow-hidden rounded-lg"
+          class="process-preview relative aspect-[4/3] overflow-hidden rounded-lg"
           data-process-preview
           style={`background: linear-gradient(135deg, ${stages[0].palette[0]}, ${stages[0].palette[1]} 55%, ${stages[0].palette[2]});`}
         >
@@ -35,20 +35,25 @@ const stages = imageStages.map((stage) => ({
           />
           <div class:list={["absolute inset-0 opacity-25 art-tile-pattern", stages[0].imageSrc ? "hidden" : ""]} data-process-fallback></div>
           <div class="absolute bottom-4 left-4 rounded-md bg-white/70 px-3 py-2 text-sm font-black text-[var(--color-ink)] backdrop-blur" data-process-label>
-            {stages[0].label} / {stages[0].title}
+            {stages[0].label} / {String(stages.length).padStart(2, "0")}
           </div>
         </div>
 
-        <input
-          class="mt-5 w-full accent-[var(--color-accent)]"
-          data-process-range
-          type="range"
-          min="0"
-          max={stages.length - 1}
-          value="0"
-          step="1"
-          aria-label="Artwork process stage"
-        />
+        <div class="art-process-widget__controls">
+          <button class="site-button" type="button" data-process-prev title="Previous stage" aria-label="Previous process stage">←</button>
+          <input
+            class="w-full accent-[var(--color-accent)]"
+            data-process-range
+            type="range"
+            min="0"
+            max={stages.length - 1}
+            value="0"
+            step="1"
+            aria-label="Artwork process stage"
+          />
+          <button class="site-button" type="button" data-process-next title="Next stage" aria-label="Next process stage">→</button>
+          <span class="art-process-widget__count" data-process-count aria-live="polite">Stage 1 of {stages.length}</span>
+        </div>
       </div>
     </div>
 
@@ -83,6 +88,9 @@ const stages = imageStages.map((stage) => ({
     const description = widget.querySelector("[data-process-description]");
     const image = widget.querySelector("[data-process-image]");
     const fallback = widget.querySelector("[data-process-fallback]");
+    const previous = widget.querySelector("[data-process-prev]");
+    const next = widget.querySelector("[data-process-next]");
+    const count = widget.querySelector("[data-process-count]");
 
     if (
       !(range instanceof HTMLInputElement) ||
@@ -91,7 +99,10 @@ const stages = imageStages.map((stage) => ({
       !(title instanceof HTMLElement) ||
       !(description instanceof HTMLElement) ||
       !(image instanceof HTMLImageElement) ||
-      !(fallback instanceof HTMLElement)
+      !(fallback instanceof HTMLElement) ||
+      !(previous instanceof HTMLButtonElement) ||
+      !(next instanceof HTMLButtonElement) ||
+      !(count instanceof HTMLElement)
     ) {
       return;
     }
@@ -104,12 +115,24 @@ const stages = imageStages.map((stage) => ({
       image.classList.toggle("hidden", !stage.imageSrc);
       image.classList.toggle("block", Boolean(stage.imageSrc));
       fallback.classList.toggle("hidden", Boolean(stage.imageSrc));
-      label.textContent = `${stage.label} / ${stage.title}`;
+      const stageIndex = Number(range.value);
+      label.textContent = `${stage.label} / ${String(stages.length).padStart(2, "0")}`;
       title.textContent = stage.title;
       description.textContent = stage.description;
+      count.textContent = `Stage ${stageIndex + 1} of ${stages.length}`;
+      previous.disabled = stageIndex === 0;
+      next.disabled = stageIndex === stages.length - 1;
     };
 
     range.addEventListener("input", renderStage);
+    previous.addEventListener("click", () => {
+      range.value = String(Math.max(0, Number(range.value) - 1));
+      renderStage();
+    });
+    next.addEventListener("click", () => {
+      range.value = String(Math.min(stages.length - 1, Number(range.value) + 1));
+      renderStage();
+    });
     renderStage();
   });
 </script>

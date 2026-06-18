@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { artVolumes, processStages } from "../data/artworks";
+import { artVolumes, currentArtwork, processStages } from "../data/artworks";
 import { skillToys } from "../data/skillToys";
 
 const base = import.meta.env.BASE_URL.endsWith("/")
@@ -88,6 +88,11 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
             <h2 class="text-3xl leading-none">Process slider</h2>
             <p>Upload drawings for each slider step, edit their names, and arrange the order.</p>
           </div>
+
+          <label class="field-stack">
+            <span>Slider title</span>
+            <input class="form-field" value={currentArtwork.title} data-process-slider-title required />
+          </label>
 
           <div class="admin-process-stages" data-process-stages>
             {
@@ -592,6 +597,7 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
   const processSliderForm = document.querySelector<HTMLFormElement>("[data-process-slider-form]");
   const processStagesContainer = document.querySelector<HTMLElement>("[data-process-stages]");
   const processOutput = document.querySelector<HTMLElement>("[data-process-output]");
+  const processSliderTitle = document.querySelector<HTMLInputElement>("[data-process-slider-title]");
   const addProcessStageButton = document.querySelector<HTMLButtonElement>("[data-add-process-stage]");
   const defaultStagePalette = ["#fff8ed", "#d94f68", "#247d70"];
   const publicAssetSrc = (src: string) => src.startsWith("/")
@@ -673,6 +679,7 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
       palette: JSON.parse(card.dataset.stagePalette || JSON.stringify(defaultStagePalette)),
     }));
     const body = new FormData();
+    body.append("title", processSliderTitle?.value.trim() || "Sunset");
     body.append("stages", JSON.stringify(stages));
 
     cards.forEach((card, index) => {
@@ -702,7 +709,8 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
         }
       });
 
-      if (processOutput) processOutput.textContent = `Saved ${result.stages.length} process slider stages. Refresh Art to see them.`;
+      if (processSliderTitle) processSliderTitle.value = result.title;
+      if (processOutput) processOutput.textContent = `Saved ${result.title} with ${result.stages.length} process stages. Refresh Art to see it.`;
     } catch (error) {
       if (processOutput) processOutput.textContent = `Could not save process slider.\n${error}`;
     }

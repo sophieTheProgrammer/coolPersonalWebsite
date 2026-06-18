@@ -68,7 +68,7 @@ const trailingVolumes = artVolumes.slice(4);
         </div>
         <ArtFlowGrid className="art-gallery-grid">
           {leadingVolumes.map((volume) => <div data-art-flow-item><ArtVolumeCard volume={volume} /></div>)}
-          <div data-art-flow-item data-art-flow-wide><ArtProcessWidget /></div>
+          <div data-art-flow-item data-art-flow-full><ArtProcessWidget /></div>
           {trailingVolumes.map((volume) => <div data-art-flow-item><ArtVolumeCard volume={volume} /></div>)}
           <div data-art-flow-item><SketchbookWidget /></div>
         </ArtFlowGrid>

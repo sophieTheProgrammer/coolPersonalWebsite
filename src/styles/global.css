@@ -1042,7 +1042,39 @@ pre,
   background: rgb(var(--color-ink-rgb) / 0.025);
 }
 
-@container (min-width: 32rem) {
+.art-process-widget__controls {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr) 2.5rem;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.art-process-widget__controls .site-button {
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+}
+
+.art-process-widget__controls .site-button:disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+
+.art-process-widget__count {
+  grid-column: 1 / -1;
+  color: var(--color-muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.art-flow-grid > [data-art-flow-full] {
+  grid-column: 1 / -1;
+}
+
+@container (min-width: 48rem) {
   .art-process-widget__layout {
     grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.72fr);
     align-items: stretch;
