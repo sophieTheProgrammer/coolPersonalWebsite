@@ -26,6 +26,11 @@ const { className = "", minColumn = "16rem" } = Astro.props;
   const observers: ResizeObserver[] = [];
   let animationFrame = 0;
 
+  const disconnectObservers = () => {
+    window.cancelAnimationFrame(animationFrame);
+    observers.splice(0).forEach((observer) => observer.disconnect());
+  };
+
   const measureGrid = (grid: HTMLElement) => {
     const styles = getComputedStyle(grid);
     const rowHeight = Number.parseFloat(styles.gridAutoRows);
@@ -67,16 +72,17 @@ const { className = "", minColumn = "16rem" } = Astro.props;
       });
 
       document.fonts?.ready.then(() => queueMeasure(grid));
-      queueMeasure(grid);
+      measureGrid(grid);
     });
   };
 
   runtime.__artFlowCleanup = () => {
-    window.cancelAnimationFrame(animationFrame);
-    observers.forEach((observer) => observer.disconnect());
+    disconnectObservers();
     document.removeEventListener("astro:page-load", runtime.__artFlowInit!);
+    document.removeEventListener("astro:before-swap", disconnectObservers);
   };
 
   document.addEventListener("astro:page-load", runtime.__artFlowInit);
+  document.addEventListener("astro:before-swap", disconnectObservers);
   runtime.__artFlowInit();
 </script>
