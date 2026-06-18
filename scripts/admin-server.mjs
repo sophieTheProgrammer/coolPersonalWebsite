@@ -363,6 +363,57 @@ const savePdfPages = async (entry) => {
   };
 };
 
+const saveProcessSlider = async (fields, files) => {
+  const stages = JSON.parse(String(fields.stages ?? "[]"));
+
+  if (!Array.isArray(stages) || stages.length === 0 || stages.length > 12) {
+    throw new Error("Add between 1 and 12 process stages.");
+  }
+
+  const savedStages = await Promise.all(
+    stages.map(async (stage, index) => {
+      const upload = files[`stageFile-${index}`];
+      if (upload && extname(upload.filename || "").toLowerCase() === ".pdf") {
+        throw new Error("Process stages must use image files.");
+      }
+
+      const uploaded = upload ? await saveUpload(upload) : null;
+      const existingImageSrc = String(stage.imageSrc ?? "").trim();
+      const palette = Array.isArray(stage.palette) && stage.palette.length >= 3
+        ? stage.palette.slice(0, 3).map(String)
+        : ["#fff8ed", "#d94f68", "#247d70"];
+
+      return {
+        label: String(index + 1).padStart(2, "0"),
+        title: String(stage.title ?? "").trim() || `Stage ${index + 1}`,
+        description: String(stage.description ?? "").trim(),
+        palette,
+        imageSrc: uploaded?.src || (existingImageSrc.startsWith("/art/") ? existingImageSrc : ""),
+      };
+    }),
+  );
+
+  const source = await readFile(artDataFile, "utf8");
+  const objects = savedStages.map((stage) => `  {
+    label: ${JSON.stringify(stage.label)},
+    title: ${JSON.stringify(stage.title)},
+    description: ${JSON.stringify(stage.description)},
+    palette: ${JSON.stringify(stage.palette)},${stage.imageSrc ? `\n    ...{ imageSrc: ${JSON.stringify(stage.imageSrc)} },` : ""}
+  },`);
+  const pattern = /export const processStages: ProcessStage\[] = \[[\s\S]*?\n\];/;
+  const next = source.replace(
+    pattern,
+    `export const processStages: ProcessStage[] = [\n${objects.join("\n")}\n];`,
+  );
+
+  if (next === source) {
+    throw new Error("Could not find process slider data.");
+  }
+
+  await writeFile(artDataFile, next);
+  return savedStages;
+};
+
 createServer(async (request, response) => {
   try {
     if (request.method === "OPTIONS") {
@@ -408,6 +459,13 @@ createServer(async (request, response) => {
       const body = await readBody(request);
       const entry = JSON.parse(body.toString("utf8"));
       send(response, 200, { ok: true, artwork: await savePdfPages(entry) });
+      return;
+    }
+
+    if (request.method === "POST" && url.pathname === "/api/process-slider") {
+      const body = await readBody(request);
+      const { fields, files } = parseMultipart(body, request.headers["content-type"] ?? "");
+      send(response, 200, { ok: true, stages: await saveProcessSlider(fields, files) });
       return;
     }
 

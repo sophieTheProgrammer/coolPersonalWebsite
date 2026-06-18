@@ -1,7 +1,12 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { artVolumes } from "../data/artworks";
+import { artVolumes, processStages } from "../data/artworks";
 import { skillToys } from "../data/skillToys";
+
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const editableProcessStages = processStages as Array<(typeof processStages)[number] & { imageSrc?: string }>;
 ---
 
 <BaseLayout
@@ -76,6 +81,55 @@ import { skillToys } from "../data/skillToys";
             </button>
           </div>
           <pre class="admin-output" data-art-output>Writer status will appear here.</pre>
+        </form>
+
+        <form class="admin-card admin-panel site-card admin-panel--process" data-process-slider-form>
+          <div class="admin-panel__header">
+            <h2 class="text-3xl leading-none">Process slider</h2>
+            <p>Upload drawings for each slider step, edit their names, and arrange the order.</p>
+          </div>
+
+          <div class="admin-process-stages" data-process-stages>
+            {
+              editableProcessStages.map((stage) => {
+                const imageSrc = stage.imageSrc?.startsWith("/")
+                  ? `${base}${stage.imageSrc.slice(1)}`
+                  : stage.imageSrc;
+
+                return (
+                  <article class="admin-process-stage" data-process-stage data-stage-palette={JSON.stringify(stage.palette)}>
+                    <div class="media-frame admin-process-stage__preview" data-stage-preview>
+                      {imageSrc ? <img src={imageSrc} alt={stage.title} /> : <span>No stage image yet</span>}
+                    </div>
+                    <input type="hidden" value={stage.imageSrc ?? ""} data-stage-image-src />
+                    <label class="field-stack">
+                      <span>Stage image</span>
+                      <input class="form-field" type="file" accept="image/*" data-stage-file />
+                    </label>
+                    <label class="field-stack">
+                      <span>Stage title</span>
+                      <input class="form-field" value={stage.title} data-stage-title required />
+                    </label>
+                    <label class="field-stack">
+                      <span>Description</span>
+                      <textarea class="form-field form-field--textarea" data-stage-description>{stage.description}</textarea>
+                    </label>
+                    <div class="admin-process-stage__actions">
+                      <button class="site-button" type="button" data-stage-move="up" title="Move stage earlier" aria-label={`Move ${stage.title} earlier`}>↑</button>
+                      <button class="site-button" type="button" data-stage-move="down" title="Move stage later" aria-label={`Move ${stage.title} later`}>↓</button>
+                      <button class="site-button" type="button" data-stage-remove title="Remove stage" aria-label={`Remove ${stage.title}`}>×</button>
+                    </div>
+                  </article>
+                );
+              })
+            }
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <button class="site-button px-4 py-3" type="button" data-add-process-stage>Add stage</button>
+            <button class="site-button site-button--dark px-4 py-3" type="submit">Save process slider</button>
+          </div>
+          <pre class="admin-output" data-process-output>Slider changes will appear here.</pre>
         </form>
 
         <form class="admin-card admin-panel site-card admin-panel--tricks" data-trick-form>
@@ -532,6 +586,125 @@ import { skillToys } from "../data/skillToys";
       writeOutput(`Saved drawing: ${result.artwork.slug}\nRun npm run build or refresh dev server to see it.`);
     } catch (error) {
       writeOutput(`Could not save drawing.\n${error}`);
+    }
+  });
+
+  const processSliderForm = document.querySelector<HTMLFormElement>("[data-process-slider-form]");
+  const processStagesContainer = document.querySelector<HTMLElement>("[data-process-stages]");
+  const processOutput = document.querySelector<HTMLElement>("[data-process-output]");
+  const addProcessStageButton = document.querySelector<HTMLButtonElement>("[data-add-process-stage]");
+  const defaultStagePalette = ["#fff8ed", "#d94f68", "#247d70"];
+  const publicAssetSrc = (src: string) => src.startsWith("/")
+    ? `${import.meta.env.BASE_URL}${src.slice(1)}`
+    : src;
+
+  const createProcessStageCard = () => {
+    const stage = document.createElement("article");
+    stage.className = "admin-process-stage";
+    stage.dataset.processStage = "";
+    stage.dataset.stagePalette = JSON.stringify(defaultStagePalette);
+    stage.innerHTML = `
+      <div class="media-frame admin-process-stage__preview" data-stage-preview><span>No stage image yet</span></div>
+      <input type="hidden" value="" data-stage-image-src>
+      <label class="field-stack">
+        <span>Stage image</span>
+        <input class="form-field" type="file" accept="image/*" data-stage-file>
+      </label>
+      <label class="field-stack">
+        <span>Stage title</span>
+        <input class="form-field" value="New stage" data-stage-title required>
+      </label>
+      <label class="field-stack">
+        <span>Description</span>
+        <textarea class="form-field form-field--textarea" data-stage-description></textarea>
+      </label>
+      <div class="admin-process-stage__actions">
+        <button class="site-button" type="button" data-stage-move="up" title="Move stage earlier" aria-label="Move stage earlier">↑</button>
+        <button class="site-button" type="button" data-stage-move="down" title="Move stage later" aria-label="Move stage later">↓</button>
+        <button class="site-button" type="button" data-stage-remove title="Remove stage" aria-label="Remove stage">×</button>
+      </div>
+    `;
+    return stage;
+  };
+
+  addProcessStageButton?.addEventListener("click", () => {
+    processStagesContainer?.append(createProcessStageCard());
+  });
+
+  processStagesContainer?.addEventListener("change", (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement) || !input.matches("[data-stage-file]")) return;
+
+    const file = input.files?.[0];
+    const preview = input.closest("[data-process-stage]")?.querySelector<HTMLElement>("[data-stage-preview]");
+    if (!file || !preview) return;
+
+    preview.innerHTML = `<img src="${URL.createObjectURL(file)}" alt="Stage image preview">`;
+  });
+
+  processStagesContainer?.addEventListener("click", (event) => {
+    const button = event.target instanceof Element ? event.target.closest<HTMLButtonElement>("button") : null;
+    const stage = button?.closest<HTMLElement>("[data-process-stage]");
+    if (!button || !stage || !processStagesContainer) return;
+
+    if (button.matches("[data-stage-remove]")) {
+      if (processStagesContainer.querySelectorAll("[data-process-stage]").length > 1) stage.remove();
+      return;
+    }
+
+    const direction = button.dataset.stageMove;
+    if (direction === "up" && stage.previousElementSibling) {
+      processStagesContainer.insertBefore(stage, stage.previousElementSibling);
+    } else if (direction === "down" && stage.nextElementSibling) {
+      processStagesContainer.insertBefore(stage.nextElementSibling, stage);
+    }
+  });
+
+  processSliderForm?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!processStagesContainer) return;
+
+    const cards = Array.from(processStagesContainer.querySelectorAll<HTMLElement>("[data-process-stage]"));
+    const stages = cards.map((card, index) => ({
+      label: String(index + 1).padStart(2, "0"),
+      title: card.querySelector<HTMLInputElement>("[data-stage-title]")?.value.trim() || `Stage ${index + 1}`,
+      description: card.querySelector<HTMLTextAreaElement>("[data-stage-description]")?.value.trim() || "",
+      imageSrc: card.querySelector<HTMLInputElement>("[data-stage-image-src]")?.value || "",
+      palette: JSON.parse(card.dataset.stagePalette || JSON.stringify(defaultStagePalette)),
+    }));
+    const body = new FormData();
+    body.append("stages", JSON.stringify(stages));
+
+    cards.forEach((card, index) => {
+      const file = card.querySelector<HTMLInputElement>("[data-stage-file]")?.files?.[0];
+      if (file) body.append(`stageFile-${index}`, file);
+    });
+
+    if (processOutput) processOutput.textContent = "Saving process slider...";
+
+    try {
+      const response = await fetch(`${writerUrl}/api/process-slider`, { method: "POST", body });
+      const result = await response.json();
+      if (!result.ok) throw new Error(result.error);
+
+      cards.forEach((card, index) => {
+        const saved = result.stages[index];
+        const imageSrc = card.querySelector<HTMLInputElement>("[data-stage-image-src]");
+        const file = card.querySelector<HTMLInputElement>("[data-stage-file]");
+        const preview = card.querySelector<HTMLElement>("[data-stage-preview]");
+        if (imageSrc) imageSrc.value = saved.imageSrc || "";
+        if (file) file.value = "";
+        if (preview && saved.imageSrc) {
+          const image = document.createElement("img");
+          image.src = publicAssetSrc(saved.imageSrc);
+          image.alt = saved.title;
+          preview.replaceChildren(image);
+        }
+      });
+
+      if (processOutput) processOutput.textContent = `Saved ${result.stages.length} process slider stages. Refresh Art to see them.`;
+    } catch (error) {
+      if (processOutput) processOutput.textContent = `Could not save process slider.\n${error}`;
     }
   });
 
