@@ -33,18 +33,24 @@ Preview the options at `/style/`.
 - Use larger type and more space for primary content; use softer fills and lower opacity for support sections.
 - Feature real content first: practice videos, packet lists, project rows, and the home navigation board.
 
-## Restricted Palette
+## Four-Color Palette
 
-- Ink: `#24202c`
-- Paper: `#fff8ed`
-- Card: `#fffdf8`
-- Rose accent: `#d94f68`
-- Leaf accent: `#247d70`
-- Muted text: `#706779`
+These are the only canonical site colors:
 
-Use rose for primary action, latest badges, and warm highlights. Use leaf for
-secondary progress, garden shapes, and calm accents. Avoid adding new strong
-colors unless a hand-drawn asset really needs one.
+| Role | Token | Hex | Use |
+| --- | --- | --- | --- |
+| Ink | `--color-ink` | `#24202c` | Text, dark buttons, media frames, and terminal surfaces |
+| Paper | `--color-paper` | `#fff8ed` | Page background and light contrast on dark surfaces |
+| Rose | `--color-accent` | `#d94f68` | Primary actions, latest badges, selection, and warm highlights |
+| Leaf | `--color-accent-2` | `#247d70` | Secondary progress, garden shapes, and calm accents |
+
+### Derived Colors and Surfaces
+
+- Muted text, cards, borders, shadows, and soft panels must be mixed from the four palette colors or use translucent white over paper.
+- Use `--color-muted`, `--color-card`, and `--color-line` instead of hard-coded approximations.
+- Use the matching RGB tokens when opacity is needed: `--color-ink-rgb`, `--color-paper-rgb`, `--color-accent-rgb`, and `--color-accent-2-rgb`.
+- White is a contrast and overlay treatment, not an additional brand color.
+- Avoid adding new strong colors unless the color belongs to the artwork itself or a hand-drawn asset genuinely requires it.
 
 ## Skill Toy Asset Colors
 
