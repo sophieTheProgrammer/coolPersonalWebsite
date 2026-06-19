@@ -11,6 +11,8 @@ const stages = imageStages.map((stage) => ({
     ? `${base}${stage.imageSrc.slice(1)}`
     : stage.imageSrc,
 }));
+const initialStageIndex = stages.length - 1;
+const initialStage = stages[initialStageIndex];
 ---
 
 <article
@@ -25,17 +27,17 @@ const stages = imageStages.map((stage) => ({
         <div
           class="process-preview relative aspect-[4/3] overflow-hidden rounded-lg"
           data-process-preview
-          style={`background: linear-gradient(135deg, ${stages[0].palette[0]}, ${stages[0].palette[1]} 55%, ${stages[0].palette[2]});`}
+          style={`background: linear-gradient(135deg, ${initialStage.palette[0]}, ${initialStage.palette[1]} 55%, ${initialStage.palette[2]});`}
         >
           <img
-            class:list={["h-full w-full object-contain", stages[0].imageSrc ? "block" : "hidden"]}
-            src={stages[0].imageSrc}
-            alt={stages[0].title}
+            class:list={["h-full w-full object-contain", initialStage.imageSrc ? "block" : "hidden"]}
+            src={initialStage.imageSrc}
+            alt={initialStage.title}
             data-process-image
           />
-          <div class:list={["absolute inset-0 opacity-25 art-tile-pattern", stages[0].imageSrc ? "hidden" : ""]} data-process-fallback></div>
+          <div class:list={["absolute inset-0 opacity-25 art-tile-pattern", initialStage.imageSrc ? "hidden" : ""]} data-process-fallback></div>
           <div class="absolute bottom-4 left-4 rounded-md bg-white/70 px-3 py-2 text-sm font-black text-[var(--color-ink)] backdrop-blur" data-process-label>
-            {stages[0].label} / {String(stages.length).padStart(2, "0")}
+            {initialStage.label} / {String(stages.length).padStart(2, "0")}
           </div>
         </div>
 
@@ -47,21 +49,20 @@ const stages = imageStages.map((stage) => ({
             type="range"
             min="0"
             max={stages.length - 1}
-            value="0"
+            value={initialStageIndex}
             step="1"
             aria-label="Artwork process stage"
           />
           <button class="site-button" type="button" data-process-next title="Next stage" aria-label="Next process stage">→</button>
-          <span class="art-process-widget__count" data-process-count aria-live="polite">Stage 1 of {stages.length}</span>
         </div>
       </div>
     </div>
 
     <div class="art-process-widget__details">
       <div class="rounded-lg bg-white/60 p-4">
-        <h3 class="text-2xl font-black" data-process-title>{stages[0].title}</h3>
-        <p class="mt-3 leading-7 text-[var(--color-muted)]" data-process-description>
-          {stages[0].description}
+        <h3 class="text-3xl font-black" data-process-title>{initialStage.title}</h3>
+        <p class="art-process-widget__description mt-3 text-[var(--color-muted)]" data-process-description>
+          {initialStage.description}
         </p>
       </div>
     </div>
@@ -90,7 +91,6 @@ const stages = imageStages.map((stage) => ({
     const fallback = widget.querySelector("[data-process-fallback]");
     const previous = widget.querySelector("[data-process-prev]");
     const next = widget.querySelector("[data-process-next]");
-    const count = widget.querySelector("[data-process-count]");
 
     if (
       !(range instanceof HTMLInputElement) ||
@@ -101,8 +101,7 @@ const stages = imageStages.map((stage) => ({
       !(image instanceof HTMLImageElement) ||
       !(fallback instanceof HTMLElement) ||
       !(previous instanceof HTMLButtonElement) ||
-      !(next instanceof HTMLButtonElement) ||
-      !(count instanceof HTMLElement)
+      !(next instanceof HTMLButtonElement)
     ) {
       return;
     }
@@ -119,7 +118,6 @@ const stages = imageStages.map((stage) => ({
       label.textContent = `${stage.label} / ${String(stages.length).padStart(2, "0")}`;
       title.textContent = stage.title;
       description.textContent = stage.description;
-      count.textContent = `Stage ${stageIndex + 1} of ${stages.length}`;
       previous.disabled = stageIndex === 0;
       next.disabled = stageIndex === stages.length - 1;
     };
@@ -133,6 +131,10 @@ const stages = imageStages.map((stage) => ({
       range.value = String(Math.min(stages.length - 1, Number(range.value) + 1));
       renderStage();
     });
+    widget.addEventListener("pointerenter", () => {
+      range.value = "0";
+      renderStage();
+    }, { once: true });
     renderStage();
   });
 </script>

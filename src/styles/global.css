@@ -1081,13 +1081,10 @@ pre,
   opacity: 0.35;
 }
 
-.art-process-widget__count {
-  grid-column: 1 / -1;
-  color: var(--color-muted);
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-align: center;
+.art-process-widget__description {
+  font-size: clamp(1.125rem, 2.5cqi, 1.35rem);
+  line-height: 1.65;
+  white-space: pre-line;
 }
 
 .art-flow-grid > [data-art-flow-full] {
