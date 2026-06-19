@@ -11,28 +11,48 @@ const drawings = getArtworksForVolume(volume.slug);
 const base = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
+const previewDrawings = drawings
+  .filter((drawing) => drawing.imageSrc && !drawing.imageSrc.toLowerCase().endsWith(".pdf"))
+  .slice(0, 3);
+const getImageSrc = (src?: string) =>
+  src?.startsWith("/") ? `${base}${src.slice(1)}` : src;
 ---
 
 <article
-  class="art-volume-card group overflow-hidden rounded-xl bg-[rgba(255,253,248,0.92)] transition hover:-translate-y-1 hover:shadow-lg"
+  class="art-volume-card site-card site-card--interactive group overflow-hidden"
 >
-  <a class="block h-full" href={`${base}art/collections/${volume.slug}/`}>
-    <div class="grid gap-5 p-4">
-      <div>
-        <p class="font-mono text-xs font-bold text-[var(--color-muted)]">
-          {volume.year} / {drawings.length} drawings
-        </p>
-        <h2 class="mt-4 text-2xl font-black leading-tight">{volume.title}</h2>
-      </div>
-
-      <div class="grid gap-2">
-        {
-          drawings.slice(0, 4).map((drawing) => (
-            <p class="truncate rounded-md bg-white/45 px-3 py-2 text-sm font-bold text-[var(--color-muted)] transition group-hover:bg-white/70">
-              {drawing.title}
-            </p>
+  <a class="art-volume-card__link" href={`${base}art/collections/${volume.slug}/`}>
+    <div
+      class:list={[
+        "art-volume-card__preview",
+        previewDrawings.length <= 1 && "art-volume-card__preview--single",
+        previewDrawings.length === 2 && "art-volume-card__preview--pair",
+      ]}
+      aria-hidden="true"
+    >
+      {
+        previewDrawings.length > 0 ? (
+          previewDrawings.map((drawing, index) => (
+            <div class:list={["art-volume-card__image", index === 0 && "art-volume-card__image--primary"]}>
+              <img src={getImageSrc(drawing.imageSrc)} alt="" loading="lazy" />
+            </div>
           ))
-        }
+        ) : (
+          <div
+            class="art-volume-card__image art-volume-card__image--primary"
+            style={`background: linear-gradient(135deg, ${drawings[0]?.palette[0]}, ${drawings[0]?.palette[1]} 58%, ${drawings[0]?.palette[2]});`}
+          ></div>
+        )
+      }
+      <span class="art-volume-card__count">{drawings.length} pieces</span>
+    </div>
+
+    <div class="art-volume-card__body">
+      <p class="art-volume-card__meta">{volume.year} · collection</p>
+      <h2>{volume.title}</h2>
+      <p class="art-volume-card__summary">{volume.subtitle || volume.note}</p>
+      <div class="art-volume-card__action" aria-hidden="true">
+        Open collection <span>→</span>
       </div>
     </div>
   </a>
