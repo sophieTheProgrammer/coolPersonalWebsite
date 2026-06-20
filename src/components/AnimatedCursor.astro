@@ -1,0 +1,79 @@
+---
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+---
+
+<div class="site-animated-cursor" data-site-cursor data-state="default" aria-hidden="true">
+  <img
+    class="site-animated-cursor__image site-animated-cursor__image--default"
+    src={`${base}doodles/animated-cursor-64.png`}
+    alt=""
+    draggable="false"
+  />
+  <img
+    class="site-animated-cursor__image site-animated-cursor__image--pointer"
+    src={`${base}doodles/hover-cursor-64.png`}
+    alt=""
+    draggable="false"
+  />
+</div>
+
+<script>
+  const interactiveSelector =
+    'a[href], button, input, select, textarea, summary, label, [role="button"]';
+  const finePointer = window.matchMedia("(pointer: fine)");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let cleanupCursor = () => {};
+
+  const initializeCursor = () => {
+    cleanupCursor();
+
+    const cursor = document.querySelector<HTMLElement>("[data-site-cursor]");
+    if (!cursor || !finePointer.matches || reducedMotion.matches) return;
+
+    const controller = new AbortController();
+    const { signal } = controller;
+    document.documentElement.classList.add("has-animated-cursor");
+
+    window.addEventListener(
+      "pointermove",
+      (event) => {
+        const target = event.target instanceof Element ? event.target : null;
+        const isPointer = Boolean(target?.closest(interactiveSelector));
+        const hotspotX = isPointer ? 20 : 19;
+
+        cursor.dataset.state = isPointer ? "pointer" : "default";
+        cursor.style.setProperty("--cursor-x", `${event.clientX - hotspotX}px`);
+        cursor.style.setProperty("--cursor-y", `${event.clientY - 18}px`);
+        cursor.dataset.visible = "true";
+      },
+      { passive: true, signal },
+    );
+
+    window.addEventListener(
+      "pointerout",
+      (event) => {
+        if (!event.relatedTarget) cursor.dataset.visible = "false";
+      },
+      { signal },
+    );
+    window.addEventListener(
+      "blur",
+      () => {
+        cursor.dataset.visible = "false";
+      },
+      { signal },
+    );
+
+    cleanupCursor = () => {
+      controller.abort();
+      document.documentElement.classList.remove("has-animated-cursor");
+    };
+  };
+
+  document.addEventListener("astro:page-load", initializeCursor);
+  finePointer.addEventListener("change", initializeCursor);
+  reducedMotion.addEventListener("change", initializeCursor);
+  initializeCursor();
+</script>

@@ -1,6 +1,7 @@
 ---
 import Footer from "../components/Footer.astro";
 import Nav from "../components/Nav.astro";
+import AnimatedCursor from "../components/AnimatedCursor.astro";
 import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 
@@ -46,6 +47,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
   <body
     style={`--site-cursor: url("${base}doodles/animated-cursor-64.png") 19 18; --site-pointer: url("${base}doodles/hover-cursor-64.png") 20 18`}
   >
+    <AnimatedCursor />
     <Nav />
     <slot />
     <Footer />

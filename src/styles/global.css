@@ -44,6 +44,50 @@ label {
   cursor: var(--site-pointer), pointer;
 }
 
+.site-animated-cursor {
+  --cursor-x: -5rem;
+  --cursor-y: -5rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10000;
+  width: 4rem;
+  height: 4rem;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(var(--cursor-x), var(--cursor-y), 0);
+  transition: opacity 90ms ease;
+  will-change: transform;
+}
+
+.site-animated-cursor[data-visible="true"] {
+  opacity: 1;
+}
+
+.site-animated-cursor__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+}
+
+.site-animated-cursor__image--pointer,
+.site-animated-cursor[data-state="pointer"] .site-animated-cursor__image--default {
+  visibility: hidden;
+}
+
+.site-animated-cursor[data-state="pointer"] .site-animated-cursor__image--pointer {
+  visibility: visible;
+}
+
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html.has-animated-cursor,
+  html.has-animated-cursor * {
+    cursor: none !important;
+  }
+}
+
 body::before {
   content: "";
   position: fixed;
