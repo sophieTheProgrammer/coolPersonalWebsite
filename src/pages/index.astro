@@ -9,17 +9,12 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 ---
 
 <BaseLayout title="Cool Personal Website">
-  <main class="page-shell overflow-hidden">
-    <section class="content-frame grid min-h-[78vh] items-center gap-16 lg:grid-cols-[1.28fr_0.72fr]">
-      <div class="relative">
-        <div class="hero-with-person">
-          <h1 class="max-w-3xl text-5xl font-black leading-[0.95] sm:text-7xl">
-            {homeContent.headline}
-          </h1>
-          <HomePersonFigure src={homeContent.studioAvatarDoodle} />
-        </div>
+  <main class="page-shell home-page overflow-hidden">
+    <section class="content-frame home-landing">
+      <header class="home-intro">
+        <h1>{homeContent.headline}</h1>
 
-        <div class="home-social-links mt-6 flex flex-wrap gap-3">
+        <div class="home-social-links" aria-label="Sophie elsewhere online">
           {
             homeContent.socialLinks.map((link) => (
               <a
@@ -39,28 +34,44 @@ const base = import.meta.env.BASE_URL.endsWith("/")
             ))
           }
         </div>
-      </div>
+      </header>
 
-      <div class="home-nav-board relative">
-        <div class="grid gap-3">
+      <div class="home-scene">
+        <div class="home-portrait-stage">
+          <HomePersonFigure src={homeContent.studioAvatarDoodle} />
+          <span class="home-portrait-caption" aria-hidden="true">me!</span>
+        </div>
+
+        <div class="home-sketch-arrow" aria-hidden="true">
+          <span></span>
+        </div>
+
+        <nav class="home-cabinet" aria-label="Go somewhere">
+          <div class="home-cabinet__top">
+            <span>go somewhere</span>
+          </div>
+
+          <div class="home-cabinet__shelves">
           {
-            homeContent.sections.map((section, index) => (
+            homeContent.sections.map((section) => (
               <a
-                class:list={[
-                  "home-section-card",
-                  index === 0 && "home-section-card--wide",
-                  index === 1 && "home-section-card--tilt-left",
-                  index === 2 && "home-section-card--tilt-right",
-                ]}
+                class="home-cabinet__link"
                 href={`${base}${section.href}`}
               >
-                <span class:list={["block font-black leading-none", section.featured ? "text-4xl" : "text-xl"]}>
-                  {section.title}
-                </span>
+                <span>{section.title}</span>
+                <span aria-hidden="true">→</span>
               </a>
             ))
           }
-        </div>
+          </div>
+
+          <div class="home-cabinet__base" aria-hidden="true">
+            <span></span>
+            <span></span>
+          </div>
+          <span class="home-cabinet__wheel home-cabinet__wheel--left" aria-hidden="true"></span>
+          <span class="home-cabinet__wheel home-cabinet__wheel--right" aria-hidden="true"></span>
+        </nav>
       </div>
     </section>
   </main>

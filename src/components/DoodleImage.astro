@@ -10,6 +10,7 @@ type Props = {
   animation?: "float" | "wiggle" | "bob" | "none";
   hideWhenMissing?: boolean;
   fetchPriority?: "high" | "low" | "auto";
+  reducedMotionSrc?: string;
 };
 
 const {
@@ -20,6 +21,7 @@ const {
   animation = "none",
   hideWhenMissing = false,
   fetchPriority = "auto",
+  reducedMotionSrc,
 } = Astro.props;
 
 const normalizedSrc = src
@@ -33,6 +35,16 @@ const base = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
 const publicSrc = hasImage ? `${base}doodles/${normalizedSrc}` : "";
+const normalizedReducedMotionSrc = reducedMotionSrc
+  ?.replace(/^\/?doodles\//, "")
+  .replace(/^\/+/, "");
+const hasReducedMotionImage = Boolean(
+  normalizedReducedMotionSrc &&
+    existsSync(join(process.cwd(), "public", "doodles", normalizedReducedMotionSrc)),
+);
+const publicReducedMotionSrc = hasReducedMotionImage
+  ? `${base}doodles/${normalizedReducedMotionSrc}`
+  : "";
 const hasFallback = Astro.slots.has("fallback");
 const isToyIcon = variant === "icon";
 ---
@@ -49,15 +61,18 @@ const isToyIcon = variant === "icon";
     >
       {
         hasImage ? (
-          <img
-            src={publicSrc}
-            alt={alt}
-            loading={isToyIcon ? "eager" : "lazy"}
-            fetchpriority={fetchPriority}
-            decoding="async"
-            width={isToyIcon ? 512 : undefined}
-            height={isToyIcon ? 512 : undefined}
-          />
+          <picture>
+            {hasReducedMotionImage && <source media="(prefers-reduced-motion: reduce)" srcset={publicReducedMotionSrc} />}
+            <img
+              src={publicSrc}
+              alt={alt}
+              loading={isToyIcon ? "eager" : "lazy"}
+              fetchpriority={fetchPriority}
+              decoding="async"
+              width={isToyIcon ? 512 : undefined}
+              height={isToyIcon ? 512 : undefined}
+            />
+          </picture>
         ) : hasFallback ? (
           <slot name="fallback" />
         ) : (
