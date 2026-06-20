@@ -7,10 +7,9 @@ export const siteInfo = {
 
 export const homeContent = {
   headline: "Hi! I'm Sophie, I keep cool stuff here",
-  studioAvatarVideo: {
-    webm: "sophie-spininng.webm",
-    mov: "sophie-spininng.MOV",
-    poster: "sophie-spininng-still.png",
+  studioAvatarDoodle: {
+    animated: "sophie-spinning.GIF",
+    still: "sophie-spinning-still.png",
   },
   socialLinks: [
     {

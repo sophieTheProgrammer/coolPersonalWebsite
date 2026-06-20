@@ -1,42 +1,19 @@
 ---
+import DoodleImage from "./DoodleImage.astro";
+
 type Props = {
-  webmSrc: string;
-  movSrc: string;
-  posterSrc: string;
+  src: string;
+  reducedMotionSrc: string;
 };
 
-const { webmSrc, movSrc, posterSrc } = Astro.props;
-const base = import.meta.env.BASE_URL.endsWith("/")
-  ? import.meta.env.BASE_URL
-  : `${import.meta.env.BASE_URL}/`;
+const { src, reducedMotionSrc } = Astro.props;
 ---
 
-<figure class="home-portrait">
-  <video
-    class="home-portrait__video"
-    autoplay
-    muted
-    loop
-    playsinline
-    poster={`${base}doodles/${posterSrc}`}
-    aria-label="Hand-drawn animation of Sophie spinning"
-    data-home-portrait
-  >
-    <source src={`${base}doodles/${movSrc}`} type="video/quicktime" />
-    <source src={`${base}doodles/${webmSrc}`} type="video/webm" />
-  </video>
-</figure>
-
-<script>
-  const portrait = document.querySelector<HTMLVideoElement>("[data-home-portrait]");
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-  const syncMotion = () => {
-    if (!portrait) return;
-    if (reducedMotion.matches) portrait.pause();
-    else void portrait.play();
-  };
-
-  syncMotion();
-  reducedMotion.addEventListener("change", syncMotion);
-</script>
+<DoodleImage
+  src={src}
+  reducedMotionSrc={reducedMotionSrc}
+  alt="Hand-drawn animation of Sophie spinning"
+  variant="avatar"
+  animation="none"
+  fetchPriority="high"
+/>
