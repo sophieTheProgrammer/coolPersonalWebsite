@@ -6,6 +6,19 @@ import { homeContent } from "../data/site";
 const base = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
+
+const startLinks = [
+  ...homeContent.sections.map((section) => ({
+    label: section.title,
+    href: `${base}${section.href}`,
+    kind: "section",
+  })),
+  ...homeContent.socialLinks.map((link) => ({
+    label: link.label,
+    href: link.href,
+    kind: link.kind,
+  })),
+];
 ---
 
 <BaseLayout title="Cool Personal Website">
@@ -13,64 +26,38 @@ const base = import.meta.env.BASE_URL.endsWith("/")
     <section class="content-frame home-landing">
       <header class="home-intro">
         <h1>{homeContent.headline}</h1>
-
-        <div class="home-social-links" aria-label="Sophie elsewhere online">
-          {
-            homeContent.socialLinks.map((link) => (
-              <a
-                class:list={[
-                  "home-social-card group rounded-md bg-[var(--color-card)] px-4 py-3 transition hover:-translate-y-0.5",
-                  link.kind === "youtube" ? "home-social-card--youtube" : "home-social-card--github",
-                ]}
-                href={link.href}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <span class="home-social-card__icon" aria-hidden="true">
-                  <span></span>
-                </span>
-                <span class="block font-black">{link.label}</span>
-              </a>
-            ))
-          }
-        </div>
       </header>
 
       <div class="home-scene">
         <div class="home-portrait-stage">
-          <HomePersonFigure src={homeContent.studioAvatarDoodle} />
-          <span class="home-portrait-caption" aria-hidden="true">me!</span>
+          <HomePersonFigure
+            webmSrc={homeContent.studioAvatarVideo.webm}
+            movSrc={homeContent.studioAvatarVideo.mov}
+            posterSrc={homeContent.studioAvatarVideo.poster}
+          />
         </div>
 
-        <div class="home-sketch-arrow" aria-hidden="true">
-          <span></span>
-        </div>
-
-        <nav class="home-cabinet" aria-label="Go somewhere">
-          <div class="home-cabinet__top">
-            <span>go somewhere</span>
-          </div>
-
-          <div class="home-cabinet__shelves">
+        <nav class="home-start-menu" aria-label="Go somewhere">
+          <p>go somewhere</p>
           {
-            homeContent.sections.map((section) => (
+            startLinks.map((link) => (
               <a
-                class="home-cabinet__link"
-                href={`${base}${section.href}`}
+                class:list={[
+                  "home-start-menu__link",
+                  link.kind !== "section" && `home-start-menu__link--${link.kind}`,
+                ]}
+                href={link.href}
+                target={link.kind !== "section" ? "_blank" : undefined}
+                rel={link.kind !== "section" ? "noreferrer" : undefined}
               >
-                <span>{section.title}</span>
-                <span aria-hidden="true">→</span>
+                <span class="home-start-menu__arrow" aria-hidden="true">→</span>
+                <span class="home-start-menu__icon" aria-hidden="true">
+                  {link.kind !== "section" && <span></span>}
+                </span>
+                <span>{link.label}</span>
               </a>
             ))
           }
-          </div>
-
-          <div class="home-cabinet__base" aria-hidden="true">
-            <span></span>
-            <span></span>
-          </div>
-          <span class="home-cabinet__wheel home-cabinet__wheel--left" aria-hidden="true"></span>
-          <span class="home-cabinet__wheel home-cabinet__wheel--right" aria-hidden="true"></span>
         </nav>
       </div>
     </section>
