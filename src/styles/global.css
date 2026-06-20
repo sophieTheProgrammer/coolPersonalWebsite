@@ -33,15 +33,6 @@ html {
 body {
   min-height: 100%;
   margin: 0;
-  cursor: var(--site-cursor), auto;
-}
-
-a,
-button,
-[role="button"],
-summary,
-label {
-  cursor: var(--site-cursor), pointer;
 }
 
 body::before {
