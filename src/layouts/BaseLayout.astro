@@ -43,7 +43,9 @@ const base = import.meta.env.BASE_URL.endsWith("/")
     <link rel="preconnect" href="https://i.ytimg.com" />
     <ClientRouter />
   </head>
-  <body style={`--site-cursor: url("${base}doodles/animated-cursor-64.png") 19 18`}>
+  <body
+    style={`--site-cursor: url("${base}doodles/animated-cursor-64.png") 19 18; --site-pointer: url("${base}doodles/hover-cursor-64.png") 20 18`}
+  >
     <Nav />
     <slot />
     <Footer />

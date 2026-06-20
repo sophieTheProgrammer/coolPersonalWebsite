@@ -41,7 +41,7 @@ button,
 [role="button"],
 summary,
 label {
-  cursor: var(--site-cursor), pointer;
+  cursor: var(--site-pointer), pointer;
 }
 
 body::before {
