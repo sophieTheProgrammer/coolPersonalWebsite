@@ -91,12 +91,23 @@ pre,
   }
 
   .site-card--interactive {
+    rotate: -0.35deg;
     transition:
       box-shadow 220ms ease,
-      transform 220ms ease;
+      transform 220ms ease,
+      rotate 220ms ease;
+  }
+
+  .site-card--interactive:nth-child(even) {
+    rotate: 0.45deg;
+  }
+
+  .site-card--interactive:nth-child(3n) {
+    rotate: 0.2deg;
   }
 
   .site-card--interactive:hover {
+    rotate: 0deg;
     box-shadow: 0 14px 34px rgb(var(--color-ink-rgb) / 0.09);
   }
 
