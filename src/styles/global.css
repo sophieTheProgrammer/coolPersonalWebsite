@@ -754,6 +754,45 @@ pre,
   min-width: 0;
 }
 
+.home-person-figure {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 160ms ease, filter 160ms ease;
+}
+
+.home-person-figure:hover,
+.home-person-figure:focus-visible {
+  transform: translateY(-0.45rem);
+  filter: drop-shadow(0 0.55rem 0 rgb(var(--color-ink-rgb) / 0.12));
+}
+
+.home-person-figure:focus-visible {
+  outline: 0.18rem dashed var(--color-ink);
+  outline-offset: 0.45rem;
+}
+
+.home-person-figure.is-spinning {
+  animation: home-person-lift 420ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes home-person-lift {
+  40% { transform: translateY(-0.8rem) scale(1.025); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-person-figure {
+    transition: none;
+  }
+
+  .home-person-figure.is-spinning {
+    animation: none;
+  }
+}
+
 .home-portrait-stage .doodle-image--avatar {
   width: 100%;
   min-height: 0;

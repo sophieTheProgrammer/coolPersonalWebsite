@@ -3,17 +3,46 @@ import DoodleImage from "./DoodleImage.astro";
 
 type Props = {
   src: string;
+  clickSrc: string;
   reducedMotionSrc: string;
 };
 
-const { src, reducedMotionSrc } = Astro.props;
+const { src, clickSrc, reducedMotionSrc } = Astro.props;
+const base = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const clickAnimationSrc = `${base}doodles/${clickSrc.replace(/^\/?doodles\//, "")}`;
 ---
 
-<DoodleImage
-  src={src}
-  reducedMotionSrc={reducedMotionSrc}
-  alt="Hand-drawn animation of Sophie spinning"
-  variant="avatar"
-  animation="none"
-  fetchPriority="high"
-/>
+<button
+  class="home-person-figure"
+  type="button"
+  aria-label="Make Sophie spin"
+  data-home-person-figure
+  data-click-src={clickAnimationSrc}
+>
+  <DoodleImage
+    src={src}
+    reducedMotionSrc={reducedMotionSrc}
+    alt="Hand-drawn animation of Sophie spinning"
+    variant="avatar"
+    animation="none"
+    fetchPriority="high"
+  />
+</button>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-home-person-figure]").forEach((figure) => {
+    figure.addEventListener("click", () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      const image = figure.querySelector<HTMLImageElement>("img");
+      const clickSrc = figure.dataset.clickSrc;
+      if (!image || !clickSrc) return;
+
+      image.src = `${clickSrc}?replay=${Date.now()}`;
+      figure.classList.remove("is-spinning");
+      requestAnimationFrame(() => figure.classList.add("is-spinning"));
+    });
+  });
+</script>
