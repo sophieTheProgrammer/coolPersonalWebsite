@@ -29,20 +29,56 @@ const clickAnimationSrc = `${base}doodles/${clickSrc.replace(/^\/?doodles\//, ""
     animation="none"
     fetchPriority="high"
   />
+  <img
+    class="home-person-figure__click-animation"
+    src={clickAnimationSrc}
+    alt=""
+    aria-hidden="true"
+    decoding="async"
+    data-click-animation
+  />
 </button>
 
 <script>
   document.querySelectorAll<HTMLElement>("[data-home-person-figure]").forEach((figure) => {
-    figure.addEventListener("click", () => {
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const image = figure.querySelector<HTMLImageElement>("[data-click-animation]");
+    const canHover = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-      const image = figure.querySelector<HTMLImageElement>("img");
+    const replay = () => {
       const clickSrc = figure.dataset.clickSrc;
-      if (!image || !clickSrc) return;
+      if (!image || !clickSrc || reducedMotion.matches) return;
 
       image.src = `${clickSrc}?replay=${Date.now()}`;
-      figure.classList.remove("is-spinning");
-      requestAnimationFrame(() => figure.classList.add("is-spinning"));
+    };
+
+    figure.addEventListener("pointerenter", () => {
+      if (!canHover.matches || reducedMotion.matches) return;
+      replay();
+      figure.classList.add("is-hovering");
+    });
+
+    figure.addEventListener("pointerleave", () => {
+      figure.classList.remove("is-hovering", "is-pressed");
+    });
+
+    figure.addEventListener("pointerdown", () => {
+      if (!figure.classList.contains("is-hovering")) replay();
+      figure.classList.add("is-pressed");
+    });
+
+    const release = () => figure.classList.remove("is-pressed");
+    figure.addEventListener("pointerup", release);
+    figure.addEventListener("pointercancel", release);
+
+    figure.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      replay();
+      figure.classList.add("is-pressed");
+    });
+
+    figure.addEventListener("keyup", (event) => {
+      if (event.key === "Enter" || event.key === " ") release();
     });
   });
 </script>
