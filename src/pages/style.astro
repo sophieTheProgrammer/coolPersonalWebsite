@@ -57,16 +57,39 @@ const palette = [
         Font and color directions
       </h1>
       <p class="mt-6 max-w-2xl text-lg leading-8 text-[var(--color-muted)]">
-        A quick page for comparing the typography directions before the site gets
-        more hand-drawn assets.
+        A quick reference for the typography, palette, and chunky hand-drawn
+        borders used across the site.
       </p>
+
+      <section class="feature-panel mt-10">
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-[var(--color-muted)]">
+          Cartoon border system
+        </p>
+        <h2 class="mt-2 text-4xl leading-none">Thick ink, crooked corners</h2>
+        <p class="mt-4 max-w-3xl leading-7 text-[var(--color-muted)]">
+          Primary cards and feature panels use a 0.18rem Ink outline, uneven corner
+          radii, and a small hard-edged offset shadow. Secondary controls use the
+          lighter 0.12rem outline. Keep borders dark and structural; avoid outlining
+          every label or decorative detail.
+        </p>
+        <div class="mt-6 grid gap-5 sm:grid-cols-2">
+          <div class="site-card bg-white/70 p-5">
+            <p class="font-black">Primary container</p>
+            <p class="mt-2 text-sm text-[var(--color-muted)]">Cards, galleries, project heroes, and major panels.</p>
+          </div>
+          <div class="support-panel bg-white/50 p-5">
+            <p class="font-black">Secondary container</p>
+            <p class="mt-2 text-sm text-[var(--color-muted)]">Supporting groups and quieter nested content.</p>
+          </div>
+        </div>
+      </section>
 
       <section class="mt-10 grid gap-4 md:grid-cols-2">
         {
           fontPreviews.map((preview) => (
             <article
               class:list={[
-                "font-preview-card rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] p-5 shadow-sm",
+                "font-preview-card site-card bg-[var(--color-card)] p-5",
                 preview.className,
               ]}
             >
@@ -88,7 +111,7 @@ const palette = [
         }
       </section>
 
-      <section class="mt-12 rounded-lg border border-[var(--color-line)] bg-[var(--color-card)] p-5 shadow-sm">
+      <section class="site-card mt-12 bg-[var(--color-card)] p-5">
         <div class="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p class="text-xs font-bold uppercase tracking-[0.18em] text-[var(--color-muted)]">

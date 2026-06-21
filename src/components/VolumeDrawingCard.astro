@@ -15,9 +15,9 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 const mediaSrc = artwork.imageSrc?.startsWith("/")
   ? `${base}${artwork.imageSrc.slice(1)}`
   : artwork.imageSrc;
-const processSrc = artwork.processSrc?.startsWith("/")
-  ? `${base}${artwork.processSrc.slice(1)}`
-  : artwork.processSrc;
+const processSources = (artwork.processSrcs?.length ? artwork.processSrcs : artwork.processSrc ? [artwork.processSrc] : [])
+  .map((src) => src.startsWith("/") ? `${base}${src.slice(1)}` : src);
+const processSrc = processSources[0];
 const isPdf = mediaSrc?.toLowerCase().endsWith(".pdf");
 ---
 
@@ -40,7 +40,7 @@ const isPdf = mediaSrc?.toLowerCase().endsWith(".pdf");
           type="button"
           data-art-lightbox-trigger
           data-art-src={mediaSrc}
-          data-art-process-src={processSrc}
+          data-art-process-srcs={JSON.stringify(processSources)}
           data-art-title={artwork.title}
         >
           <img

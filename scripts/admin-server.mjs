@@ -131,11 +131,14 @@ const parseMultipart = (body, contentType) => {
 
     const value = rawValue.replace(/\r\n--$/, "").replace(/\r\n$/, "");
     if (filename) {
-      files[name] = {
+      const upload = {
         filename,
         data: Buffer.from(value, "latin1"),
         type: rawHeaders.match(/Content-Type:\s*([^\r\n]+)/i)?.[1] ?? "application/octet-stream",
       };
+      files[name] = files[name]
+        ? [...(Array.isArray(files[name]) ? files[name] : [files[name]]), upload]
+        : upload;
     } else {
       fields[name] = value;
     }
@@ -179,7 +182,10 @@ const writeArtworkEntries = async (packetSlug, entries) => {
   const objects = entries.map((entry) => {
     const title = String(entry.title ?? "").trim();
     const imageSrc = String(entry.imageSrc ?? "").trim();
-    const processSrc = String(entry.processSrc ?? "").trim();
+    const processSrcs = (Array.isArray(entry.processSrcs) ? entry.processSrcs : [entry.processSrc])
+      .map((src) => String(src ?? "").trim())
+      .filter((src) => src.startsWith("/art/"));
+    const featured = Boolean(entry.featured);
     const medium = String(entry.medium ?? "Uploaded scan").trim();
     const note = String(entry.note ?? "").trim();
 
@@ -208,7 +214,7 @@ const writeArtworkEntries = async (packetSlug, entries) => {
     status: "study",
     note: ${JSON.stringify(note || "Uploaded from the local admin helper.")},
     palette: ["#fbfaf7", "#1e1b2e", "#d8d3c8"],
-    imageSrc: ${JSON.stringify(imageSrc)},${processSrc ? `\n    processSrc: ${JSON.stringify(processSrc)},` : ""}
+    imageSrc: ${JSON.stringify(imageSrc)},${featured ? "\n    featured: true," : ""}${processSrcs.length ? `\n    processSrcs: ${JSON.stringify(processSrcs)},` : ""}
   },`;
   });
 
@@ -280,7 +286,8 @@ const createArtwork = async (entry) => {
     {
       title: entry.title,
       imageSrc: entry.imageSrc,
-      processSrc: entry.processSrc,
+      processSrcs: entry.processSrcs,
+      featured: entry.featured,
       note: entry.note,
       medium: kind === "pdf" ? "Uploaded PDF" : "Uploaded scan",
     },
@@ -341,15 +348,15 @@ const savePdfPages = async (entry) => {
 
   const artworkEntries = finalPages.map((page) => {
     const pageTitle = String(page.title ?? "").trim();
-    const processPageNumber = Number(page.processPageNumber);
-    const processSrc = Number.isFinite(processPageNumber)
-      ? srcByPage.get(processPageNumber)
-      : "";
+    const processSrcs = (Array.isArray(page.processPageNumbers) ? page.processPageNumbers : [])
+      .map((pageNumber) => srcByPage.get(Number(pageNumber)))
+      .filter(Boolean);
 
     return {
       title: pageTitle || (finalPages.length === 1 ? title : `${title} p. ${page.pageNumber}`),
       imageSrc: page.src,
-      processSrc,
+      processSrcs,
+      featured: Boolean(page.featured),
       medium: "PDF page",
       note: note || "Extracted from an uploaded PDF.",
     };
@@ -488,13 +495,16 @@ createServer(async (request, response) => {
       const { files } = parseMultipart(body, request.headers["content-type"] ?? "");
       if (!files.file) throw new Error("Missing upload file.");
       const file = await saveUpload(files.file);
-      const processFile = files.processFile ? await saveUpload(files.processFile) : null;
+      const processUploads = files.processFile
+        ? (Array.isArray(files.processFile) ? files.processFile : [files.processFile])
+        : [];
+      const processFiles = await Promise.all(processUploads.map((upload) => saveUpload(upload)));
 
-      if (processFile?.kind === "pdf") {
+      if (processFiles.some((processFile) => processFile.kind === "pdf")) {
         throw new Error("Process uploads must be images.");
       }
 
-      send(response, 200, { ok: true, file, processFile });
+      send(response, 200, { ok: true, file, processFiles });
       return;
     }
 

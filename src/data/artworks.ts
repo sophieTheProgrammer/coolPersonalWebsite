@@ -8,7 +8,9 @@ export type Artwork = {
   note: string;
   palette: string[];
   imageSrc?: string;
+  featured?: boolean;
   processSrc?: string;
+  processSrcs?: string[];
 };
 
 export type ProcessStage = {

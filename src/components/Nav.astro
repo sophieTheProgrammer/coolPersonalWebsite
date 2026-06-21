@@ -12,7 +12,7 @@ const links = [
 ];
 ---
 
-<header class="sticky top-0 z-30 border-b border-[var(--color-line)] bg-[rgba(251,250,247,0.86)] backdrop-blur-xl">
+<header class="sticky top-0 z-30 border-b-[0.18rem] border-[var(--color-ink)] bg-[rgba(251,250,247,0.86)] backdrop-blur-xl">
   <nav
     class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3 sm:px-8"
     aria-label="Main navigation"
@@ -20,7 +20,7 @@ const links = [
     <a class="text-sm font-black uppercase tracking-[0.18em]" href={base}>
       Studio
     </a>
-    <div class="flex items-center gap-1 rounded-md border border-[var(--color-line)] bg-white/70 p-1 shadow-sm">
+    <div class="flex items-center gap-1 rounded-[0.45rem_0.7rem_0.4rem_0.6rem] border-2 border-[var(--color-ink)] bg-white/70 p-1 shadow-[0.2rem_0.24rem_0_rgb(var(--color-ink-rgb)/0.1)]">
       {
         links.map((link) => {
           const isActive =

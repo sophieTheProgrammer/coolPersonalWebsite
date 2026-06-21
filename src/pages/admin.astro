@@ -36,8 +36,15 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
               <input class="form-field" name="file" type="file" accept="image/*,.pdf" required />
             </label>
             <label class="field-stack">
-              <span>Process/hover image</span>
-              <input class="form-field" name="processFile" type="file" accept="image/*" data-process-file />
+              <span>Process/hover images</span>
+              <input class="form-field" name="processFile" type="file" accept="image/*" multiple data-process-file />
+            </label>
+            <label class="field-stack">
+              <span>Gallery size</span>
+              <span class="flex min-h-11 items-center gap-2 rounded-md border border-[var(--color-line)] bg-white/60 p-3 text-sm font-bold">
+                <input name="featured" type="checkbox" value="true" />
+                Feature as a larger masonry tile
+              </span>
             </label>
             <label class="field-stack">
               <span>Packet</span>
@@ -58,8 +65,8 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
               <textarea class="form-field form-field--textarea" name="note" placeholder="Optional tiny note"></textarea>
             </label>
             <label class="field-stack admin-field-grid__wide">
-              <span>Existing process image path</span>
-              <input class="form-field" name="processSrc" placeholder="/art/sketch-upload.png" />
+              <span>Existing process image paths</span>
+              <textarea class="form-field form-field--textarea" name="processSrcs" placeholder="One /art/ path per line"></textarea>
             </label>
           </div>
 
@@ -67,8 +74,8 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
             <div class="media-frame admin-upload-preview" data-upload-preview>
               <span>Select an image or PDF</span>
             </div>
-            <div class="media-frame admin-upload-preview" data-process-preview>
-              <span>Optional process image</span>
+            <div class="media-frame admin-upload-preview grid-cols-[repeat(auto-fit,minmax(7rem,1fr))] gap-2 [&_img]:!h-32" data-process-preview>
+              <span>Optional process images</span>
             </div>
           </div>
           <div class="admin-pdf-pages" data-pdf-pages hidden></div>
@@ -239,7 +246,7 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
   const packetSelect = document.querySelector<HTMLSelectElement>('[name="packetSlug"]');
   const newPacketInput = document.querySelector<HTMLInputElement>('[name="newPacketTitle"]');
   let uploadedFile: { src: string; kind: "image" | "pdf" } | null = null;
-  let uploadedProcessFile: { src: string; kind: "image" | "pdf" } | null = null;
+  let uploadedProcessFiles: Array<{ src: string; kind: "image" | "pdf" }> = [];
   type RenderedPdfPage = {
     pageNumber: number;
     dataUrl: string;
@@ -250,7 +257,8 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
   type PdfPagePayload = RenderedPdfPage & {
     title: string;
     role: "final" | "process";
-    processPageNumber?: number;
+    processPageNumbers?: number[];
+    featured: boolean;
   };
 
   let renderedPdfPages: RenderedPdfPage[] = [];
@@ -347,13 +355,22 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
       const processLabel = document.createElement("label");
       processLabel.className = "field-stack";
       const processText = document.createElement("span");
-      processText.textContent = "Hover image";
+      processText.textContent = "Process images";
       const processSelect = document.createElement("select");
       processSelect.className = "form-field";
       processSelect.dataset.pdfProcessFor = String(pageNumber);
+      processSelect.multiple = true;
+      processSelect.size = 3;
       processLabel.append(processText, processSelect);
 
-      controls.append(titleLabel, roleLabel, processLabel);
+      const featuredLabel = document.createElement("label");
+      featuredLabel.className = "flex min-h-11 items-center gap-2 rounded-md border border-[var(--color-line)] bg-white/60 p-3 text-sm font-bold";
+      const featuredInput = document.createElement("input");
+      featuredInput.type = "checkbox";
+      featuredInput.dataset.pdfFeatured = String(pageNumber);
+      featuredLabel.append(featuredInput, " Feature as larger masonry tile");
+
+      controls.append(titleLabel, roleLabel, processLabel, featuredLabel);
       pageCard.append(includeLabel, image, meta, controls);
       pdfPagesPreview.append(pageCard);
     }
@@ -374,7 +391,7 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
 
     pdfPagesPreview.querySelectorAll<HTMLSelectElement>("[data-pdf-process-for]").forEach((select) => {
       const pageNumber = Number(select.dataset.pdfProcessFor);
-      const currentValue = select.value;
+      const currentValues = new Set(Array.from(select.selectedOptions).map((option) => option.value));
       const role = pdfPagesPreview.querySelector<HTMLSelectElement>(`[data-pdf-role="${pageNumber}"]`);
 
       select.innerHTML = `<option value="">none</option>`;
@@ -388,7 +405,9 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
           select.append(option);
         });
 
-      select.value = currentValue;
+      Array.from(select.options).forEach((option) => {
+        option.selected = currentValues.has(option.value);
+      });
       select.disabled = role?.value === "process";
     });
   };
@@ -446,7 +465,7 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
     if (!(input instanceof HTMLInputElement)) return;
     const file = input.files?.[0];
     uploadedFile = null;
-    uploadedProcessFile = null;
+    uploadedProcessFiles = [];
 
     if (saveArtworkButton instanceof HTMLButtonElement) {
       saveArtworkButton.disabled = true;
@@ -462,7 +481,7 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
       if (processPreview instanceof HTMLElement) {
         processPreview.innerHTML = isPdf
           ? "<span>Pair PDF process pages below</span>"
-          : "<span>Optional process image</span>";
+          : "<span>Optional process images</span>";
       }
 
       await renderPreview(file);
@@ -471,19 +490,20 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
   });
 
   processFileInput?.addEventListener("change", () => {
-    const file = processFileInput.files?.[0];
-    uploadedProcessFile = null;
+    const files = Array.from(processFileInput.files ?? []);
+    uploadedProcessFiles = [];
 
     if (!(processPreview instanceof HTMLElement)) return;
 
-    if (!file) {
-      processPreview.innerHTML = "<span>Optional process image</span>";
+    if (files.length === 0) {
+      processPreview.innerHTML = "<span>Optional process images</span>";
       return;
     }
 
-    const url = URL.createObjectURL(file);
-    processPreview.innerHTML = `<img src="${url}" alt="Process image preview" />`;
-    writeOutput(`Ready to upload process image: ${file.name}`);
+    processPreview.innerHTML = files
+      .map((file, index) => `<img src="${URL.createObjectURL(file)}" alt="Process image preview ${index + 1}" />`)
+      .join("");
+    writeOutput(`Ready to upload ${files.length} process image${files.length === 1 ? "" : "s"}.`);
   });
 
   artForm?.addEventListener("submit", async (event) => {
@@ -503,7 +523,7 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
       if (!result.ok) throw new Error(result.error);
 
       uploadedFile = result.file;
-      uploadedProcessFile = result.processFile ?? null;
+      uploadedProcessFiles = result.processFiles ?? [];
       if (saveArtworkButton instanceof HTMLButtonElement) {
         saveArtworkButton.disabled = false;
       }
@@ -511,7 +531,7 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
       writeOutput(
         uploadedFile?.kind === "pdf"
           ? `Uploaded ${result.file.src}\nReady to save this PDF into the selected packet.`
-          : `Uploaded ${result.file.src}${uploadedProcessFile ? `\nUploaded process image ${uploadedProcessFile.src}` : ""}\nReady to save this image into the selected packet.`,
+          : `Uploaded ${result.file.src}${uploadedProcessFiles.length ? `\nUploaded ${uploadedProcessFiles.length} process image${uploadedProcessFiles.length === 1 ? "" : "s"}` : ""}\nReady to save this image into the selected packet.`,
       );
     } catch (error) {
       writeOutput(`Writer unavailable or failed.\nRun: npm run admin:server\n\n${error}`);
@@ -538,15 +558,17 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
             const titleInput = document.querySelector<HTMLInputElement>(`[data-pdf-title="${page.pageNumber}"]`);
             const roleInput = document.querySelector<HTMLSelectElement>(`[data-pdf-role="${page.pageNumber}"]`);
             const processInput = document.querySelector<HTMLSelectElement>(`[data-pdf-process-for="${page.pageNumber}"]`);
+            const featuredInput = document.querySelector<HTMLInputElement>(`[data-pdf-featured="${page.pageNumber}"]`);
             const role = roleInput?.value === "process" ? "process" : "final";
 
             return {
               ...page,
               title: titleInput?.value.trim() || `${String(data.get("title") ?? "PDF page")} p. ${page.pageNumber}`,
               role,
-              processPageNumber: role === "final" && processInput?.value
-                ? Number(processInput.value)
+              processPageNumbers: role === "final"
+                ? Array.from(processInput?.selectedOptions ?? []).map((option) => Number(option.value))
                 : undefined,
+              featured: role === "final" && Boolean(featuredInput?.checked),
             };
           });
 
@@ -581,7 +603,11 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
           title: data.get("title"),
           note: data.get("note"),
           imageSrc: uploadedFile.src,
-          processSrc: uploadedProcessFile?.src || data.get("processSrc"),
+          processSrcs: [
+            ...uploadedProcessFiles.map((file) => file.src),
+            ...String(data.get("processSrcs") ?? "").split(/[\n,]+/).map((src) => src.trim()).filter(Boolean),
+          ],
+          featured: data.get("featured") === "true",
           kind: uploadedFile.kind,
         }),
       });

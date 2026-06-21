@@ -61,7 +61,7 @@ const drawings = getArtworksForVolume(volume.slug);
         <ArtFlowGrid className="packet-drawing-grid mt-5">
           {
             drawings.map((artwork, index) => (
-              <div data-art-flow-item data-packet-drawing>
+              <div data-art-flow-item data-packet-drawing data-art-flow-wide={artwork.featured ? "" : undefined}>
                 <VolumeDrawingCard artwork={artwork} index={index} />
               </div>
             ))
@@ -121,16 +121,21 @@ const drawings = getArtworksForVolume(volume.slug);
   const lightboxToggle = document.querySelector<HTMLButtonElement>("[data-art-lightbox-toggle]");
   const lightboxClose = document.querySelector<HTMLButtonElement>("[data-art-lightbox-close]");
   let lightboxFinalSrc = "";
-  let lightboxProcessSrc = "";
-  let showingProcess = false;
+  let lightboxProcessSrcs: string[] = [];
+  let lightboxProcessIndex = -1;
 
   const renderLightboxImage = () => {
     if (!lightboxImage) return;
-    lightboxImage.src = showingProcess && lightboxProcessSrc ? lightboxProcessSrc : lightboxFinalSrc;
+    const processSrc = lightboxProcessIndex >= 0 ? lightboxProcessSrcs[lightboxProcessIndex] : "";
+    lightboxImage.src = processSrc || lightboxFinalSrc;
     lightboxImage.alt = lightboxTitle?.textContent ?? "";
 
     if (lightboxToggle) {
-      lightboxToggle.textContent = showingProcess ? "Show finished" : "Show process";
+      lightboxToggle.textContent = lightboxProcessIndex < 0
+        ? `Show process${lightboxProcessSrcs.length > 1 ? ` (1/${lightboxProcessSrcs.length})` : ""}`
+        : lightboxProcessIndex === lightboxProcessSrcs.length - 1
+          ? "Show finished"
+          : `Next process (${lightboxProcessIndex + 2}/${lightboxProcessSrcs.length})`;
     }
   };
 
@@ -139,12 +144,16 @@ const drawings = getArtworksForVolume(volume.slug);
       if (!lightbox || !lightboxImage || !lightboxTitle) return;
 
       lightboxFinalSrc = trigger.dataset.artSrc ?? "";
-      lightboxProcessSrc = trigger.dataset.artProcessSrc ?? "";
-      showingProcess = false;
+      try {
+        lightboxProcessSrcs = JSON.parse(trigger.dataset.artProcessSrcs ?? "[]");
+      } catch {
+        lightboxProcessSrcs = [];
+      }
+      lightboxProcessIndex = -1;
       lightboxTitle.textContent = trigger.dataset.artTitle ?? "Drawing";
 
       if (lightboxToggle) {
-        lightboxToggle.hidden = !lightboxProcessSrc;
+        lightboxToggle.hidden = lightboxProcessSrcs.length === 0;
       }
 
       renderLightboxImage();
@@ -153,7 +162,9 @@ const drawings = getArtworksForVolume(volume.slug);
   });
 
   lightboxToggle?.addEventListener("click", () => {
-    showingProcess = !showingProcess;
+    lightboxProcessIndex = lightboxProcessIndex >= lightboxProcessSrcs.length - 1
+      ? -1
+      : lightboxProcessIndex + 1;
     renderLightboxImage();
   });
 

@@ -17,6 +17,9 @@
   --color-muted: color-mix(in srgb, var(--color-ink) 68%, var(--color-paper));
   --color-card: color-mix(in srgb, var(--color-paper) 96%, var(--color-ink));
   --color-line: rgb(var(--color-ink-rgb) / 0.14);
+  --border-cartoon: 0.18rem solid var(--color-ink);
+  --border-cartoon-light: 0.12rem solid rgb(var(--color-ink-rgb) / 0.72);
+  --shadow-cartoon: 0.4rem 0.45rem 0 rgb(var(--color-ink-rgb) / 0.1);
 }
 
 * {
@@ -135,8 +138,10 @@ pre,
 
 @layer components {
   .site-card {
-    border-radius: 0.5rem;
+    border: var(--border-cartoon);
+    border-radius: 0.65rem 1rem 0.55rem 0.8rem;
     background: var(--color-card);
+    box-shadow: var(--shadow-cartoon);
   }
 
   .site-card--soft {
@@ -161,7 +166,8 @@ pre,
 
   .site-card--interactive:hover {
     rotate: 0deg;
-    box-shadow: 0 14px 34px rgb(var(--color-ink-rgb) / 0.09);
+    box-shadow: 0.2rem 0.24rem 0 rgb(var(--color-ink-rgb) / 0.14);
+    transform: translate(0.12rem, 0.12rem);
   }
 
   .page-shell {
@@ -175,9 +181,11 @@ pre,
   }
 
   .feature-panel {
-    border-radius: 1.35rem;
+    border: var(--border-cartoon);
+    border-radius: 0.8rem 1.25rem 0.7rem 1rem;
     background: rgb(255 255 255 / 0.42);
     padding: clamp(0.85rem, 2vw, 1.35rem);
+    box-shadow: var(--shadow-cartoon);
   }
 
   .feature-panel--quiet {
@@ -193,13 +201,16 @@ pre,
   }
 
   .practice-stage {
-    border-radius: 1.35rem;
+    border: var(--border-cartoon);
+    border-radius: 1.2rem 0.75rem 1.05rem 0.65rem;
     background: rgb(255 255 255 / 0.46);
     padding: clamp(0.85rem, 2vw, 1.4rem);
+    box-shadow: var(--shadow-cartoon);
   }
 
   .support-panel {
-    border-radius: 1.1rem;
+    border: var(--border-cartoon-light);
+    border-radius: 0.65rem 0.95rem 0.6rem 0.85rem;
     background: rgb(255 255 255 / 0.26);
     padding: clamp(0.75rem, 1.6vw, 1rem);
   }
@@ -209,7 +220,8 @@ pre,
   }
 
   .art-roadmap-card {
-    border-radius: 0.85rem;
+    border: var(--border-cartoon-light);
+    border-radius: 0.65rem 0.9rem 0.55rem 0.8rem;
     background: rgb(255 255 255 / 0.2);
     padding: 1rem;
   }
@@ -217,9 +229,11 @@ pre,
   .project-hero {
     display: grid;
     gap: clamp(1.75rem, 4vw, 2.75rem);
-    border-radius: 1.35rem;
+    border: var(--border-cartoon);
+    border-radius: 0.75rem 1.2rem 0.65rem 1rem;
     background: rgb(255 255 255 / 0.34);
     padding: clamp(1rem, 2.3vw, 1.5rem);
+    box-shadow: var(--shadow-cartoon);
   }
 
   @media (min-width: 1024px) {
@@ -233,7 +247,8 @@ pre,
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 0.45rem;
+    border: var(--border-cartoon-light);
+    border-radius: 0.4rem 0.65rem 0.35rem 0.55rem;
     background: rgb(255 255 255 / 0.5);
     color: var(--color-muted);
     font-weight: 900;
@@ -270,7 +285,8 @@ pre,
 
   .media-frame {
     overflow: hidden;
-    border-radius: 0.45rem;
+    border: var(--border-cartoon-light);
+    border-radius: 0.45rem 0.7rem 0.4rem 0.6rem;
     background: var(--color-ink);
   }
 
@@ -1032,8 +1048,8 @@ pre,
   min-height: 12rem;
   justify-items: center;
   align-content: space-between;
-  border: 1px solid var(--color-line);
-  border-radius: 0.75rem;
+  border: var(--border-cartoon-light);
+  border-radius: 0.6rem 0.9rem 0.5rem 0.75rem;
   background: rgb(255 255 255 / 0.62);
   padding: 0.85rem;
   scroll-snap-align: start;
@@ -1353,9 +1369,9 @@ pre,
 
 .art-simple-card {
   margin: 0 0 1rem;
-  border: 1px solid var(--color-line);
+  border: var(--border-cartoon-light);
   background: rgb(255 255 255 / 0.72);
-  box-shadow: 0 1px 2px rgb(var(--color-ink-rgb) / 0.08);
+  box-shadow: 0.3rem 0.35rem 0 rgb(var(--color-ink-rgb) / 0.09);
   transform: rotate(var(--art-tilt));
 }
 
@@ -1421,9 +1437,9 @@ pre,
 }
 
 .admin-card {
-  border: 1px solid var(--color-line);
+  border: var(--border-cartoon);
   background: var(--color-card);
-  box-shadow: 0 1px 2px rgb(var(--color-ink-rgb) / 0.08);
+  box-shadow: var(--shadow-cartoon);
 }
 
 .admin-card input,
