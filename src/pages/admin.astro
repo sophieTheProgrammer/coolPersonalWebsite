@@ -47,13 +47,19 @@ const libraryPackets = artVolumes.map((volume) => ({
               <span>Process/hover images</span>
               <input class="form-field" name="processFile" type="file" accept="image/*" multiple data-process-file />
             </label>
-            <label class="field-stack">
+            <div class="field-stack">
               <span>Gallery size</span>
-              <span class="flex min-h-11 items-center gap-2 rounded-md border border-[var(--color-line)] bg-white/60 p-3 text-sm font-bold">
-                <input name="featured" type="checkbox" value="true" />
+              <label class="flex min-h-11 cursor-pointer items-center gap-2 rounded-md border border-[var(--color-line)] bg-white/60 p-3 text-sm font-bold hover:bg-white/80">
+                <input
+                  class="shrink-0 accent-[var(--color-accent-2)]"
+                  name="featured"
+                  type="checkbox"
+                  value="true"
+                  style="appearance: auto; width: 1.1rem; height: 1.1rem;"
+                />
                 Feature as a larger masonry tile
-              </span>
-            </label>
+              </label>
+            </div>
             <label class="field-stack">
               <span>Packet</span>
               <select class="form-field" name="packetSlug">
@@ -510,10 +516,13 @@ const libraryPackets = artVolumes.map((volume) => ({
       processLabel.append(processText, processSelect);
 
       const featuredLabel = document.createElement("label");
-      featuredLabel.className = "flex min-h-11 items-center gap-2 rounded-md border border-[var(--color-line)] bg-white/60 p-3 text-sm font-bold";
+      featuredLabel.className = "flex min-h-11 cursor-pointer items-center gap-2 rounded-md border border-[var(--color-line)] bg-white/60 p-3 text-sm font-bold hover:bg-white/80";
       const featuredInput = document.createElement("input");
       featuredInput.type = "checkbox";
       featuredInput.dataset.pdfFeatured = String(pageNumber);
+      featuredInput.style.appearance = "auto";
+      featuredInput.style.width = "1.1rem";
+      featuredInput.style.height = "1.1rem";
       featuredLabel.append(featuredInput, " Feature as larger masonry tile");
 
       controls.append(titleLabel, roleLabel, processLabel, featuredLabel);
