@@ -1,12 +1,20 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { artVolumes, currentArtwork, processStages } from "../data/artworks";
+import { artVolumes, currentArtwork, getArtworksForVolume, processStages } from "../data/artworks";
 import { skillToys } from "../data/skillToys";
 
 const base = import.meta.env.BASE_URL.endsWith("/")
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
 const editableProcessStages = processStages as Array<(typeof processStages)[number] & { imageSrc?: string }>;
+const libraryPackets = artVolumes.map((volume) => ({
+  slug: volume.slug,
+  title: volume.title,
+  drawings: getArtworksForVolume(volume.slug).map((artwork) => ({
+    slug: artwork.slug,
+    title: artwork.title,
+  })),
+}));
 ---
 
 <BaseLayout
@@ -89,6 +97,36 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
           </div>
           <pre class="admin-output" data-art-output>Writer status will appear here.</pre>
         </form>
+
+        <section
+          class="admin-card admin-panel site-card col-span-full"
+          data-art-library-manager
+          data-library-packets={JSON.stringify(libraryPackets)}
+        >
+          <div class="admin-panel__header">
+            <h2 class="text-3xl leading-none">Remove art</h2>
+            <p>Delete individual drawings from a packet, or remove the packet and its unshared drawings together.</p>
+          </div>
+
+          <label class="field-stack">
+            <span>Packet</span>
+            <select class="form-field" data-library-packet>
+              {libraryPackets.map((packet) => <option value={packet.slug}>{packet.title}</option>)}
+            </select>
+          </label>
+
+          <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3" data-library-drawings></div>
+
+          <div class="flex flex-wrap gap-2">
+            <button class="site-button px-4 py-3" type="button" data-delete-drawings>
+              Delete selected drawings
+            </button>
+            <button class="site-button site-button--dark px-4 py-3" type="button" data-delete-packet>
+              Delete entire packet
+            </button>
+          </div>
+          <pre class="admin-output" data-library-output>Select a packet to manage its drawings.</pre>
+        </section>
 
         <form class="admin-card admin-panel site-card admin-panel--process" data-process-slider-form>
           <div class="admin-panel__header">
@@ -268,6 +306,114 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
       artOutput.textContent = message;
     }
   };
+
+  type ManagedPacket = {
+    slug: string;
+    title: string;
+    drawings: Array<{ slug: string; title: string }>;
+  };
+
+  const libraryManager = document.querySelector<HTMLElement>("[data-art-library-manager]");
+  const libraryPacketSelect = document.querySelector<HTMLSelectElement>("[data-library-packet]");
+  const libraryDrawings = document.querySelector<HTMLElement>("[data-library-drawings]");
+  const libraryOutput = document.querySelector<HTMLElement>("[data-library-output]");
+  const deleteDrawingsButton = document.querySelector<HTMLButtonElement>("[data-delete-drawings]");
+  const deletePacketButton = document.querySelector<HTMLButtonElement>("[data-delete-packet]");
+  let managedPackets: ManagedPacket[] = [];
+
+  try {
+    managedPackets = JSON.parse(libraryManager?.dataset.libraryPackets ?? "[]");
+  } catch {
+    managedPackets = [];
+  }
+
+  const renderManagedDrawings = () => {
+    if (!libraryDrawings || !libraryPacketSelect) return;
+    const packet = managedPackets.find((item) => item.slug === libraryPacketSelect.value);
+    libraryDrawings.replaceChildren();
+
+    if (!packet?.drawings.length) {
+      const empty = document.createElement("p");
+      empty.className = "text-sm font-semibold text-[var(--color-muted)]";
+      empty.textContent = packet ? "This packet has no drawings." : "No packets left.";
+      libraryDrawings.append(empty);
+    } else {
+      packet.drawings.forEach((drawing) => {
+        const label = document.createElement("label");
+        label.className = "flex items-center gap-2 rounded-md border border-[var(--color-line)] bg-white/60 p-3 text-sm font-bold";
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = drawing.slug;
+        checkbox.dataset.libraryDrawing = "";
+        label.append(checkbox, drawing.title);
+        libraryDrawings.append(label);
+      });
+    }
+
+    const hasPacket = Boolean(packet);
+    if (deleteDrawingsButton) deleteDrawingsButton.disabled = !hasPacket || !packet?.drawings.length;
+    if (deletePacketButton) deletePacketButton.disabled = !hasPacket;
+  };
+
+  const refreshPacketOptions = (preferredSlug = "") => {
+    if (!libraryPacketSelect) return;
+    libraryPacketSelect.replaceChildren(
+      ...managedPackets.map((packet) => new Option(packet.title, packet.slug)),
+    );
+    if (preferredSlug && managedPackets.some((packet) => packet.slug === preferredSlug)) {
+      libraryPacketSelect.value = preferredSlug;
+    }
+    renderManagedDrawings();
+  };
+
+  const deleteLibraryItems = async (mode: "drawings" | "packet") => {
+    if (!libraryPacketSelect || !libraryOutput) return;
+    const packet = managedPackets.find((item) => item.slug === libraryPacketSelect.value);
+    if (!packet) return;
+
+    const drawingSlugs = mode === "drawings"
+      ? Array.from(document.querySelectorAll<HTMLInputElement>("[data-library-drawing]:checked")).map((input) => input.value)
+      : packet.drawings.map((drawing) => drawing.slug);
+
+    if (mode === "drawings" && drawingSlugs.length === 0) {
+      libraryOutput.textContent = "Choose at least one drawing first.";
+      return;
+    }
+
+    const description = mode === "packet"
+      ? `Delete “${packet.title}” and its ${packet.drawings.length} drawing${packet.drawings.length === 1 ? "" : "s"}? Shared drawings will remain in other packets.`
+      : `Delete ${drawingSlugs.length} selected drawing${drawingSlugs.length === 1 ? "" : "s"} from “${packet.title}”?`;
+    if (!window.confirm(description)) return;
+
+    libraryOutput.textContent = "Removing art...";
+    try {
+      const response = await fetch(`${writerUrl}/api/art-library/delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode, packetSlug: packet.slug, drawingSlugs }),
+      });
+      const result = await response.json();
+      if (!result.ok) throw new Error(result.error);
+
+      if (mode === "packet") {
+        managedPackets = managedPackets.filter((item) => item.slug !== packet.slug);
+        packetSelect?.querySelector(`option[value="${CSS.escape(packet.slug)}"]`)?.remove();
+        refreshPacketOptions();
+      } else {
+        packet.drawings = packet.drawings.filter((drawing) => !drawingSlugs.includes(drawing.slug));
+        renderManagedDrawings();
+      }
+
+      libraryOutput.textContent = `Removed ${result.result.removedFromPacket.length} drawing${result.result.removedFromPacket.length === 1 ? "" : "s"}${mode === "packet" ? " and the packet" : ""}.`;
+    } catch (error) {
+      libraryOutput.textContent = `Could not remove art.\n${error}`;
+    }
+  };
+
+  libraryPacketSelect?.addEventListener("change", renderManagedDrawings);
+  deleteDrawingsButton?.addEventListener("click", () => deleteLibraryItems("drawings"));
+  deletePacketButton?.addEventListener("click", () => deleteLibraryItems("packet"));
+  renderManagedDrawings();
 
   const renderPdfPages = async (file: File) => {
     if (!(pdfPagesPreview instanceof HTMLElement)) return;

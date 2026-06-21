@@ -1,5 +1,5 @@
 import { createServer } from "node:http";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
 import { extname, join } from "node:path";
 import { randomUUID } from "node:crypto";
 
@@ -426,6 +426,97 @@ const saveProcessSlider = async (fields, files) => {
   return { title: sliderTitle, stages: savedStages };
 };
 
+const deleteArtLibraryItems = async (entry) => {
+  const packetSlug = String(entry.packetSlug ?? "").trim();
+  const mode = entry.mode === "packet" ? "packet" : "drawings";
+  const selectedSlugs = new Set(
+    (Array.isArray(entry.drawingSlugs) ? entry.drawingSlugs : [])
+      .map((slug) => String(slug).trim())
+      .filter(Boolean),
+  );
+
+  if (!packetSlug) throw new Error("Choose a packet first.");
+  if (mode === "drawings" && selectedSlugs.size === 0) {
+    throw new Error("Choose at least one drawing to delete.");
+  }
+
+  const source = await readFile(artDataFile, "utf8");
+  const artworkSection = source.match(/(export const artworks: Artwork\[] = \[\n)([\s\S]*?)(\n\];\n\nexport const artVolumes)/);
+  const volumeSection = source.match(/(export const artVolumes: ArtVolume\[] = \[\n)([\s\S]*?)(\n\];\n\nexport const currentArtwork)/);
+
+  if (!artworkSection || !volumeSection) {
+    throw new Error("Could not read the art library data.");
+  }
+
+  const objectBlocks = (body) => body.match(/  \{\n[\s\S]*?\n  \},/g) ?? [];
+  const blockSlug = (block) => block.match(/\n\s*slug:\s*"([^"]+)"/)?.[1] ?? "";
+  const blockDrawingSlugs = (block) =>
+    [...(block.match(/drawingSlugs:\s*\[([\s\S]*?)\]/)?.[1] ?? "").matchAll(/"([^"]+)"/g)]
+      .map((match) => match[1]);
+
+  const artworkBlocks = objectBlocks(artworkSection[2]);
+  const volumeBlocks = objectBlocks(volumeSection[2]);
+  const targetVolume = volumeBlocks.find((block) => blockSlug(block) === packetSlug);
+
+  if (!targetVolume) throw new Error(`Packet not found: ${packetSlug}`);
+
+  const packetDrawingSlugs = blockDrawingSlugs(targetVolume);
+  const removedFromPacket = mode === "packet"
+    ? packetDrawingSlugs
+    : packetDrawingSlugs.filter((slug) => selectedSlugs.has(slug));
+  const removedSet = new Set(removedFromPacket);
+
+  let nextVolumeBlocks;
+  if (mode === "packet") {
+    nextVolumeBlocks = volumeBlocks.filter((block) => blockSlug(block) !== packetSlug);
+  } else {
+    const remaining = packetDrawingSlugs.filter((slug) => !removedSet.has(slug));
+    const drawingList = remaining.length
+      ? `drawingSlugs: [\n${remaining.map((slug) => `      ${JSON.stringify(slug)},`).join("\n")}\n    ]`
+      : "drawingSlugs: []";
+    nextVolumeBlocks = volumeBlocks.map((block) =>
+      blockSlug(block) === packetSlug
+        ? block.replace(/drawingSlugs:\s*\[[\s\S]*?\]/, drawingList)
+        : block,
+    );
+  }
+
+  const stillReferenced = new Set(nextVolumeBlocks.flatMap(blockDrawingSlugs));
+  const orphanedSlugs = new Set(removedFromPacket.filter((slug) => !stillReferenced.has(slug)));
+  const removedArtworkBlocks = artworkBlocks.filter((block) => orphanedSlugs.has(blockSlug(block)));
+  const nextArtworkBlocks = artworkBlocks.filter((block) => !orphanedSlugs.has(blockSlug(block)));
+
+  let next = source.replace(
+    volumeSection[0],
+    `${volumeSection[1]}${nextVolumeBlocks.join("\n")}${volumeSection[3]}`,
+  );
+  next = next.replace(
+    artworkSection[0],
+    `${artworkSection[1]}${nextArtworkBlocks.join("\n")}${artworkSection[3]}`,
+  );
+
+  await writeFile(artDataFile, next);
+
+  const removedAssets = new Set(
+    removedArtworkBlocks.flatMap((block) =>
+      [...block.matchAll(/"(\/art\/[^"\n]+)"/g)].map((match) => match[1]),
+    ),
+  );
+  await Promise.all(
+    [...removedAssets]
+      .filter((src) => !next.includes(JSON.stringify(src)))
+      .map((src) => unlink(join(artDir.pathname, src.replace(/^\/art\//, ""))).catch(() => undefined)),
+  );
+
+  return {
+    mode,
+    packetSlug,
+    removedFromPacket,
+    deletedArtworkSlugs: [...orphanedSlugs],
+    deletedAssets: [...removedAssets].filter((src) => !next.includes(JSON.stringify(src))),
+  };
+};
+
 const saveSkillToyClip = async (entry) => {
   const id = String(entry.id ?? "").trim();
   const toySlug = String(entry.toySlug ?? "").trim();
@@ -519,6 +610,13 @@ createServer(async (request, response) => {
       const body = await readBody(request);
       const entry = JSON.parse(body.toString("utf8"));
       send(response, 200, { ok: true, artwork: await savePdfPages(entry) });
+      return;
+    }
+
+    if (request.method === "POST" && url.pathname === "/api/art-library/delete") {
+      const body = await readBody(request);
+      const entry = JSON.parse(body.toString("utf8"));
+      send(response, 200, { ok: true, result: await deleteArtLibraryItems(entry) });
       return;
     }
 
