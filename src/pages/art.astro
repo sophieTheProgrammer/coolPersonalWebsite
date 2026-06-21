@@ -2,18 +2,17 @@
 import ArtProcessWidget from "../components/ArtProcessWidget.astro";
 import ArtVolumeCard from "../components/ArtVolumeCard.astro";
 import ArtFlowGrid from "../components/ArtFlowGrid.astro";
-import { artVolumes, artworks } from "../data/artworks";
+import { artVolumes } from "../data/artworks";
 import SketchbookWidget from "../components/SketchbookWidget.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
-const moods = [...new Set(artworks.map((artwork) => artwork.mood))];
 const leadingVolumes = artVolumes.slice(0, 4);
 const trailingVolumes = artVolumes.slice(4);
 ---
 
 <BaseLayout
   title="Art | Cool Personal Website"
-  description="A small art gallery with placeholder works, moods, and future interactive features."
+  description="A small gallery of drawing collections, process work, and sketchbooks."
 >
   <main class="art-page-shell page-shell overflow-hidden">
     <section class="art-wide-frame relative z-10">
@@ -24,41 +23,6 @@ const trailingVolumes = artVolumes.slice(4);
           </h1>
         </div>
       </div>
-
-      <section class="feature-panel section-rhythm--tight">
-        <div class="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h2 class="text-lg font-black">Gallery controls</h2>
-            <p class="mt-1 text-sm text-[var(--color-muted)]">
-              Volume packs now open into drawing collections. Filters and lightbox mode can come next.
-            </p>
-          </div>
-          <div class="flex flex-wrap gap-2">
-            <button class="rounded-md bg-[var(--color-ink)] px-3 py-2 text-sm font-bold text-white" type="button">
-              Gallery
-            </button>
-            <button class="rounded-md bg-white/50 px-3 py-2 text-sm font-bold text-[var(--color-muted)]" type="button">
-              Process
-            </button>
-            <button class="rounded-md bg-white/50 px-3 py-2 text-sm font-bold text-[var(--color-muted)]" type="button">
-              Sketchbook
-            </button>
-          </div>
-        </div>
-
-        <div class="mt-4 flex gap-2 overflow-x-auto pb-1">
-          <span class="rounded bg-[rgba(30,27,46,0.07)] px-3 py-1.5 text-xs font-black uppercase tracking-[0.12em]">
-            All moods
-          </span>
-          {
-            moods.map((mood) => (
-              <span class="rounded bg-white/45 px-3 py-1.5 text-xs font-black uppercase tracking-[0.12em] text-[var(--color-muted)]">
-                {mood}
-              </span>
-            ))
-          }
-        </div>
-      </section>
 
       <div class="art-gallery-stage feature-panel section-rhythm--tight">
         <div class="mb-3 flex flex-wrap items-center justify-between gap-3 px-1">
@@ -74,28 +38,6 @@ const trailingVolumes = artVolumes.slice(4);
         </ArtFlowGrid>
       </div>
 
-      <section class="art-roadmap section-rhythm--tight grid gap-3 md:grid-cols-3">
-        <article class="art-roadmap-card">
-          <h2 class="font-black">Future filter</h2>
-          <p class="mt-2 leading-7 text-[var(--color-muted)]">
-            Turn the mood chips into real filters once the gallery has enough
-            work to browse.
-          </p>
-        </article>
-        <article class="art-roadmap-card">
-          <h2 class="font-black">Process slider</h2>
-          <p class="mt-2 leading-7 text-[var(--color-muted)]">
-            Add sketch to final comparisons for pieces that have process shots.
-          </p>
-        </article>
-        <article class="art-roadmap-card">
-          <h2 class="font-black">Lightbox view</h2>
-          <p class="mt-2 leading-7 text-[var(--color-muted)]">
-            Open artwork in a focused viewer with notes, process details, and
-            related studies.
-          </p>
-        </article>
-      </section>
     </section>
   </main>
 </BaseLayout>
