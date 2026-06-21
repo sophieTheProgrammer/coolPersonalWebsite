@@ -17,9 +17,9 @@
   --color-muted: color-mix(in srgb, var(--color-ink) 68%, var(--color-paper));
   --color-card: color-mix(in srgb, var(--color-paper) 96%, var(--color-ink));
   --color-line: rgb(var(--color-ink-rgb) / 0.14);
-  --border-cartoon: 0.18rem solid var(--color-ink);
-  --border-cartoon-light: 0.12rem solid rgb(var(--color-ink-rgb) / 0.72);
-  --shadow-cartoon: 0.4rem 0.45rem 0 rgb(var(--color-ink-rgb) / 0.1);
+  --border-cartoon: 0.12rem solid rgb(var(--color-ink-rgb) / 0.38);
+  --border-cartoon-light: 1px solid rgb(var(--color-ink-rgb) / 0.16);
+  --shadow-cartoon: 0.28rem 0.32rem 0 rgb(var(--color-ink-rgb) / 0.07);
 }
 
 * {
@@ -114,8 +114,17 @@ a {
 h1,
 h2 {
   font-family: var(--font-hand);
-  font-weight: 400;
+  font-weight: 700;
   letter-spacing: 0.01em;
+}
+
+h1 {
+  font-weight: 900;
+  letter-spacing: -0.015em;
+}
+
+h2 {
+  font-weight: 800;
 }
 
 h3,
@@ -183,7 +192,7 @@ pre,
   .feature-panel {
     border: var(--border-cartoon);
     border-radius: 0.8rem 1.25rem 0.7rem 1rem;
-    background: rgb(255 255 255 / 0.42);
+    background: rgb(255 255 255 / 0.5);
     padding: clamp(0.85rem, 2vw, 1.35rem);
     box-shadow: var(--shadow-cartoon);
   }
@@ -203,7 +212,7 @@ pre,
   .practice-stage {
     border: var(--border-cartoon);
     border-radius: 1.2rem 0.75rem 1.05rem 0.65rem;
-    background: rgb(255 255 255 / 0.46);
+    background: rgb(255 255 255 / 0.54);
     padding: clamp(0.85rem, 2vw, 1.4rem);
     box-shadow: var(--shadow-cartoon);
   }
@@ -211,7 +220,7 @@ pre,
   .support-panel {
     border: var(--border-cartoon-light);
     border-radius: 0.65rem 0.95rem 0.6rem 0.85rem;
-    background: rgb(255 255 255 / 0.26);
+    background: rgb(255 255 255 / 0.2);
     padding: clamp(0.75rem, 1.6vw, 1rem);
   }
 
@@ -220,7 +229,7 @@ pre,
     gap: clamp(1.75rem, 4vw, 2.75rem);
     border: var(--border-cartoon);
     border-radius: 0.75rem 1.2rem 0.65rem 1rem;
-    background: rgb(255 255 255 / 0.34);
+    background: rgb(255 255 255 / 0.48);
     padding: clamp(1rem, 2.3vw, 1.5rem);
     box-shadow: var(--shadow-cartoon);
   }
@@ -479,6 +488,7 @@ pre,
 .nav-link--active {
   background: var(--color-ink);
   color: #ffffff !important;
+  font-weight: 900;
 }
 
 .nav-link--active:visited,
@@ -778,11 +788,11 @@ pre,
   pointer-events: none;
 }
 
-.home-person-figure.is-person-hovered .home-person-figure__hover-animation {
+.home-person-figure:hover .home-person-figure__hover-animation {
   opacity: 1;
 }
 
-.home-person-figure.is-person-hovered .doodle-image {
+.home-person-figure:hover .doodle-image {
   opacity: 0;
 }
 
@@ -813,11 +823,11 @@ pre,
 .home-start-menu {
   display: grid;
   align-content: center;
-  border: 0.18rem solid var(--color-ink);
+  border: var(--border-cartoon);
   border-radius: 0.65rem 1rem 0.55rem 0.8rem;
   background: rgb(255 255 255 / 0.28);
   padding: clamp(1.25rem, 3vw, 1.8rem);
-  box-shadow: 0.45rem 0.5rem 0 rgb(var(--color-ink-rgb) / 0.1);
+  box-shadow: var(--shadow-cartoon);
   transform: rotate(0.35deg);
 }
 
@@ -846,6 +856,7 @@ pre,
   padding: 0.3rem 0.5rem;
   font-family: var(--font-hand);
   font-size: clamp(2rem, 3.2vw, 2.55rem);
+  font-weight: 700;
   line-height: 1;
   text-decoration: none;
   transition: color 160ms ease, transform 160ms ease, background-color 160ms ease;
