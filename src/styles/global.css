@@ -770,9 +770,16 @@ pre,
 }
 
 .home-person-figure {
+  position: relative;
   display: grid;
   place-items: center;
   width: 100%;
+}
+
+.home-person-figure__hitbox {
+  position: absolute;
+  z-index: 1;
+  inset: 5% 20% 13%;
 }
 
 .home-person-figure > * {
@@ -788,11 +795,11 @@ pre,
   pointer-events: none;
 }
 
-.home-person-figure:hover .home-person-figure__hover-animation {
+.home-person-figure__hitbox:hover ~ .home-person-figure__hover-animation {
   opacity: 1;
 }
 
-.home-person-figure:hover .doodle-image {
+.home-person-figure__hitbox:hover ~ .doodle-image {
   opacity: 0;
 }
 
