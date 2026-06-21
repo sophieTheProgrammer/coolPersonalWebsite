@@ -48,7 +48,7 @@ const libraryPackets = artVolumes.map((volume) => ({
               <input class="form-field" name="processFile" type="file" accept="image/*" multiple data-process-file />
             </label>
             <div class="field-stack">
-              <span>Gallery size</span>
+              <span>Drawing layout</span>
               <label class="flex min-h-11 cursor-pointer items-center gap-2 rounded-md border border-[var(--color-line)] bg-white/60 p-3 text-sm font-bold hover:bg-white/80">
                 <input
                   class="shrink-0 accent-[var(--color-accent-2)]"
@@ -57,7 +57,7 @@ const libraryPackets = artVolumes.map((volume) => ({
                   value="true"
                   style="appearance: auto; width: 1.1rem; height: 1.1rem;"
                 />
-                Feature as a larger masonry tile
+                Make this drawing a larger masonry tile
               </label>
             </div>
             <label class="field-stack">
@@ -523,7 +523,7 @@ const libraryPackets = artVolumes.map((volume) => ({
       featuredInput.style.appearance = "auto";
       featuredInput.style.width = "1.1rem";
       featuredInput.style.height = "1.1rem";
-      featuredLabel.append(featuredInput, " Feature as larger masonry tile");
+      featuredLabel.append(featuredInput, " Make this drawing a larger masonry tile");
 
       controls.append(titleLabel, roleLabel, processLabel, featuredLabel);
       pageCard.append(includeLabel, image, meta, controls);
