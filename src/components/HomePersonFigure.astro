@@ -14,7 +14,7 @@ const base = import.meta.env.BASE_URL.endsWith("/")
 const hoverAnimationSrc = `${base}doodles/${hoverSrc.replace(/^\/?doodles\//, "")}`;
 ---
 
-<div class="home-person-figure" data-home-person-figure>
+<div class="home-person-figure">
   <DoodleImage
     src={src}
     reducedMotionSrc={reducedMotionSrc}
@@ -32,34 +32,3 @@ const hoverAnimationSrc = `${base}doodles/${hoverSrc.replace(/^\/?doodles\//, ""
     fetchpriority="high"
   />
 </div>
-
-<script>
-  document.querySelectorAll<HTMLElement>("[data-home-person-figure]").forEach((figure) => {
-    const image = figure.querySelector<HTMLImageElement>(".doodle-image img");
-    const canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d", { willReadFrequently: true });
-
-    canvas.width = 1;
-    canvas.height = 1;
-    if (context) context.imageSmoothingEnabled = false;
-
-    figure.addEventListener("pointermove", (event) => {
-      if (!image?.complete || !image.naturalWidth || !context) return;
-
-      const bounds = image.getBoundingClientRect();
-      const sourceX = ((event.clientX - bounds.left) / bounds.width) * image.naturalWidth;
-      const sourceY = ((event.clientY - bounds.top) / bounds.height) * image.naturalHeight;
-      const isInside = sourceX >= 0 && sourceY >= 0 && sourceX < image.naturalWidth && sourceY < image.naturalHeight;
-
-      context.clearRect(0, 0, 1, 1);
-      if (isInside) context.drawImage(image, sourceX, sourceY, 1, 1, 0, 0, 1, 1);
-
-      const isOpaque = isInside && context.getImageData(0, 0, 1, 1).data[3] > 24;
-      figure.classList.toggle("is-person-hovered", isOpaque);
-    });
-
-    figure.addEventListener("pointerleave", () => {
-      figure.classList.remove("is-person-hovered");
-    });
-  });
-</script>
