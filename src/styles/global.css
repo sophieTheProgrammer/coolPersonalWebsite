@@ -17,8 +17,8 @@
   --color-muted: color-mix(in srgb, var(--color-ink) 68%, var(--color-paper));
   --color-card: color-mix(in srgb, var(--color-paper) 96%, var(--color-ink));
   --color-line: rgb(var(--color-ink-rgb) / 0.14);
-  --border-cartoon: 0.12rem solid rgb(var(--color-ink-rgb) / 0.38);
-  --border-cartoon-light: 1px solid rgb(var(--color-ink-rgb) / 0.16);
+  --border-cartoon: 0.12rem solid var(--color-ink);
+  --border-cartoon-light: 1px solid var(--color-ink);
   --shadow-cartoon: 0.28rem 0.32rem 0 rgb(var(--color-ink-rgb) / 0.07);
 }
 
