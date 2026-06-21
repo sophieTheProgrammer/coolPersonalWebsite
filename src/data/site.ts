@@ -9,7 +9,7 @@ export const homeContent = {
   headline: "Hi! I'm Sophie, I keep cool stuff here",
   studioAvatarDoodle: {
     animated: "sophie-spinning.GIF",
-    clickAnimated: "click-spinning-sophie.gif",
+    hoverAnimated: "click-spinning-sophie.gif",
     still: "sophie-spinning-still.png",
   },
   socialLinks: [
