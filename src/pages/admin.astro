@@ -388,6 +388,7 @@ const libraryPackets = artVolumes.map((volume) => ({
   const packetMoveButtons = document.querySelectorAll<HTMLButtonElement>("[data-packet-move]");
   let managedPackets: ManagedPacket[] = [];
   let oldLibraryAssetPaths: string[] = [];
+  let pendingLibraryDelete = "";
 
   try {
     managedPackets = JSON.parse(libraryManager?.dataset.libraryPackets ?? "[]");
@@ -448,18 +449,19 @@ const libraryPackets = artVolumes.map((volume) => ({
   };
 
   const renderManagedDrawings = () => {
-    if (!libraryDrawings || !libraryPacketSelect) return;
-    const packet = currentPacket();
-    libraryDrawings.replaceChildren();
-    renderPacketEditor(packet);
+    try {
+      if (!libraryDrawings || !libraryPacketSelect) return;
+      const packet = currentPacket();
+      libraryDrawings.replaceChildren();
+      renderPacketEditor(packet);
 
-    if (!packet?.drawings.length) {
-      const empty = document.createElement("p");
-      empty.className = "text-sm font-semibold text-[var(--color-muted)]";
-      empty.textContent = packet ? "This packet has no drawings." : "No packets left.";
-      libraryDrawings.append(empty);
-    } else {
-      packet.drawings.forEach((drawing, index) => {
+      if (!packet?.drawings.length) {
+        const empty = document.createElement("p");
+        empty.className = "text-sm font-semibold text-[var(--color-muted)]";
+        empty.textContent = packet ? "This packet has no drawings." : "No packets left.";
+        libraryDrawings.append(empty);
+      } else {
+        packet.drawings.forEach((drawing, index) => {
         const card = document.createElement("article");
         card.className = "admin-library-drawing";
         card.dataset.libraryDrawingCard = drawing.slug;
@@ -570,7 +572,14 @@ const libraryPackets = artVolumes.map((volume) => ({
         remove.type = "button";
         remove.textContent = "Delete drawing";
         remove.addEventListener("click", () => {
-          if (!window.confirm(`Delete "${drawing.title}" from "${packet.title}"?`)) return;
+          const deleteKey = `drawing:${packet.slug}:${drawing.slug}`;
+          if (pendingLibraryDelete !== deleteKey) {
+            pendingLibraryDelete = deleteKey;
+            remove.textContent = "Click again to delete";
+            setLibraryOutput(`Click Delete drawing again to remove "${drawing.title}" from "${packet.title}".`);
+            return;
+          }
+          pendingLibraryDelete = "";
           packet.drawings = packet.drawings.filter((item) => item.slug !== drawing.slug);
           renderManagedDrawings();
           setLibraryOutput("Drawing removed from this packet. Save library changes to write it.");
@@ -580,15 +589,18 @@ const libraryPackets = artVolumes.map((volume) => ({
         card.append(previewFrame, fields, featuredLabel, imageUploadLabel, actions);
         libraryDrawings.append(card);
       });
-    }
+      }
 
-    const hasPacket = Boolean(packet);
-    if (deletePacketButton) deletePacketButton.disabled = !hasPacket;
-    saveLibraryButton?.toggleAttribute("disabled", !hasPacket);
-    packetMoveButtons.forEach((button) => {
-      const index = packet ? managedPackets.findIndex((item) => item.slug === packet.slug) : -1;
-      button.disabled = !packet || (button.dataset.packetMove === "up" ? index <= 0 : index >= managedPackets.length - 1);
-    });
+      const hasPacket = Boolean(packet);
+      if (deletePacketButton) deletePacketButton.disabled = !hasPacket;
+      saveLibraryButton?.toggleAttribute("disabled", !hasPacket);
+      packetMoveButtons.forEach((button) => {
+        const index = packet ? managedPackets.findIndex((item) => item.slug === packet.slug) : -1;
+        button.disabled = !packet || (button.dataset.packetMove === "up" ? index <= 0 : index >= managedPackets.length - 1);
+      });
+    } catch (error) {
+      setLibraryOutput(`Could not load art editor.\n${error}`);
+    }
   };
 
   const refreshPacketOptions = (preferredSlug = "") => {
@@ -633,8 +645,13 @@ const libraryPackets = artVolumes.map((volume) => ({
 
     const drawingSlugs = packet.drawings.map((drawing) => drawing.slug);
 
-    const description = `Delete "${packet.title}" and its ${packet.drawings.length} drawing${packet.drawings.length === 1 ? "" : "s"}? Shared drawings will remain in other packets.`;
-    if (!window.confirm(description)) return;
+    const deleteKey = `packet:${packet.slug}`;
+    if (pendingLibraryDelete !== deleteKey) {
+      pendingLibraryDelete = deleteKey;
+      libraryOutput.textContent = `Click Delete packet again to remove "${packet.title}" and its ${packet.drawings.length} drawing${packet.drawings.length === 1 ? "" : "s"}.`;
+      return;
+    }
+    pendingLibraryDelete = "";
 
     libraryOutput.textContent = "Removing art...";
     try {
