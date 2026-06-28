@@ -566,6 +566,8 @@ pre,
   }
 
   .art-packet-tile__media {
+    display: grid;
+    place-items: center;
     background: rgb(255 255 255 / 0.6);
   }
 
@@ -1246,7 +1248,7 @@ pre,
 .art-flow-grid > [data-art-flow-item] {
   min-width: 0;
   align-self: start;
-  padding-bottom: 1rem;
+  padding-bottom: 1.15rem;
 }
 
 .art-volume-card {
@@ -1458,24 +1460,40 @@ pre,
   padding: 0;
 }
 
+.packet-drawing-grid .art-lightbox-trigger {
+  aspect-ratio: 4 / 3;
+  min-height: clamp(16rem, 32vw, 26rem);
+}
+
+.packet-drawing-grid .art-lightbox-trigger > img:first-child,
+.packet-drawing-grid .art-packet-tile__hover-image {
+  width: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
 .art-lightbox {
-  width: min(94vw, 68rem);
-  max-height: 92vh;
+  width: min(96vw, 82rem);
+  max-height: 94dvh;
   border: 0;
-  border-radius: 1rem;
-  background: var(--color-card);
+  border-radius: 0.85rem;
+  background: rgb(var(--color-paper-rgb) / 0.96);
+  box-shadow: 0 2rem 5rem rgb(var(--color-ink-rgb) / 0.28);
   color: var(--color-ink);
+  margin: auto;
   padding: 0;
 }
 
 .art-lightbox::backdrop {
-  background: rgb(var(--color-ink-rgb) / 0.54);
+  background: rgb(var(--color-ink-rgb) / 0.62);
 }
 
 .art-lightbox__inner {
   display: grid;
-  gap: 1rem;
-  max-height: 92vh;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 0.85rem;
+  max-height: 94dvh;
   padding: clamp(0.85rem, 2vw, 1.2rem);
 }
 
@@ -1488,7 +1506,7 @@ pre,
 }
 
 .art-lightbox__toolbar h2 {
-  font-size: clamp(1.4rem, 4vw, 2.4rem);
+  font-size: clamp(1.2rem, 3vw, 2.05rem);
   line-height: 1;
 }
 
@@ -1498,18 +1516,24 @@ pre,
   gap: 0.5rem;
 }
 
-.art-lightbox img {
+.art-lightbox__image {
   display: block;
-  width: 100%;
-  max-height: calc(92vh - 7rem);
+  width: auto;
+  max-width: 100%;
+  max-height: min(74dvh, calc(94dvh - 9rem));
+  margin: auto;
+  border: 1px solid rgb(var(--color-ink-rgb) / 0.1);
+  border-radius: 0.55rem;
   object-fit: contain;
   background: white;
+  box-shadow: 0 1rem 2.5rem rgb(var(--color-ink-rgb) / 0.12);
 }
 
 .art-lightbox__strip {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(4.5rem, 1fr));
-  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(4rem, 5.5rem));
+  justify-content: center;
+  gap: 0.45rem;
 }
 
 .art-lightbox__thumb {
@@ -1526,7 +1550,7 @@ pre,
 
 .art-lightbox__thumb img {
   width: 100%;
-  height: 4.5rem;
+  height: 4rem;
   max-height: none;
   object-fit: contain;
 }
