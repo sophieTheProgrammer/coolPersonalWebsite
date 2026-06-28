@@ -10,9 +10,21 @@ const editableProcessStages = processStages as Array<(typeof processStages)[numb
 const libraryPackets = artVolumes.map((volume) => ({
   slug: volume.slug,
   title: volume.title,
+  subtitle: volume.subtitle,
+  year: volume.year,
+  note: volume.note,
   drawings: getArtworksForVolume(volume.slug).map((artwork) => ({
     slug: artwork.slug,
     title: artwork.title,
+    year: artwork.year,
+    medium: artwork.medium,
+    mood: artwork.mood,
+    status: artwork.status,
+    note: artwork.note,
+    palette: artwork.palette,
+    imageSrc: artwork.imageSrc ?? "",
+    featured: Boolean(artwork.featured),
+    processSrcs: artwork.processSrcs ?? (artwork.processSrc ? [artwork.processSrc] : []),
   })),
 }));
 ---
@@ -110,25 +122,32 @@ const libraryPackets = artVolumes.map((volume) => ({
           data-library-packets={JSON.stringify(libraryPackets)}
         >
           <div class="admin-panel__header">
-            <h2 class="text-3xl leading-none">Remove art</h2>
-            <p>Delete individual drawings from a packet, or remove the packet and its unshared drawings together.</p>
+            <h2 class="text-3xl leading-none">Art library editor</h2>
+            <p>Edit packet details, drawing notes, image paths, featured layout, and ordering.</p>
           </div>
 
-          <label class="field-stack">
-            <span>Packet</span>
-            <select class="form-field" data-library-packet>
-              {libraryPackets.map((packet) => <option value={packet.slug}>{packet.title}</option>)}
-            </select>
-          </label>
+          <div class="admin-library-toolbar">
+            <label class="field-stack">
+              <span>Packet</span>
+              <select class="form-field" data-library-packet>
+                {libraryPackets.map((packet) => <option value={packet.slug}>{packet.title}</option>)}
+              </select>
+            </label>
+            <div class="admin-library-actions">
+              <button class="site-button px-4 py-3" type="button" data-packet-move="up">Move packet up</button>
+              <button class="site-button px-4 py-3" type="button" data-packet-move="down">Move packet down</button>
+              <button class="site-button site-button--dark px-4 py-3" type="button" data-delete-packet>
+                Delete packet
+              </button>
+            </div>
+          </div>
 
-          <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3" data-library-drawings></div>
+          <div class="admin-field-grid" data-packet-editor></div>
+          <div class="admin-library-drawings" data-library-drawings></div>
 
           <div class="flex flex-wrap gap-2">
-            <button class="site-button px-4 py-3" type="button" data-delete-drawings>
-              Delete selected drawings
-            </button>
-            <button class="site-button site-button--dark px-4 py-3" type="button" data-delete-packet>
-              Delete entire packet
+            <button class="site-button site-button--dark px-4 py-3" type="button" data-save-library>
+              Save library changes
             </button>
           </div>
           <pre class="admin-output" data-library-output>Select a packet to manage its drawings.</pre>
@@ -256,7 +275,30 @@ const libraryPackets = artVolumes.map((volume) => ({
 
   pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerSrc;
 
-  const writerUrl = "http://localhost:8787";
+  const writerUrl = "http://127.0.0.1:8787";
+
+  const fetchWriterJson = async (path: string, init?: RequestInit) => {
+    let response: Response;
+
+    try {
+      response = await fetch(`${writerUrl}${path}`, init);
+    } catch {
+      throw new Error("Writer unavailable. Run npm run admin:server.");
+    }
+
+    let result: { ok?: boolean; error?: string; [key: string]: unknown };
+    try {
+      result = await response.json();
+    } catch {
+      throw new Error(`Writer returned ${response.status} without JSON.`);
+    }
+
+    if (!response.ok || !result.ok) {
+      throw new Error(result.error || `Writer returned ${response.status}.`);
+    }
+
+    return result;
+  };
 
   const slugify = (value: string) =>
     value
@@ -313,19 +355,39 @@ const libraryPackets = artVolumes.map((volume) => ({
     }
   };
 
+  type ManagedDrawing = {
+    slug: string;
+    title: string;
+    year: string;
+    medium: string;
+    mood: string;
+    status: "finished" | "study" | "wip";
+    note: string;
+    palette: string[];
+    imageSrc: string;
+    featured: boolean;
+    processSrcs: string[];
+  };
+
   type ManagedPacket = {
     slug: string;
     title: string;
-    drawings: Array<{ slug: string; title: string }>;
+    subtitle: string;
+    year: string;
+    note: string;
+    drawings: ManagedDrawing[];
   };
 
   const libraryManager = document.querySelector<HTMLElement>("[data-art-library-manager]");
   const libraryPacketSelect = document.querySelector<HTMLSelectElement>("[data-library-packet]");
+  const packetEditor = document.querySelector<HTMLElement>("[data-packet-editor]");
   const libraryDrawings = document.querySelector<HTMLElement>("[data-library-drawings]");
   const libraryOutput = document.querySelector<HTMLElement>("[data-library-output]");
-  const deleteDrawingsButton = document.querySelector<HTMLButtonElement>("[data-delete-drawings]");
+  const saveLibraryButton = document.querySelector<HTMLButtonElement>("[data-save-library]");
   const deletePacketButton = document.querySelector<HTMLButtonElement>("[data-delete-packet]");
+  const packetMoveButtons = document.querySelectorAll<HTMLButtonElement>("[data-packet-move]");
   let managedPackets: ManagedPacket[] = [];
+  let oldLibraryAssetPaths: string[] = [];
 
   try {
     managedPackets = JSON.parse(libraryManager?.dataset.libraryPackets ?? "[]");
@@ -333,10 +395,63 @@ const libraryPackets = artVolumes.map((volume) => ({
     managedPackets = [];
   }
 
+  const publicAssetSrc = (src: string) => src.startsWith("/")
+    ? `${import.meta.env.BASE_URL}${src.slice(1)}`
+    : src;
+
+  const currentPacket = () =>
+    managedPackets.find((item) => item.slug === libraryPacketSelect?.value);
+
+  const setLibraryOutput = (message: string) => {
+    if (libraryOutput) libraryOutput.textContent = message;
+  };
+
+  const createLibraryField = (
+    labelText: string,
+    value: string,
+    onInput: (value: string) => void,
+    multiline = false,
+  ) => {
+    const label = document.createElement("label");
+    label.className = "field-stack";
+    const span = document.createElement("span");
+    span.textContent = labelText;
+    const input = multiline ? document.createElement("textarea") : document.createElement("input");
+    input.className = multiline ? "form-field form-field--textarea" : "form-field";
+    input.value = value;
+    input.addEventListener("input", () => onInput(input.value));
+    label.append(span, input);
+    return label;
+  };
+
+  const renderPacketEditor = (packet?: ManagedPacket) => {
+    if (!packetEditor) return;
+    packetEditor.replaceChildren();
+
+    if (!packet) return;
+
+    packetEditor.append(
+      createLibraryField("Packet title", packet.title, (value) => {
+        packet.title = value;
+        refreshPacketOptions(packet.slug);
+      }),
+      createLibraryField("Subtitle", packet.subtitle, (value) => {
+        packet.subtitle = value;
+      }),
+      createLibraryField("Year", packet.year, (value) => {
+        packet.year = value;
+      }),
+      createLibraryField("Packet note", packet.note, (value) => {
+        packet.note = value;
+      }, true),
+    );
+  };
+
   const renderManagedDrawings = () => {
     if (!libraryDrawings || !libraryPacketSelect) return;
-    const packet = managedPackets.find((item) => item.slug === libraryPacketSelect.value);
+    const packet = currentPacket();
     libraryDrawings.replaceChildren();
+    renderPacketEditor(packet);
 
     if (!packet?.drawings.length) {
       const empty = document.createElement("p");
@@ -344,21 +459,136 @@ const libraryPackets = artVolumes.map((volume) => ({
       empty.textContent = packet ? "This packet has no drawings." : "No packets left.";
       libraryDrawings.append(empty);
     } else {
-      packet.drawings.forEach((drawing) => {
-        const label = document.createElement("label");
-        label.className = "flex items-center gap-2 rounded-md border border-[var(--color-line)] bg-white/60 p-3 text-sm font-bold";
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.value = drawing.slug;
-        checkbox.dataset.libraryDrawing = "";
-        label.append(checkbox, drawing.title);
-        libraryDrawings.append(label);
+      packet.drawings.forEach((drawing, index) => {
+        const card = document.createElement("article");
+        card.className = "admin-library-drawing";
+        card.dataset.libraryDrawingCard = drawing.slug;
+
+        const previewFrame = document.createElement("div");
+        previewFrame.className = "media-frame admin-library-drawing__preview";
+        if (drawing.imageSrc) {
+          const image = document.createElement(drawing.imageSrc.toLowerCase().endsWith(".pdf") ? "iframe" : "img");
+          image.src = publicAssetSrc(drawing.imageSrc);
+          image.title = drawing.title;
+          image.setAttribute("alt", drawing.title);
+          previewFrame.replaceChildren(image);
+        } else {
+          const empty = document.createElement("span");
+          empty.textContent = "No image";
+          previewFrame.append(empty);
+        }
+
+        const fields = document.createElement("div");
+        fields.className = "admin-library-drawing__fields";
+        fields.append(
+          createLibraryField("Drawing title", drawing.title, (value) => {
+            drawing.title = value;
+          }),
+          createLibraryField("Main image path", drawing.imageSrc, (value) => {
+            drawing.imageSrc = value;
+          }),
+          createLibraryField("Description", drawing.note, (value) => {
+            drawing.note = value;
+          }, true),
+          createLibraryField("Process image paths", drawing.processSrcs.join("\n"), (value) => {
+            drawing.processSrcs = value.split(/[\n,]+/).map((src) => src.trim()).filter(Boolean);
+          }, true),
+        );
+
+        const featuredLabel = document.createElement("label");
+        featuredLabel.className = "admin-library-check";
+        const featuredInput = document.createElement("input");
+        featuredInput.type = "checkbox";
+        featuredInput.checked = drawing.featured;
+        featuredInput.addEventListener("change", () => {
+          drawing.featured = featuredInput.checked;
+        });
+        featuredLabel.append(featuredInput, " Featured");
+
+        const imageUploadLabel = document.createElement("label");
+        imageUploadLabel.className = "field-stack";
+        const imageUploadText = document.createElement("span");
+        imageUploadText.textContent = "Replace image";
+        const imageUpload = document.createElement("input");
+        imageUpload.className = "form-field";
+        imageUpload.type = "file";
+        imageUpload.accept = "image/*,.pdf";
+        imageUpload.addEventListener("change", async () => {
+          const file = imageUpload.files?.[0];
+          if (!file) return;
+
+          const previousImage = drawing.imageSrc;
+          const body = new FormData();
+          body.append("file", file);
+          setLibraryOutput(`Uploading replacement for ${drawing.title}...`);
+
+          try {
+            const result = await fetchWriterJson("/api/upload", {
+              method: "POST",
+              body,
+            }) as { file?: { src: string } };
+            if (!result.file?.src) throw new Error("Upload did not return a file path.");
+            if (previousImage && previousImage !== result.file.src) {
+              oldLibraryAssetPaths = [...new Set([...oldLibraryAssetPaths, previousImage])];
+            }
+            drawing.imageSrc = result.file.src;
+            setLibraryOutput(`Updated image path for ${drawing.title}. Save library changes to write it.`);
+            renderManagedDrawings();
+          } catch (error) {
+            setLibraryOutput(`Could not replace image.\n${error}`);
+          }
+        });
+        imageUploadLabel.append(imageUploadText, imageUpload);
+
+        const actions = document.createElement("div");
+        actions.className = "admin-library-actions";
+
+        const moveUp = document.createElement("button");
+        moveUp.className = "site-button";
+        moveUp.type = "button";
+        moveUp.textContent = "Move up";
+        moveUp.disabled = index === 0;
+        moveUp.addEventListener("click", () => {
+          if (index === 0) return;
+          packet.drawings.splice(index - 1, 0, packet.drawings.splice(index, 1)[0]);
+          renderManagedDrawings();
+        });
+
+        const moveDown = document.createElement("button");
+        moveDown.className = "site-button";
+        moveDown.type = "button";
+        moveDown.textContent = "Move down";
+        moveDown.disabled = index === packet.drawings.length - 1;
+        moveDown.addEventListener("click", () => {
+          if (index >= packet.drawings.length - 1) return;
+          packet.drawings.splice(index + 1, 0, packet.drawings.splice(index, 1)[0]);
+          renderManagedDrawings();
+        });
+
+        const remove = document.createElement("button");
+        remove.className = "site-button site-button--dark";
+        remove.type = "button";
+        remove.textContent = "Delete drawing";
+        remove.addEventListener("click", () => {
+          if (!window.confirm(`Delete "${drawing.title}" from "${packet.title}"?`)) return;
+          packet.drawings = packet.drawings.filter((item) => item.slug !== drawing.slug);
+          renderManagedDrawings();
+          setLibraryOutput("Drawing removed from this packet. Save library changes to write it.");
+        });
+
+        actions.append(moveUp, moveDown, remove);
+        card.append(previewFrame, fields, featuredLabel, imageUploadLabel, actions);
+        libraryDrawings.append(card);
       });
     }
 
     const hasPacket = Boolean(packet);
-    if (deleteDrawingsButton) deleteDrawingsButton.disabled = !hasPacket || !packet?.drawings.length;
     if (deletePacketButton) deletePacketButton.disabled = !hasPacket;
+    saveLibraryButton?.toggleAttribute("disabled", !hasPacket);
+    packetMoveButtons.forEach((button) => {
+      const index = packet ? managedPackets.findIndex((item) => item.slug === packet.slug) : -1;
+      button.disabled = !packet || (button.dataset.packetMove === "up" ? index <= 0 : index >= managedPackets.length - 1);
+    });
   };
 
   const refreshPacketOptions = (preferredSlug = "") => {
@@ -372,53 +602,72 @@ const libraryPackets = artVolumes.map((volume) => ({
     renderManagedDrawings();
   };
 
-  const deleteLibraryItems = async (mode: "drawings" | "packet") => {
+  const saveLibraryChanges = async () => {
+    setLibraryOutput("Saving art library...");
+
+    try {
+      const result = await fetchWriterJson("/api/art-library/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ packets: managedPackets }),
+      }) as { result?: { removedArtworkSlugs?: string[]; oldImageSrcs?: string[] } };
+      const oldPaths = [...new Set([
+        ...oldLibraryAssetPaths,
+        ...(result.result?.oldImageSrcs ?? []),
+      ])];
+      oldLibraryAssetPaths = [];
+      setLibraryOutput(
+        `Saved ${managedPackets.length} packet${managedPackets.length === 1 ? "" : "s"}.`
+        + `${result.result?.removedArtworkSlugs?.length ? `\nRemoved artwork entries: ${result.result.removedArtworkSlugs.join(", ")}` : ""}`
+        + `${oldPaths.length ? `\nOld files kept:\n${oldPaths.join("\n")}` : ""}`,
+      );
+    } catch (error) {
+      setLibraryOutput(`Could not save art library.\n${error}`);
+    }
+  };
+
+  const deleteLibraryItems = async (mode: "packet") => {
     if (!libraryPacketSelect || !libraryOutput) return;
-    const packet = managedPackets.find((item) => item.slug === libraryPacketSelect.value);
+    const packet = currentPacket();
     if (!packet) return;
 
-    const drawingSlugs = mode === "drawings"
-      ? Array.from(document.querySelectorAll<HTMLInputElement>("[data-library-drawing]:checked")).map((input) => input.value)
-      : packet.drawings.map((drawing) => drawing.slug);
+    const drawingSlugs = packet.drawings.map((drawing) => drawing.slug);
 
-    if (mode === "drawings" && drawingSlugs.length === 0) {
-      libraryOutput.textContent = "Choose at least one drawing first.";
-      return;
-    }
-
-    const description = mode === "packet"
-      ? `Delete “${packet.title}” and its ${packet.drawings.length} drawing${packet.drawings.length === 1 ? "" : "s"}? Shared drawings will remain in other packets.`
-      : `Delete ${drawingSlugs.length} selected drawing${drawingSlugs.length === 1 ? "" : "s"} from “${packet.title}”?`;
+    const description = `Delete "${packet.title}" and its ${packet.drawings.length} drawing${packet.drawings.length === 1 ? "" : "s"}? Shared drawings will remain in other packets.`;
     if (!window.confirm(description)) return;
 
     libraryOutput.textContent = "Removing art...";
     try {
-      const response = await fetch(`${writerUrl}/api/art-library/delete`, {
+      const result = await fetchWriterJson("/api/art-library/delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mode, packetSlug: packet.slug, drawingSlugs }),
-      });
-      const result = await response.json();
-      if (!result.ok) throw new Error(result.error);
+      }) as { result?: { removedFromPacket?: string[] } };
 
-      if (mode === "packet") {
-        managedPackets = managedPackets.filter((item) => item.slug !== packet.slug);
-        packetSelect?.querySelector(`option[value="${CSS.escape(packet.slug)}"]`)?.remove();
-        refreshPacketOptions();
-      } else {
-        packet.drawings = packet.drawings.filter((drawing) => !drawingSlugs.includes(drawing.slug));
-        renderManagedDrawings();
-      }
+      managedPackets = managedPackets.filter((item) => item.slug !== packet.slug);
+      packetSelect?.querySelector(`option[value="${CSS.escape(packet.slug)}"]`)?.remove();
+      refreshPacketOptions();
 
-      libraryOutput.textContent = `Removed ${result.result.removedFromPacket.length} drawing${result.result.removedFromPacket.length === 1 ? "" : "s"}${mode === "packet" ? " and the packet" : ""}.`;
+      libraryOutput.textContent = `Removed ${result.result?.removedFromPacket?.length ?? 0} drawing${result.result?.removedFromPacket?.length === 1 ? "" : "s"} and the packet.`;
     } catch (error) {
       libraryOutput.textContent = `Could not remove art.\n${error}`;
     }
   };
 
   libraryPacketSelect?.addEventListener("change", renderManagedDrawings);
-  deleteDrawingsButton?.addEventListener("click", () => deleteLibraryItems("drawings"));
   deletePacketButton?.addEventListener("click", () => deleteLibraryItems("packet"));
+  saveLibraryButton?.addEventListener("click", saveLibraryChanges);
+  packetMoveButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const packet = currentPacket();
+      if (!packet) return;
+      const index = managedPackets.findIndex((item) => item.slug === packet.slug);
+      const nextIndex = button.dataset.packetMove === "up" ? index - 1 : index + 1;
+      if (nextIndex < 0 || nextIndex >= managedPackets.length) return;
+      managedPackets.splice(nextIndex, 0, managedPackets.splice(index, 1)[0]);
+      refreshPacketOptions(packet.slug);
+    });
+  });
   renderManagedDrawings();
 
   const renderPdfPages = async (file: File) => {
@@ -670,12 +919,10 @@ const libraryPackets = artVolumes.map((volume) => ({
     writeOutput("Uploading to local writer...");
 
     try {
-      const response = await fetch(`${writerUrl}/api/upload`, {
+      const result = await fetchWriterJson("/api/upload", {
         method: "POST",
         body: data,
-      });
-      const result = await response.json();
-      if (!result.ok) throw new Error(result.error);
+      }) as { file: { src: string; kind: "image" | "pdf" }; processFiles?: Array<{ src: string; kind: "image" | "pdf" }> };
 
       uploadedFile = result.file;
       uploadedProcessFiles = result.processFiles ?? [];
@@ -727,7 +974,7 @@ const libraryPackets = artVolumes.map((volume) => ({
             };
           });
 
-        const response = await fetch(`${writerUrl}/api/pdf-pages`, {
+        const result = await fetchWriterJson("/api/pdf-pages", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -737,9 +984,7 @@ const libraryPackets = artVolumes.map((volume) => ({
             note: data.get("note"),
             pages,
           }),
-        });
-        const result = await response.json();
-        if (!result.ok) throw new Error(result.error);
+        }) as { artwork: { packetSlug: string; packetTitle?: string; createdPacket?: unknown; slugs: string[] } };
 
         selectPacket(result.artwork.packetSlug, result.artwork.packetTitle);
         if (result.artwork.createdPacket && newPacketInput) {
@@ -750,7 +995,7 @@ const libraryPackets = artVolumes.map((volume) => ({
         return;
       }
 
-      const response = await fetch(`${writerUrl}/api/artwork`, {
+      const result = await fetchWriterJson("/api/artwork", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -765,9 +1010,7 @@ const libraryPackets = artVolumes.map((volume) => ({
           featured: data.get("featured") === "true",
           kind: uploadedFile.kind,
         }),
-      });
-      const result = await response.json();
-      if (!result.ok) throw new Error(result.error);
+      }) as { artwork: { slug: string } };
 
       writeOutput(`Saved drawing: ${result.artwork.slug}\nRun npm run build or refresh dev server to see it.`);
     } catch (error) {
@@ -781,9 +1024,6 @@ const libraryPackets = artVolumes.map((volume) => ({
   const processSliderTitle = document.querySelector<HTMLInputElement>("[data-process-slider-title]");
   const addProcessStageButton = document.querySelector<HTMLButtonElement>("[data-add-process-stage]");
   const defaultStagePalette = ["#fff8ed", "#d94f68", "#247d70"];
-  const publicAssetSrc = (src: string) => src.startsWith("/")
-    ? `${import.meta.env.BASE_URL}${src.slice(1)}`
-    : src;
 
   const createProcessStageCard = () => {
     const stage = document.createElement("article");
@@ -871,9 +1111,10 @@ const libraryPackets = artVolumes.map((volume) => ({
     if (processOutput) processOutput.textContent = "Saving process slider...";
 
     try {
-      const response = await fetch(`${writerUrl}/api/process-slider`, { method: "POST", body });
-      const result = await response.json();
-      if (!result.ok) throw new Error(result.error);
+      const result = await fetchWriterJson("/api/process-slider", { method: "POST", body }) as {
+        title: string;
+        stages: Array<{ title: string; imageSrc?: string }>;
+      };
 
       cards.forEach((card, index) => {
         const saved = result.stages[index];
@@ -950,9 +1191,9 @@ const libraryPackets = artVolumes.map((volume) => ({
     }
 
     try {
-      const response = await fetch(`${writerUrl}/api/youtube-metadata?url=${encodeURIComponent(value)}`);
-      const result = await response.json();
-      if (!result.ok) throw new Error(result.error);
+      const result = await fetchWriterJson(`/api/youtube-metadata?url=${encodeURIComponent(value)}`) as {
+        video: { youtubeId: string; title?: string; description?: string };
+      };
 
       if (trickYoutube) trickYoutube.value = result.video.youtubeId;
       if (trickTitle) trickTitle.value = result.video.title || "";
@@ -1011,13 +1252,11 @@ const libraryPackets = artVolumes.map((volume) => ({
     output.textContent = "Saving clip to the skill toy log...";
 
     try {
-      const response = await fetch(`${writerUrl}/api/skilltoy-clip`, {
+      const result = await fetchWriterJson("/api/skilltoy-clip", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, toySlug, title, date, tag, youtubeId, notes }),
-      });
-      const result = await response.json();
-      if (!result.ok) throw new Error(result.error);
+      }) as { clip: { title: string; toySlug: string } };
 
       output.textContent = `Saved ${result.clip.title} to ${result.clip.toySlug}. Refresh the skill toys page to see it.`;
       form.reset();

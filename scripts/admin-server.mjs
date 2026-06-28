@@ -274,6 +274,179 @@ const createArtVolume = async ({ title, subtitle, note }) => {
   return { slug, title: packetTitle };
 };
 
+const objectBlocks = (body) => body.match(/  \{\n[\s\S]*?\n  \},/g) ?? [];
+
+const blockValue = (block, field, fallback) => {
+  const match = block.match(new RegExp(`\\n\\s*${field}:\\s*([\\s\\S]*?),\\n`));
+  if (!match) return fallback;
+
+  try {
+    return Function(`"use strict"; return (${match[1]});`)();
+  } catch {
+    return fallback;
+  }
+};
+
+const blockSlug = (block) => blockValue(block, "slug", "");
+
+const blockDrawingSlugs = (block) =>
+  [...(block.match(/drawingSlugs:\s*\[([\s\S]*?)\]/)?.[1] ?? "").matchAll(/"([^"]+)"/g)]
+    .map((match) => match[1]);
+
+const parseArtworkBlock = (block) => ({
+  title: String(blockValue(block, "title", "")),
+  slug: String(blockValue(block, "slug", "")),
+  year: String(blockValue(block, "year", String(new Date().getFullYear()))),
+  medium: String(blockValue(block, "medium", "Uploaded scan")),
+  mood: String(blockValue(block, "mood", "study")),
+  status: String(blockValue(block, "status", "study")),
+  note: String(blockValue(block, "note", "")),
+  palette: Array.isArray(blockValue(block, "palette", []))
+    ? blockValue(block, "palette", []).map(String).slice(0, 3)
+    : ["#fbfaf7", "#1e1b2e", "#d8d3c8"],
+  imageSrc: String(blockValue(block, "imageSrc", "")),
+  featured: Boolean(block.match(/\n\s*featured:\s*true,\n/)),
+  processSrcs: Array.isArray(blockValue(block, "processSrcs", undefined))
+    ? blockValue(block, "processSrcs", []).map(String)
+    : String(blockValue(block, "processSrc", "") || "").trim()
+      ? [String(blockValue(block, "processSrc", ""))]
+      : [],
+});
+
+const serializeArtwork = (artwork) => {
+  const imageSrc = String(artwork.imageSrc ?? "").trim();
+  const processSrcs = (Array.isArray(artwork.processSrcs) ? artwork.processSrcs : [])
+    .map((src) => String(src).trim())
+    .filter((src) => src.startsWith("/art/"));
+
+  return `  {
+    title: ${JSON.stringify(String(artwork.title ?? "").trim() || "Untitled drawing")},
+    slug: ${JSON.stringify(String(artwork.slug ?? "").trim())},
+    year: ${JSON.stringify(String(artwork.year ?? "").trim() || String(new Date().getFullYear()))},
+    medium: ${JSON.stringify(String(artwork.medium ?? "").trim() || "Uploaded scan")},
+    mood: ${JSON.stringify(String(artwork.mood ?? "").trim() || "study")},
+    status: ${JSON.stringify(["finished", "study", "wip"].includes(artwork.status) ? artwork.status : "study")},
+    note: ${JSON.stringify(String(artwork.note ?? "").trim())},
+    palette: ${JSON.stringify(Array.isArray(artwork.palette) && artwork.palette.length >= 3 ? artwork.palette.slice(0, 3) : ["#fbfaf7", "#1e1b2e", "#d8d3c8"])},${imageSrc ? `\n    imageSrc: ${JSON.stringify(imageSrc)},` : ""}${artwork.featured ? "\n    featured: true," : ""}${processSrcs.length ? `\n    processSrcs: ${JSON.stringify(processSrcs)},` : ""}
+  },`;
+};
+
+const serializeVolume = (packet) => {
+  const drawingSlugs = Array.isArray(packet.drawingSlugs) ? packet.drawingSlugs : [];
+  const drawingList = drawingSlugs.length
+    ? `[\n${drawingSlugs.map((slug) => `      ${JSON.stringify(slug)},`).join("\n")}\n    ]`
+    : "[]";
+
+  return `  {
+    title: ${JSON.stringify(String(packet.title ?? "").trim() || "Untitled packet")},
+    slug: ${JSON.stringify(String(packet.slug ?? "").trim())},
+    subtitle: ${JSON.stringify(String(packet.subtitle ?? "").trim())},
+    year: ${JSON.stringify(String(packet.year ?? "").trim() || String(new Date().getFullYear()))},
+    note: ${JSON.stringify(String(packet.note ?? "").trim())},
+    drawingSlugs: ${drawingList},
+  },`;
+};
+
+const saveArtLibraryItems = async (entry) => {
+  const packets = Array.isArray(entry.packets) ? entry.packets : [];
+  if (packets.length === 0) throw new Error("At least one packet is required.");
+
+  const source = await readFile(artDataFile, "utf8");
+  const artworkSection = source.match(/(export const artworks: Artwork\[] = \[\n)([\s\S]*?)(\n\];\n\nexport const artVolumes)/);
+  const volumeSection = source.match(/(export const artVolumes: ArtVolume\[] = \[\n)([\s\S]*?)(\n\];\n\nexport const currentArtwork)/);
+
+  if (!artworkSection || !volumeSection) {
+    throw new Error("Could not read the art library data.");
+  }
+
+  const existingArtworks = new Map(
+    objectBlocks(artworkSection[2]).map((block) => {
+      const artwork = parseArtworkBlock(block);
+      return [artwork.slug, artwork];
+    }),
+  );
+  const seenPackets = new Set();
+  const seenDrawings = new Set();
+  const nextPackets = [];
+  const nextArtworks = new Map();
+  const oldImageSrcs = new Set();
+
+  for (const packet of packets) {
+    const packetSlug = String(packet.slug ?? "").trim();
+    if (!packetSlug) throw new Error("Every packet needs a slug.");
+    if (seenPackets.has(packetSlug)) throw new Error(`Duplicate packet slug: ${packetSlug}`);
+    seenPackets.add(packetSlug);
+
+    const drawingSlugs = [];
+    for (const drawing of Array.isArray(packet.drawings) ? packet.drawings : []) {
+      const drawingSlug = String(drawing.slug ?? "").trim();
+      if (!drawingSlug) throw new Error(`A drawing in ${packetSlug} is missing a slug.`);
+
+      const existing = existingArtworks.get(drawingSlug);
+      if (!existing) throw new Error(`Unknown drawing slug: ${drawingSlug}`);
+
+      if (!seenDrawings.has(drawingSlug)) {
+        const nextArtwork = {
+          ...existing,
+          title: String(drawing.title ?? existing.title).trim() || existing.title,
+          year: String(drawing.year ?? existing.year).trim() || existing.year,
+          medium: String(drawing.medium ?? existing.medium).trim() || existing.medium,
+          mood: String(drawing.mood ?? existing.mood).trim() || existing.mood,
+          status: ["finished", "study", "wip"].includes(drawing.status) ? drawing.status : existing.status,
+          note: String(drawing.note ?? existing.note).trim(),
+          palette: Array.isArray(drawing.palette) && drawing.palette.length >= 3
+            ? drawing.palette.slice(0, 3).map(String)
+            : existing.palette,
+          imageSrc: String(drawing.imageSrc ?? existing.imageSrc).trim(),
+          featured: Boolean(drawing.featured),
+          processSrcs: (Array.isArray(drawing.processSrcs) ? drawing.processSrcs : existing.processSrcs)
+            .map((src) => String(src).trim())
+            .filter((src) => src.startsWith("/art/")),
+        };
+
+        if (existing.imageSrc && existing.imageSrc !== nextArtwork.imageSrc) {
+          oldImageSrcs.add(existing.imageSrc);
+        }
+        existing.processSrcs
+          .filter((src) => !nextArtwork.processSrcs.includes(src))
+          .forEach((src) => oldImageSrcs.add(src));
+        nextArtworks.set(drawingSlug, nextArtwork);
+        seenDrawings.add(drawingSlug);
+      }
+
+      drawingSlugs.push(drawingSlug);
+    }
+
+    nextPackets.push({
+      title: String(packet.title ?? "").trim() || "Untitled packet",
+      slug: packetSlug,
+      subtitle: String(packet.subtitle ?? "").trim(),
+      year: String(packet.year ?? "").trim() || String(new Date().getFullYear()),
+      note: String(packet.note ?? "").trim(),
+      drawingSlugs,
+    });
+  }
+
+  const removedArtworkSlugs = [...existingArtworks.keys()].filter((slug) => !nextArtworks.has(slug));
+  let next = source.replace(
+    artworkSection[0],
+    `${artworkSection[1]}${[...nextArtworks.values()].map(serializeArtwork).join("\n")}${artworkSection[3]}`,
+  );
+  next = next.replace(
+    volumeSection[0],
+    `${volumeSection[1]}${nextPackets.map(serializeVolume).join("\n")}${volumeSection[3]}`,
+  );
+
+  await writeFile(artDataFile, next);
+
+  return {
+    packets: nextPackets.length,
+    artworks: nextArtworks.size,
+    removedArtworkSlugs,
+    oldImageSrcs: [...oldImageSrcs],
+  };
+};
+
 const createArtwork = async (entry) => {
   const packetSlug = String(entry.packetSlug ?? "").trim();
   const kind = String(entry.kind ?? "").trim();
@@ -448,12 +621,6 @@ const deleteArtLibraryItems = async (entry) => {
     throw new Error("Could not read the art library data.");
   }
 
-  const objectBlocks = (body) => body.match(/  \{\n[\s\S]*?\n  \},/g) ?? [];
-  const blockSlug = (block) => block.match(/\n\s*slug:\s*"([^"]+)"/)?.[1] ?? "";
-  const blockDrawingSlugs = (block) =>
-    [...(block.match(/drawingSlugs:\s*\[([\s\S]*?)\]/)?.[1] ?? "").matchAll(/"([^"]+)"/g)]
-      .map((match) => match[1]);
-
   const artworkBlocks = objectBlocks(artworkSection[2]);
   const volumeBlocks = objectBlocks(volumeSection[2]);
   const targetVolume = volumeBlocks.find((block) => blockSlug(block) === packetSlug);
@@ -617,6 +784,13 @@ createServer(async (request, response) => {
       const body = await readBody(request);
       const entry = JSON.parse(body.toString("utf8"));
       send(response, 200, { ok: true, result: await deleteArtLibraryItems(entry) });
+      return;
+    }
+
+    if (request.method === "POST" && url.pathname === "/api/art-library/save") {
+      const body = await readBody(request);
+      const entry = JSON.parse(body.toString("utf8"));
+      send(response, 200, { ok: true, result: await saveArtLibraryItems(entry) });
       return;
     }
 
