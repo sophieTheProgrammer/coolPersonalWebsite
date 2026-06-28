@@ -1310,7 +1310,15 @@ pre,
 
 .art-volume-card__body {
   display: grid;
+  gap: 0.45rem;
   padding: clamp(1rem, 2.5vw, 1.3rem);
+}
+
+.art-volume-card__date {
+  color: var(--color-muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
 }
 
 .art-volume-card__body h2 {
