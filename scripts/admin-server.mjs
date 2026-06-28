@@ -9,6 +9,8 @@ const artDataFile = new URL("src/data/artworks.ts", root);
 const skillToyDataFile = new URL("src/data/skillToys.ts", root);
 const port = Number(process.env.ADMIN_PORT ?? 8787);
 const host = process.env.ADMIN_HOST ?? "127.0.0.1";
+const imageUploadExtensions = new Set([".jpg", ".jpeg", ".png", ".apng", ".gif", ".webp", ".avif"]);
+const uploadExtensions = new Set([...imageUploadExtensions, ".pdf"]);
 
 const send = (response, status, body) => {
   response.writeHead(status, {
@@ -150,10 +152,9 @@ const parseMultipart = (body, contentType) => {
 const saveUpload = async (file) => {
   const original = file.filename || "upload";
   const extension = extname(original).toLowerCase();
-  const allowed = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp", ".pdf"]);
 
-  if (!allowed.has(extension)) {
-    throw new Error("Only image and PDF uploads are supported.");
+  if (!uploadExtensions.has(extension)) {
+    throw new Error("Only JPG, PNG/APNG, GIF, WebP, AVIF, and PDF uploads are supported.");
   }
 
   await mkdir(artDir, { recursive: true });
@@ -165,7 +166,7 @@ const saveUpload = async (file) => {
   return {
     filename,
     src: `/art/${filename}`,
-    kind: extension === ".pdf" ? "pdf" : "image",
+    kind: imageUploadExtensions.has(extension) ? "image" : "pdf",
   };
 };
 

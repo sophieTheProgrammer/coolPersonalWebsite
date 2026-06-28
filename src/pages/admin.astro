@@ -47,17 +47,17 @@ const libraryPackets = artVolumes.map((volume) => ({
         <form class="admin-card admin-panel site-card admin-panel--art" data-art-upload-form>
           <div class="admin-panel__header">
             <h2 class="text-3xl leading-none">Upload art</h2>
-            <p>PDF pages can be renamed, paired, and saved into a new or existing packet.</p>
+            <p>PDF pages can be renamed, paired, and saved into a new or existing packet. GIFs and APNGs stay animated.</p>
           </div>
 
           <div class="admin-field-grid">
             <label class="field-stack">
               <span>Image or PDF</span>
-              <input class="form-field" name="file" type="file" accept="image/*,.pdf" required />
+              <input class="form-field" name="file" type="file" accept="image/*,.apng,.pdf" required />
             </label>
             <label class="field-stack">
               <span>Process/hover images</span>
-              <input class="form-field" name="processFile" type="file" accept="image/*" multiple data-process-file />
+              <input class="form-field" name="processFile" type="file" accept="image/*,.apng" multiple data-process-file />
             </label>
             <div class="field-stack">
               <span>Drawing layout</span>
@@ -179,7 +179,7 @@ const libraryPackets = artVolumes.map((volume) => ({
                     <input type="hidden" value={stage.imageSrc ?? ""} data-stage-image-src />
                     <label class="field-stack">
                       <span>Stage image</span>
-                      <input class="form-field" type="file" accept="image/*" data-stage-file />
+                      <input class="form-field" type="file" accept="image/*,.apng" data-stage-file />
                     </label>
                     <label class="field-stack">
                       <span>Stage title</span>
@@ -517,7 +517,7 @@ const libraryPackets = artVolumes.map((volume) => ({
         const imageUpload = document.createElement("input");
         imageUpload.className = "form-field";
         imageUpload.type = "file";
-        imageUpload.accept = "image/*,.pdf";
+        imageUpload.accept = "image/*,.apng,.pdf";
         imageUpload.addEventListener("change", async () => {
           const file = imageUpload.files?.[0];
           if (!file) return;
@@ -1055,7 +1055,7 @@ const libraryPackets = artVolumes.map((volume) => ({
       <input type="hidden" value="" data-stage-image-src>
       <label class="field-stack">
         <span>Stage image</span>
-        <input class="form-field" type="file" accept="image/*" data-stage-file>
+        <input class="form-field" type="file" accept="image/*,.apng" data-stage-file>
       </label>
       <label class="field-stack">
         <span>Stage title</span>
