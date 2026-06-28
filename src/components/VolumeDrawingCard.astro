@@ -19,11 +19,15 @@ const processSources = (artwork.processSrcs?.length ? artwork.processSrcs : artw
   .map((src) => src.startsWith("/") ? `${base}${src.slice(1)}` : src);
 const processSrc = processSources[0];
 const isPdf = mediaSrc?.toLowerCase().endsWith(".pdf");
+const isFeatured = Boolean(artwork.featured);
 ---
 
-<article class="art-packet-tile group bg-[var(--color-card)] transition hover:-translate-y-1 hover:shadow-lg">
+<article
+  class="art-packet-tile group bg-[var(--color-card)] transition hover:-translate-y-1 hover:shadow-lg"
+  data-art-featured={isFeatured ? "" : undefined}
+>
   <div
-    class="relative overflow-hidden rounded-t-[inherit]"
+    class="art-packet-tile__media relative overflow-hidden rounded-t-[inherit]"
     style={hasImage ? undefined : `background: linear-gradient(135deg, ${first}, ${second} 58%, ${third});`}
   >
     {
@@ -36,7 +40,7 @@ const isPdf = mediaSrc?.toLowerCase().endsWith(".pdf");
         />
       ) : mediaSrc ? (
         <button
-          class="art-lightbox-trigger group/lightbox block w-full cursor-zoom-in text-left"
+          class="art-lightbox-trigger group/lightbox flex w-full cursor-zoom-in items-center justify-center text-left"
           type="button"
           data-art-lightbox-trigger
           data-art-src={mediaSrc}
@@ -55,7 +59,7 @@ const isPdf = mediaSrc?.toLowerCase().endsWith(".pdf");
           {
             processSrc && (
               <img
-                class="absolute inset-0 h-full w-full object-contain opacity-0 transition duration-300 group-hover:opacity-100 group-focus-within:opacity-100 group-hover/lightbox:opacity-100 group-focus/lightbox:opacity-100"
+                class="art-packet-tile__hover-image absolute inset-0 h-full w-full object-contain opacity-0 transition duration-300 group-hover:opacity-100 group-focus-within:opacity-100 group-hover/lightbox:opacity-100 group-focus/lightbox:opacity-100"
                 src={processSrc}
                 alt={`${artwork.title} process sketch`}
                 loading="lazy"
@@ -75,6 +79,28 @@ const isPdf = mediaSrc?.toLowerCase().endsWith(".pdf");
       )
     }
   </div>
+  {
+    processSources.length > 1 && (
+      <div class="art-packet-tile__process-strip" aria-label={`${artwork.title} process previews`}>
+        {
+          processSources.map((src, processIndex) => (
+            <button
+              class="art-packet-tile__process-thumb"
+              type="button"
+              data-art-lightbox-trigger
+              data-art-src={mediaSrc}
+              data-art-process-srcs={JSON.stringify(processSources)}
+              data-art-start-index={String(processIndex)}
+              data-art-title={artwork.title}
+              aria-label={`Open process image ${processIndex + 1} for ${artwork.title}`}
+            >
+              <img src={src} alt="" loading="lazy" />
+            </button>
+          ))
+        }
+      </div>
+    )
+  }
   <div class="p-4">
     <h2 class="text-xl font-black">{artwork.title}</h2>
     {

@@ -83,6 +83,7 @@ const drawings = getArtworksForVolume(volume.slug);
             </div>
           </div>
           <img data-art-lightbox-image alt="" />
+          <div class="art-lightbox__strip" data-art-lightbox-strip hidden></div>
         </div>
       </dialog>
     </section>
@@ -120,9 +121,39 @@ const drawings = getArtworksForVolume(volume.slug);
   const lightboxTitle = document.querySelector<HTMLElement>("[data-art-lightbox-title]");
   const lightboxToggle = document.querySelector<HTMLButtonElement>("[data-art-lightbox-toggle]");
   const lightboxClose = document.querySelector<HTMLButtonElement>("[data-art-lightbox-close]");
+  const lightboxStrip = document.querySelector<HTMLElement>("[data-art-lightbox-strip]");
   let lightboxFinalSrc = "";
   let lightboxProcessSrcs: string[] = [];
   let lightboxProcessIndex = -1;
+
+  const renderLightboxStrip = () => {
+    if (!lightboxStrip) return;
+    lightboxStrip.innerHTML = "";
+    lightboxStrip.hidden = lightboxProcessSrcs.length === 0;
+
+    const options = [
+      { label: "Finished", src: lightboxFinalSrc, index: -1 },
+      ...lightboxProcessSrcs.map((src, index) => ({
+        label: `Process ${index + 1}`,
+        src,
+        index,
+      })),
+    ];
+
+    options.forEach((option) => {
+      const button = document.createElement("button");
+      const image = document.createElement("img");
+      button.type = "button";
+      button.className = "art-lightbox__thumb";
+      button.dataset.artLightboxIndex = String(option.index);
+      button.setAttribute("aria-label", option.label);
+      button.setAttribute("aria-current", lightboxProcessIndex === option.index ? "true" : "false");
+      image.src = option.src;
+      image.alt = "";
+      button.append(image);
+      lightboxStrip.append(button);
+    });
+  };
 
   const renderLightboxImage = () => {
     if (!lightboxImage) return;
@@ -137,6 +168,8 @@ const drawings = getArtworksForVolume(volume.slug);
           ? "Show finished"
           : `Next process (${lightboxProcessIndex + 2}/${lightboxProcessSrcs.length})`;
     }
+
+    renderLightboxStrip();
   };
 
   document.querySelectorAll<HTMLButtonElement>("[data-art-lightbox-trigger]").forEach((trigger) => {
@@ -149,7 +182,8 @@ const drawings = getArtworksForVolume(volume.slug);
       } catch {
         lightboxProcessSrcs = [];
       }
-      lightboxProcessIndex = -1;
+      const startIndex = Number(trigger.dataset.artStartIndex ?? -1);
+      lightboxProcessIndex = Number.isInteger(startIndex) && startIndex >= 0 ? startIndex : -1;
       lightboxTitle.textContent = trigger.dataset.artTitle ?? "Drawing";
 
       if (lightboxToggle) {
@@ -165,6 +199,16 @@ const drawings = getArtworksForVolume(volume.slug);
     lightboxProcessIndex = lightboxProcessIndex >= lightboxProcessSrcs.length - 1
       ? -1
       : lightboxProcessIndex + 1;
+    renderLightboxImage();
+  });
+
+  lightboxStrip?.addEventListener("click", (event) => {
+    const button = event.target instanceof Element
+      ? event.target.closest<HTMLButtonElement>("[data-art-lightbox-index]")
+      : null;
+    if (!button) return;
+
+    lightboxProcessIndex = Number(button.dataset.artLightboxIndex ?? -1);
     renderLightboxImage();
   });
 

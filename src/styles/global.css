@@ -89,6 +89,15 @@ label {
   html.has-animated-cursor * {
     cursor: none !important;
   }
+
+  html.has-animated-cursor .art-lightbox,
+  html.has-animated-cursor .art-lightbox * {
+    cursor: auto !important;
+  }
+
+  html.has-animated-cursor .art-lightbox button {
+    cursor: pointer !important;
+  }
 }
 
 body::before {
@@ -554,6 +563,47 @@ pre,
     width: 100%;
     overflow: hidden;
     border-radius: 0.85rem;
+  }
+
+  .art-packet-tile__media {
+    background: rgb(255 255 255 / 0.6);
+  }
+
+  .art-packet-tile[data-art-featured] .art-packet-tile__media {
+    padding: clamp(0.35rem, 1.2vw, 0.8rem);
+  }
+
+  .art-packet-tile[data-art-featured] .art-lightbox-trigger > img:first-child,
+  .art-packet-tile[data-art-featured] .art-packet-tile__hover-image {
+    width: auto;
+    max-width: 100%;
+    max-height: min(20rem, 42vh);
+    object-fit: contain;
+  }
+
+  .art-packet-tile__process-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(4.25rem, 1fr));
+    gap: 0.4rem;
+    padding: 0.45rem;
+    border-top: 1px solid var(--color-line);
+    background: rgb(var(--color-ink-rgb) / 0.035);
+  }
+
+  .art-packet-tile__process-thumb {
+    min-height: 4.75rem;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    border-radius: 0.45rem;
+    background: white;
+    padding: 0;
+  }
+
+  .art-packet-tile__process-thumb img {
+    display: block;
+    width: 100%;
+    height: 4.75rem;
+    object-fit: contain;
   }
 }
 
@@ -1386,7 +1436,7 @@ pre,
 
 @media (min-width: 640px) {
   .art-flow-grid > [data-art-flow-wide] {
-    grid-column: span 2;
+    grid-column: span 1;
   }
 }
 
@@ -1444,6 +1494,31 @@ pre,
   max-height: calc(92vh - 7rem);
   object-fit: contain;
   background: white;
+}
+
+.art-lightbox__strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(4.5rem, 1fr));
+  gap: 0.5rem;
+}
+
+.art-lightbox__thumb {
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: 0.5rem;
+  background: white;
+  padding: 0;
+}
+
+.art-lightbox__thumb[aria-current="true"] {
+  border-color: var(--color-accent-2);
+}
+
+.art-lightbox__thumb img {
+  width: 100%;
+  height: 4.5rem;
+  max-height: none;
+  object-fit: contain;
 }
 
 .art-simple-card {
