@@ -396,8 +396,11 @@ const libraryPackets = artVolumes.map((volume) => ({
     managedPackets = [];
   }
 
+  const publicBase = import.meta.env.BASE_URL.endsWith("/")
+    ? import.meta.env.BASE_URL
+    : `${import.meta.env.BASE_URL}/`;
   const publicAssetSrc = (src: string) => src.startsWith("/")
-    ? `${import.meta.env.BASE_URL}${src.slice(1)}`
+    ? `${publicBase}${src.slice(1)}`
     : src;
 
   const currentPacket = () =>
