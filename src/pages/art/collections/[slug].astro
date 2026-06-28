@@ -47,16 +47,9 @@ const drawings = getArtworksForVolume(volume.slug);
       </div>
 
       <section class="section-rhythm--tight" aria-labelledby="drawing-pack-heading">
-        <div class="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h2 id="drawing-pack-heading" class="text-3xl font-black">
-              Inside this volume
-            </h2>
-          </div>
-          <p class="max-w-md text-sm font-semibold leading-6 text-[var(--color-muted)]">
-            {drawings.length} pieces in this drawing packet.
-          </p>
-        </div>
+        <h2 id="drawing-pack-heading" class="text-3xl font-black">
+          Inside this volume
+        </h2>
 
         <ArtFlowGrid className="packet-drawing-grid mt-5" minColumn="34rem">
           {

@@ -3,7 +3,6 @@ import ArtProcessWidget from "../components/ArtProcessWidget.astro";
 import ArtVolumeCard from "../components/ArtVolumeCard.astro";
 import ArtFlowGrid from "../components/ArtFlowGrid.astro";
 import { artVolumes } from "../data/artworks";
-import SketchbookWidget from "../components/SketchbookWidget.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 const leadingVolumes = artVolumes.slice(0, 4);
@@ -34,7 +33,6 @@ const trailingVolumes = artVolumes.slice(4);
           {leadingVolumes.map((volume) => <div data-art-flow-item><ArtVolumeCard volume={volume} /></div>)}
           <div data-art-flow-item data-art-flow-full><ArtProcessWidget /></div>
           {trailingVolumes.map((volume) => <div data-art-flow-item><ArtVolumeCard volume={volume} /></div>)}
-          <div data-art-flow-item><SketchbookWidget /></div>
         </ArtFlowGrid>
       </div>
 
