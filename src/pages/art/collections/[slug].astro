@@ -58,7 +58,7 @@ const drawings = getArtworksForVolume(volume.slug);
           </p>
         </div>
 
-        <ArtFlowGrid className="packet-drawing-grid mt-5">
+        <ArtFlowGrid className="packet-drawing-grid mt-5" minColumn="34rem">
           {
             drawings.map((artwork, index) => (
               <div data-art-flow-item data-packet-drawing data-art-flow-wide={artwork.featured ? "" : undefined}>

@@ -577,7 +577,7 @@ pre,
   .art-packet-tile[data-art-featured] .art-packet-tile__hover-image {
     width: auto;
     max-width: 100%;
-    max-height: min(20rem, 42vh);
+    max-height: min(30rem, 62vh);
     object-fit: contain;
   }
 
