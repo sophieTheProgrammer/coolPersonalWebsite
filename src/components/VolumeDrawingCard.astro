@@ -79,36 +79,31 @@ const isFeatured = Boolean(artwork.featured);
       )
     }
   </div>
-  {
-    processSources.length > 1 && (
-      <div class="art-packet-tile__process-strip" aria-label={`${artwork.title} process previews`}>
-        {
-          processSources.map((src, processIndex) => (
-            <button
-              class="art-packet-tile__process-thumb"
-              type="button"
-              data-art-lightbox-trigger
-              data-art-src={mediaSrc}
-              data-art-process-srcs={JSON.stringify(processSources)}
-              data-art-start-index={String(processIndex)}
-              data-art-title={artwork.title}
-              aria-label={`Open process image ${processIndex + 1} for ${artwork.title}`}
-            >
-              <img src={src} alt="" loading="lazy" />
-            </button>
-          ))
-        }
-      </div>
-    )
-  }
-  <div class="p-4">
-    <h2 class="text-xl font-black">{artwork.title}</h2>
-    {
-      processSources.length > 1 && (
-        <p class="mt-1 text-xs font-bold text-[var(--color-muted)]">
-          {processSources.length} process images
-        </p>
-      )
-    }
+  <div class="art-packet-tile__footer p-4">
+    <div class="art-packet-tile__title-row">
+      <h2 class="text-xl font-black">{artwork.title}</h2>
+      {
+        processSources.length > 0 && (
+          <div class="art-packet-tile__process-badges" aria-label={`${artwork.title} process previews`}>
+            {
+              processSources.slice(0, 2).map((src, processIndex) => (
+                <button
+                  class="art-packet-tile__process-badge"
+                  type="button"
+                  data-art-lightbox-trigger
+                  data-art-src={mediaSrc}
+                  data-art-process-srcs={JSON.stringify(processSources)}
+                  data-art-start-index={String(processIndex)}
+                  data-art-title={artwork.title}
+                  aria-label={`Open process image ${processIndex + 1} for ${artwork.title}`}
+                >
+                  <img src={src} alt="" loading="lazy" />
+                </button>
+              ))
+            }
+          </div>
+        )
+      }
+    </div>
   </div>
 </article>

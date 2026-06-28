@@ -158,8 +158,12 @@ const drawings = getArtworksForVolume(volume.slug);
   const renderLightboxImage = () => {
     if (!lightboxImage) return;
     const processSrc = lightboxProcessIndex >= 0 ? lightboxProcessSrcs[lightboxProcessIndex] : "";
-    lightboxImage.src = processSrc || lightboxFinalSrc;
+    const nextSrc = processSrc || lightboxFinalSrc;
+    lightboxImage.removeAttribute("src");
     lightboxImage.alt = lightboxTitle?.textContent ?? "";
+    window.requestAnimationFrame(() => {
+      lightboxImage.src = nextSrc;
+    });
 
     if (lightboxToggle) {
       lightboxToggle.textContent = lightboxProcessIndex < 0
@@ -190,8 +194,8 @@ const drawings = getArtworksForVolume(volume.slug);
         lightboxToggle.hidden = lightboxProcessSrcs.length === 0;
       }
 
-      renderLightboxImage();
       lightbox.showModal();
+      renderLightboxImage();
     });
   });
 
